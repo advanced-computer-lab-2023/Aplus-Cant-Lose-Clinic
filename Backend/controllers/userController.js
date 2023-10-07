@@ -1,7 +1,6 @@
 const User = require("../Models/user.js");
-const Pharmacist = require("../Models/pharmacist.js");
+const Doctor = require("../Models/doctor.js");
 const Patient = require("../Models/patient.js");
-const Medicine = require("../Models/medicine.js");
 const { default: mongoose } = require("mongoose");
 
 const createUser = async (req, res) => {
@@ -42,15 +41,15 @@ const getUser = async (req, res) => {
           res.status(500).json({ error: "Internal Server Error" });
         }
         break;
-      case "pharmacist":
+      case "doctor":
         try {
-          const ph = await Pharmacist.findByUsername(fUser.username);
+          const ph = await Doctor.findByUsername(fUser.username);
           res
             .status(201)
             .json({ message: "User created successfully", user: { fUser, ph }});
           return { fUser, ph };
         } catch (error) {
-          console.error("Error handling pharmacist:", error);
+          console.error("Error handling doctor:", error);
           res.status(500).json({ error: "Internal Server Error" });
         }
         break;
@@ -106,68 +105,12 @@ const deleteUser = async (req, res) => {
 
 module.exports = { createUser, getUser, updateUser, deleteUser };
 
-const viewMedicine = async (req, res) => {
-  try {
-    const medicines = await Medicine.find();
-    console.log(medicines);
-    res
-      .status(200)
-      .json({ message: "Medicines retrieved successfully", medicines });
-  } catch (error) {
-    console.error("Error fetching medicines:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
 
-const searchMedicineByName = async (req, res) => {
-  try {
-    const { name } = req.query;
-
-    // Validate the 'name' parameter
-    if (!name || name.trim() === "") {
-      return res.status(400).json({ error: "Invalid or missing 'name' parameter" });
-    }
-
-    // Perform the medicine search by name (partial match)
-    const meds = await Medicine.find({ name: { $regex: name, $options: 'i' } });
-    
-    if (meds.length === 0) {
-      return res.status(404).json({ error: "Medicine not found" });
-    }
-    
-    // Send a successful response with a 200 status code
-    res.status(200).json({ message: "Medicines retrieved successfully", meds });
-  } catch (error) {
-    console.error("Error searching for medicine by name:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
 
-const filterMedicineByUse = async (req, res) => {
-  try {
-    const { use } = req.query;
 
-    // Validate the 'use' parameter
-    if (!use || use.trim() === "") {
-      return res.status(400).json({ error: "Invalid or missing 'use' parameter" });
-    }
 
-    // Perform the medicine search by 'use' (partial match)
-    const medicines = await Medicine.find({ use: { $regex: use, $options: 'i' } });
-    
-    if (medicines.length === 0) {
-      return res.status(404).json({ error: "Medicine not found" });
-    }
-    
-    // Send a successful response with a 200 status code
-    res.status(200).json({ message: "Medicines retrieved successfully", medicines });
-  } catch (error) {
-    console.error("Error searching for medicine by use:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 
 
 module.exports = {
@@ -176,7 +119,4 @@ module.exports = {
   checkUser,
   updateUser,
   deleteUser,
-  viewMedicine,
-  searchMedicineByName,
-  filterMedicineByUse,
 };

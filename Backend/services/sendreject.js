@@ -5,7 +5,7 @@ const sendAccessRequestRejectionEmail = async (email, title) => {
         Title: title,
         email: email
     };
-    sendEmail(email, context, "phreject", "El7a2ni pharmacy | Access Request Rejected 🟥");
+    sendEmail(email, context, "drreject", "El7a2ni clinic | Access Request Rejected 🟥");
 };
 
 module.exports = { sendAccessRequestRejectionEmail };

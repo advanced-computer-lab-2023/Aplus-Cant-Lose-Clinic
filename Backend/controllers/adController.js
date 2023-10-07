@@ -1,5 +1,5 @@
 const User = require("../Models/user");
-const Pharmacist = require("../Models/pharmacist");
+const Doctor = require("../Models/doctor");
 const Patient = require("../Models/patient");
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
@@ -37,10 +37,10 @@ const createAdmin = async (req, res) => {
 
 const viewPendPh = async (req, res) => {
   try {
-    const pharmacists = await Pharmacist.find({ status: "pending" });
+    const doctors = await Doctor.find({ status: "pending" });
     res
       .status(201)
-      .json({ message: "pending pharmacist r got successfully", pharmacists });
+      .json({ message: "pending doctor r got successfully", doctors });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -48,10 +48,10 @@ const viewPendPh = async (req, res) => {
 };
 const viewJoinedPh = async (req, res) => {
   try {
-    const pharmacists = await Pharmacist.find({ status: "accepted" });
+    const doctors = await Doctor.find({ status: "accepted" });
     res
       .status(201)
-      .json({ message: "accepted pharmacist r got successfully", pharmacists });
+      .json({ message: "accepted doctor r got successfully", doctors });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -80,17 +80,17 @@ const deletePatient = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const deletePharmacist = async (req, res) => {
+const deleteDoctor = async (req, res) => {
   try {
     ///
-    const pharmacist = await Pharmacist.deleteOne({
+    const doctor = await Doctor.deleteOne({
       username: req.query.username,
     });
     const user = await User.deleteOne({ username: req.query.username });
 
     res
       .status(201)
-      .json({ message: "pharmacist r got successfully", pharmacist });
+      .json({ message: "doctor r got successfully", doctor });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -101,27 +101,27 @@ const deleteAdmin = async (req, res) => {
     ///
     const admin = await User.deleteOne({ username: req.query.username });
 
-    res.status(201).json({ message: "pharmacist r got successfully", admin });
+    res.status(201).json({ message: "doctor r got successfully", admin });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-// const acceptPharmacist = async (req, res) => {
+// const acceptDoctor = async (req, res) => {
 //   try {
-//     const Pharmacist = await Pharmacist.updateOne({username: req.username },{$set:{status:"accepted"}});
-//     res.status(201).json({ message: "Pharmacist r got accepted", Pharmacist });
+//     const Doctor = await Doctor.updateOne({username: req.username },{$set:{status:"accepted"}});
+//     res.status(201).json({ message: "Doctor r got accepted", Doctor });
 //   } catch (error) {
 //     console.error("Error creating user:", error);
 //     res.status(500).json({ error: "Internal Server Error" });
 //   }
 // };
-// const rejectPharmacist = async (req, res) => {
+// const rejectDoctor = async (req, res) => {
 //   try {
-//     const Pharmacist = await Pharmacist.updateOne({username: req.username },{$set:{status:"rejected"}});
+//     const Doctor = await Doctor.updateOne({username: req.username },{$set:{status:"rejected"}});
 
-//     res.status(201).json({ message: "Pharmacist r got accepted", Pharmacist });
+//     res.status(201).json({ message: "Doctor r got accepted", Doctor });
 //   } catch (error) {
 //     console.error("Error creating user:", error);
 //     res.status(500).json({ error: "Internal Server Error" });
@@ -164,7 +164,7 @@ const updatePack = async (req, res) => {
   //   ///
   //   const admin = await User.deleteOne({ username: req.query.username });
 
-  //   res.status(201).json({ message: "pharmacist r got successfully", admin });
+  //   res.status(201).json({ message: "doctor r got successfully", admin });
   // } catch (error) {
   //   console.error("Error creating user:", error);
   //   res.status(500).json({ error: "Internal Server Error" });
@@ -177,7 +177,7 @@ module.exports = {
   viewJoinedPh,
   viewPatients,
   deletePatient,
-  deletePharmacist,
+  deleteDoctor,
   deleteAdmin,
   addPack,
   deletePack,

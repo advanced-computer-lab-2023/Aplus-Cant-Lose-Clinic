@@ -5,7 +5,7 @@ const sendAccessRequestApprovalEmail = async (email, title) => {
         Title: title,
         email: email
     };
-    sendEmail(email, context, "phapproval", "El7a2ni pharmacy | Access Approved 🟩");
+    sendEmail(email, context, "drapproval", "El7a2ni clinic | Access Approved 🟩");
 };
 
 module.exports = { sendAccessRequestApprovalEmail };
