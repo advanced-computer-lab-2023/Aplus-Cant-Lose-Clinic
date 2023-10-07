@@ -57,5 +57,47 @@ const addPatient = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const addFamilyMember = async (req, res) => {
+  const { username, fullName, NID, age, gender, relation } = req.body;
 
-module.exports={addPatient};
+  try {
+    // Validate input fields
+    if (!username || !fullName || !NID || !age || !gender || !relation) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    // Check if the patient exists by username
+    const patient = await Patient.findOne({ username });
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Check if the user already has a spouse
+    if (relation === "spouse" && patient.family.some((member) => member.relation === "spouse")) {
+      return res.status(400).json({ error: "A patient can have only one spouse" });
+    }
+
+    if (relation !== "spouse" && relation !== "child") {
+      return res.status(400).json({ error: "Invalid relation. Allowed values are 'spouse' or 'child'" });
+    }
+
+    // Create the family member object
+    const familyMember = { fullName, NID, age, gender, relation };
+
+    // Add the family member to the "family" array
+    patient.family.push(familyMember);
+
+    // Save the updated patient document
+    await patient.save();
+
+    return res.status(201).json({ message: "Family member added successfully", patient });
+  } catch (error) {
+    console.error("Error adding family member:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+module.exports={addPatient, addFamilyMember};

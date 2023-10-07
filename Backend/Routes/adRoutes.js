@@ -16,11 +16,11 @@ router.get("/getUser", getUser);
 
 
 router.post("/createAdmin", createAdmin);
-router.get("/viewPendPh", viewPendPh);
-router.get("/viewJoinedPh", viewJoinedPh);
+// router.get("/viewPendDr", viewPendDr);
+// router.get("/viewJoinedDr", viewJoinedDr);
 router.get("/viewPatients", viewPatients);
-router.delete("/deletePatient", deletePatient);
-router.delete("/deleteDoctor", deleteDoctor);
+// router.delete("/deletePatient", deletePatient);
+// router.delete("/deleteDoctor", deleteDoctor);
 router.delete("/deleteAdmin", deleteAdmin);
 
 module.exports = router; // Export the router instance

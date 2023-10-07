@@ -43,11 +43,11 @@ const getUser = async (req, res) => {
         break;
       case "doctor":
         try {
-          const ph = await Doctor.findByUsername(fUser.username);
+          const dr = await Doctor.findByUsername(fUser.username);
           res
             .status(201)
-            .json({ message: "User created successfully", user: { fUser, ph }});
-          return { fUser, ph };
+            .json({ message: "User created successfully", user: { fUser, dr }});
+          return { fUser, dr };
         } catch (error) {
           console.error("Error handling doctor:", error);
           res.status(500).json({ error: "Internal Server Error" });

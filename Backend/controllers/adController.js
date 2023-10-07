@@ -35,7 +35,7 @@ const createAdmin = async (req, res) => {
 };
 
 
-const viewPendPh = async (req, res) => {
+const viewPendDr = async (req, res) => {
   try {
     const doctors = await Doctor.find({ status: "pending" });
     res
@@ -46,7 +46,7 @@ const viewPendPh = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const viewJoinedPh = async (req, res) => {
+const viewJoinedDr = async (req, res) => {
   try {
     const doctors = await Doctor.find({ status: "accepted" });
     res
@@ -173,8 +173,8 @@ const updatePack = async (req, res) => {
 
 module.exports = {
   createAdmin,
-  viewPendPh,
-  viewJoinedPh,
+  viewPendDr,
+  viewJoinedDr,
   viewPatients,
   deletePatient,
   deleteDoctor,
