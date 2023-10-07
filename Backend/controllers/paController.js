@@ -97,7 +97,27 @@ const addFamilyMember = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const viewFamilyMembers = async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    // Find the patient by username
+    const patient = await Patient.findOne({ username });
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Retrieve the family members of the patient
+    const familyMembers = patient.family;
+
+    return res.status(200).json({ message: "Family members retrieved successfully", familyMembers });
+  } catch (error) {
+    console.error("Error retrieving family members:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 
 
-module.exports={addPatient, addFamilyMember};
+module.exports={addPatient, addFamilyMember, viewFamilyMembers};
