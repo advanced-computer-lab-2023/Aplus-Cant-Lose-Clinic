@@ -50,6 +50,11 @@ const paSchema = new mongoose.Schema(
           enum: ["spouse", "child"] // Define allowed values for the 'role' field
         },
       }
+    ],
+    doctors: [
+      {
+        username: String,
+      }
     ]
   }
 );

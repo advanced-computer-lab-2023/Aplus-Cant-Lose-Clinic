@@ -65,9 +65,27 @@ const addDoctor = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const getPatients = async (req, res) => {
+  const { username } = req.query;
+
+  try {
+    // Validate the 'username' parameter
+    if (!username || username.trim() === "") {
+      return res.status(400).json({ error: "Invalid or missing 'username' parameter" });
+    }
+
+    // Find patients where the doctor's username exists in the 'doctors' array
+    const patients = await Patient.find({ "doctors.username": username });
+
+    return res.status(200).json({ message: "Patients found", patients });
+  } catch (error) {
+    console.error("Error finding patients:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
 
 
-module.exports={addDoctor};
+module.exports={addDoctor, getPatients};
