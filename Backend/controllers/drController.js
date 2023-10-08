@@ -285,6 +285,41 @@ const editDoctor = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const doctorFilterAppointments = async (req, res) => {
+  const { doctorId, startDate, endDate, status } = req.query;
+
+  // Check if at least one filter parameter is provided
+  if (!doctorId && !startDate && !endDate && !status) {
+    return res.status(400).json({ error: "At least one filter parameter is required" });
+  }
+
+  // Build the query object based on the provided parameters
+  const query = {
+    drID: doctorId,
+  };
+
+  if (startDate) {
+    query.startDate = { $gte: new Date(startDate) };
+  }
+
+  if (endDate) {
+    query.endDate = { $lte: new Date(endDate) };
+  }
+
+  if (status) {
+    query.Description = status;
+  }
+
+  try {
+    // Find appointments that match the query
+    const appointments = await Appointment.find(query);
+
+    res.status(200).json({ message: "Appointments filtered successfully", appointments });
+  } catch (error) {
+    console.error("Error filtering appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   addDoctor,
@@ -292,5 +327,6 @@ module.exports = {
   searchPatientByName,
   patientsInUpcomingApointments,
   filterPrescriptions,
-  editDoctor
+  editDoctor,
+  doctorFilterAppointments
 };
