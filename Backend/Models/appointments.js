@@ -3,9 +3,17 @@ const appointmentSchema = new mongoose.Schema(
   {
     startDate: Date,
     endDate: Date,
-    drID: mongoose.Schema.Types.ObjectId,
-    pID: mongoose.Schema.Types.ObjectId,
-    Description: String
+    drID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Doctor", // Reference to the Doctor model
+      required: true,
+    },
+    pID: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Patient", // Reference to the Patient model
+      required: true,
+    },
+    Description: String,
   }
 );
 module.exports = mongoose.model("Appointment", appointmentSchema);

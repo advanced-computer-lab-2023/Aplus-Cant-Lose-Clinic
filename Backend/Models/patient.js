@@ -53,15 +53,36 @@ const paSchema = new mongoose.Schema(
     ],
     doctors: [
       {
-        username: String,
-      }
+        doctorID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Doctor", // Reference to the Doctor model
+        },
+      },
     ],
     hPackage: mongoose.Schema.Types.ObjectId,
-    perscriptions:[
+    perscriptions: [
       {
-        medID: mongoose.Schema.Types.ObjectId,
-      }
-    ]
+        medID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Medicine", // Reference to the Medicine model
+          required: true,
+        },
+        doctorID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Doctor", // Reference to the Doctor model
+          required: true,
+        },
+        datePrescribed: {
+          type: Date,
+          required: true,
+        },
+        status: {
+          type: String,
+          enum: ["filled", "unfilled"], // Define allowed values for status
+          default: "unfilled",
+        },
+      },
+    ],
   }
 );
 
