@@ -1,0 +1,163 @@
+import * as React from 'react';
+import { Paper, Tooltip, Button, Avatar, Container, Menu, Typography, IconButton, Toolbar, Box, AppBar } from '@mui/material';
+import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
+import VaccinesIcon from '@mui/icons-material/Vaccines';
+import { Link } from 'react-router-dom';
+
+function ResponsiveAppBar() {
+    const styles = {
+        marginRight: '10px',
+        color: 'white'
+    }
+    const picstyle = {
+        position: 'relative',
+        margin: '10px',
+        left: '45%',
+    }
+    const pic2style = {
+        margin: '10px',
+    }
+    const textstyle = {
+        position: 'relative',
+        padding: '10px',
+        right: '53%',
+        marginTop: '10%',
+    }
+    const text2style = {
+        padding: '10px',
+        marginTop: '10%',
+    }
+    const divstyle = {
+        display: 'flex',
+
+    }
+    return (
+        <>
+            <AppBar position="static" sx={{ backgroundColor: '#004E98' }}>
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters >
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                mr: 2,
+                                display: { xs: '2', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            HomePage
+                        </Typography>
+
+                        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                color="inherit"
+                            >
+                            </IconButton>
+                            <Menu
+
+                            >
+                            </Menu>
+                        </Box>
+
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <Link to='/Homepage/viewfamilymembers'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <FamilyRestroomIcon style={styles}></FamilyRestroomIcon>
+                                    </IconButton>
+                                    <Typography >view Family Members</Typography>
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <Link to='/Homepage/appointments'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <CalendarMonthIcon style={styles}  ></CalendarMonthIcon>
+                                    </IconButton>
+                                    <Typography >My Appointments</Typography>
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <Link to='/Homepage/'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <MedicalInformationIcon style={styles} ></MedicalInformationIcon>
+                                    </IconButton>
+                                    <Typography >My Health Records</Typography>
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <Link to='/Homepage/ListOfPrescriptions'>
+
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <VaccinesIcon style={styles} ></VaccinesIcon>
+                                    </IconButton>
+                                    <Typography >My Percriptions</Typography>
+                                </Button>
+                            </Link>
+                        </Box>
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open settings">
+                                <IconButton sx={{ p: 0 }}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                </IconButton>
+                            </Tooltip>
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+            <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
+                <div style={divstyle}>
+                    <img src="../doctors.jpg" alt="doctors" width="50%" height="auto" style={picstyle} />
+                    <Typography sx={{ margin: '10px' }} style={textstyle}>Here you can find Professional doctors in different specialities,
+                        Find your doctor and schadule your appointment with us.
+                    </Typography>
+                </div>
+                <Link to='/Homepage/'>
+
+                    <Button sx={{
+                        color: 'white', borderRadius: '25px', backgroundColor: '#004E98',
+                        margin: '10px', left: '40%', '&:hover': {
+                            backgroundColor: 'grey',
+                        },
+                    }}>
+                        Find Doctors
+                    </Button>
+                </Link>
+
+            </Paper>
+            <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
+                <div style={divstyle}>
+                    <img src="https://img.freepik.com/free-photo/nurses-are-well-good-taken-care-elderly-woman-patients-hospital-bed-patients-feel-happiness-medical-healthcare-concept_1150-21696.jpg" alt="health pic" width="50%" height="auto" style={pic2style} />
+                    <Typography sx={{ margin: '10px' }} style={text2style}>
+                        Don't forget to subscripe to our health membership that will give
+                        you and your family discounts to always check your health.
+                    </Typography>
+                </div>
+                <Link to='/Homepage/'>
+                    <Button sx={{
+                        color: 'white', borderRadius: '25px', backgroundColor: '#004E98',
+                        margin: '10px', left: '40%', '&:hover': {
+                            backgroundColor: 'grey',
+                        },
+                    }}>
+                        Hospital membership
+                    </Button>
+                </Link>
+            </Paper>
+        </>
+    );
+}
+export default ResponsiveAppBar;
