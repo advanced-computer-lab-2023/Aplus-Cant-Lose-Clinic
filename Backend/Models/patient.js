@@ -59,7 +59,10 @@ const paSchema = new mongoose.Schema(
         },
       },
     ],
-    hPackage: mongoose.Schema.Types.ObjectId,
+    hPackage: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "HPackages", // Reference to the HPackages model
+    },
     perscriptions: [
       {
         medID: {
