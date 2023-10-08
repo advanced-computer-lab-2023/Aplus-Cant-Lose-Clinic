@@ -119,7 +119,47 @@ const viewFamilyMembers = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+const viewDoctors = async (req, res) => {
+  try {
+    // Find all doctors
+    const doctors = await Doctor.find();
+
+    if (!doctors || doctors.length === 0) {
+      return res.status(404).json({ error: "No doctors found" });
+    }
+
+    // Prepare an array to store doctor information
+    const doctorInfo = [];
+
+    // Iterate through each doctor
+    for (const doctor of doctors) {
+      // Find the health package associated with the patient
+      const healthPackage = await HPackages.findById(req.patient.hPackage);
+
+      if (!healthPackage) {
+        return res.status(404).json({ error: "Health package not found" });
+      }
+
+      // Calculate session price based on doctor's rate, health package, and fee
+      const sessionPrice =
+        doctor.rate * 1.1 * (1 - healthPackage.doctorDisc / 100);
+
+      // Prepare doctor information object
+      const doctorInfoItem = {
+        name: doctor.name,
+        specialty: doctor.affilation,
+        sessionPrice,
+      };
+
+      doctorInfo.push(doctorInfoItem);
+    }
+
+    return res.status(200).json({ message: "Doctors information", doctors: doctorInfo });
+  } catch (error) {
+    console.error("Error retrieving doctors information:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
-
-module.exports={addPatient, addFamilyMember, viewFamilyMembers};
+module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors};

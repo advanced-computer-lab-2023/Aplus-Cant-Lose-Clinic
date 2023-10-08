@@ -55,7 +55,8 @@ const paSchema = new mongoose.Schema(
       {
         username: String,
       }
-    ]
+    ],
+    hPackage: mongoose.Schema.Types.ObjectId,
   }
 );
 
