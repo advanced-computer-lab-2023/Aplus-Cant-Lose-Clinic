@@ -176,15 +176,38 @@ const addPack = async (req, res) => {
 };
 
 const updatePack = async (req, res) => {
-  // try {
-  //   ///
-  //   const admin = await User.deleteOne({ username: req.query.username });
+  const packageId = req.params.id; // Assuming the package ID is passed as a parameter
 
-  //   res.status(201).json({ message: "doctor r got successfully", admin });
-  // } catch (error) {
-  //   console.error("Error creating user:", error);
-  //   res.status(500).json({ error: "Internal Server Error" });
-  // }
+  // Define the fields that can be updated
+  const allowedFields = ["rate", "doctorDisc", "medicineDisc", "familyDisc"];
+
+  // Extract the fields to update from the request body
+  const updates = {};
+  for (const field of allowedFields) {
+    if (req.body[field] !== undefined) {
+      updates[field] = req.body[field];
+    }
+  }
+
+  // Check if at least one field is provided for update
+  if (Object.keys(updates).length === 0) {
+    return res.status(400).json({ error: "At least one field must be provided for update" });
+  }
+
+  try {
+    const package = await HPackages.findByIdAndUpdate(packageId, updates, {
+      new: true, // Return the updated document
+    });
+
+    if (!package) {
+      return res.status(404).json({ error: "Package not found" });
+    }
+
+    res.status(200).json({ message: "Package updated successfully", package });
+  } catch (error) {
+    console.error("Error updating package:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
 module.exports = {
