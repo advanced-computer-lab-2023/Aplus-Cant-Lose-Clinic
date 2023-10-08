@@ -140,10 +140,68 @@ const patientsInUpcomingApointments = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const filterPrescriptions = async (patientId, filters) => {
+  if (!patientId) {
+    return { error: "Patient ID is required" };
+  }
+
+  const {
+    date, // The date to filter by (optional)
+    doctorID, // The doctor's ID to filter by (optional)
+    status, // The status to filter by (optional)
+  } = filters;
+
+  // Build the query based on the provided filters
+  const query = {
+    _id: patientId,
+  };
+
+  if (date) {
+    query["perscriptions.datePrescribed"] = date;
+  }
+
+  if (doctorID) {
+    query["perscriptions.doctorID"] = doctorID;
+  }
+
+  if (status) {
+    query["perscriptions.status"] = status;
+  }
+
+  try {
+    // Find the patient document based on the patient ID and apply the filters
+    const patient = await Patient.findOne(query).populate({
+      path: "perscriptions.medID perscriptions.doctorID",
+    });
+
+    if (!patient) {
+      return { error: "Patient not found" };
+    }
+
+    // Filter prescriptions based on the provided criteria
+    const filteredPrescriptions = patient.perscriptions.filter((prescription) => {
+      let match = true;
+      if (date && prescription.datePrescribed.toDateString() !== new Date(date).toDateString()) {
+        match = false;
+      }
+      if (doctorID && prescription.doctorID.id !== doctorID) {
+        match = false;
+      }
+      if (status && prescription.status !== status) {
+        match = false;
+      }
+      return match;
+    });
+
+    return { message: "Prescriptions filtered successfully", prescriptions: filteredPrescriptions };
+  } catch (error) {
+    console.error("Error filtering prescriptions:", error);
+    return { error: "Internal Server Error" };
+  }
+};
 
 
 
 
 
-
-module.exports={addDoctor, getPatients, searchPatientByName, patientsInUpcomingApointments};
+module.exports={addDoctor, getPatients, searchPatientByName, patientsInUpcomingApointments, filterPrescriptions};
