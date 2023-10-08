@@ -2,6 +2,7 @@ const Patient = require("../Models/patient");
 const User = require("../Models/user");
 const Doctor = require("../Models/doctor");
 const Pharmacist = require("../Models/pharmacist");
+const Medicine = require("../Models/medicine");
 const validator = require('validator');
 const addPatient = async (req, res) => {
   try {
@@ -234,5 +235,57 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const viewPrescriptions = async (req, res) => {
+  try {
+    const { username } = req.query;
 
-module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors, searchDoctorsByNameOrSpecialty, searchDoctorsBySpecialtyOrAvailability};
+    // Validate the 'username' parameter
+    if (!username || username.trim() === "") {
+      return res.status(400).json({ error: "Invalid or missing 'username' parameter" });
+    }
+
+    // Find the patient by username
+    const patient = await Patient.findOne({ username });
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Extract the list of prescription details from the patient's prescriptions array
+    let prescriptions = patient.perscriptions;
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res.status(404).json({ error: "No prescriptions found for the patient" });
+    }
+
+    // Fetch details about each medicine
+    const medicineDetails = await Promise.all(prescriptions.map(async prescription => {
+      const medID = prescription.medID;
+      const medicine = await Medicine.findById(medID);
+
+      if (!medicine) {
+        return null; // Medicine not found for this prescription
+      }
+
+      return {
+        prescription,
+        medicine,
+      };
+    }));
+
+    // Filter out any prescriptions without matching medicines
+    const validPrescriptions = medicineDetails.filter(item => item !== null);
+
+    if (validPrescriptions.length === 0) {
+      return res.status(404).json({ error: "No matching prescriptions found" });
+    }
+
+    // Prepare the response with the filtered prescriptions and medicine details
+    return res.status(200).json({ message: "Prescriptions retrieved successfully", prescriptions: validPrescriptions });
+  } catch (error) {
+    console.error("Error retrieving prescriptions:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors, searchDoctorsByNameOrSpecialty, searchDoctorsBySpecialtyOrAvailability, viewPrescriptions};

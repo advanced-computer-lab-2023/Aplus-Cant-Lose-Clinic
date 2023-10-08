@@ -57,6 +57,11 @@ const paSchema = new mongoose.Schema(
       }
     ],
     hPackage: mongoose.Schema.Types.ObjectId,
+    perscriptions:[
+      {
+        medID: mongoose.Schema.Types.ObjectId,
+      }
+    ]
   }
 );
 
