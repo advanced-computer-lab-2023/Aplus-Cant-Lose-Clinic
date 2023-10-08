@@ -252,6 +252,39 @@ const filterPrescriptions = async (patientId, filters) => {
     return { error: "Internal Server Error" };
   }
 };
+const editDoctor = async (req, res) => {
+  const { id } = req.params; // Get the ID from the request parameters
+  const { email, rate, affiliation } = req.body; // Get the updated values from the request body
+
+  // Check if at least one of the fields (email, rate, affiliation) is provided
+  if (!email && !rate && !affiliation) {
+    return res.status(400).json({ error: "At least one input is required" });
+  }
+
+  try {
+    // Check for email duplicates in doctor, patient, and pharmacist tables
+    const emailExists = await Doctor.findOne({ email }) || await Patient.findOne({ email }) || await Pharmacist.findOne({ email });
+    if (emailExists) {
+      return res.status(400).json({ error: "Email already exists" });
+    }
+
+    // Find the doctor by ID and update the specified fields
+    const updatedDoctor = await Doctor.findByIdAndUpdate(
+      id,
+      { email, rate, affiliation },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedDoctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    res.status(200).json({ message: "Doctor updated successfully", doctor: updatedDoctor });
+  } catch (error) {
+    console.error("Error updating doctor:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   addDoctor,
@@ -259,4 +292,5 @@ module.exports = {
   searchPatientByName,
   patientsInUpcomingApointments,
   filterPrescriptions,
+  editDoctor
 };
