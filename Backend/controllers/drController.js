@@ -1,16 +1,37 @@
 const Doctor = require("../Models/doctor");
 const User = require("../Models/user");
 const Patient = require("../Models/patient");
-const validator = require('validator');
-const Appointment = require('../Models/appointment');
+const validator = require("validator");
+const Appointment = require("../Models/appointment");
 
 const addDoctor = async (req, res) => {
   try {
-    const { name, email, username, dBirth, gender, rate, affilation, background, docs, password } =
-      req.body;
+    const {
+      name,
+      email,
+      username,
+      dBirth,
+      gender,
+      rate,
+      affilation,
+      background,
+      docs,
+      password,
+    } = req.body;
 
     // Validate input fields
-    if (!name || !email || !username || !dBirth || !gender || !rate || !affilation || !background || !docs || !password) {
+    if (
+      !name ||
+      !email ||
+      !username ||
+      !dBirth ||
+      !gender ||
+      !rate ||
+      !affilation ||
+      !background ||
+      !docs ||
+      !password
+    ) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
@@ -52,7 +73,7 @@ const addDoctor = async (req, res) => {
       affilation,
       background,
       docs,
-      status
+      status,
     });
 
     const user = await User.create({
@@ -73,7 +94,9 @@ const getPatients = async (req, res) => {
   try {
     // Validate the 'username' parameter
     if (!username || username.trim() === "") {
-      return res.status(400).json({ error: "Invalid or missing 'username' parameter" });
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing 'username' parameter" });
     }
 
     // Find patients where the doctor's username exists in the 'doctors' array
@@ -91,18 +114,24 @@ const searchPatientByName = async (req, res) => {
 
     // Validate the 'name' parameter
     if (!name || name.trim() === "") {
-      return res.status(400).json({ error: "Invalid or missing 'name' parameter" });
+      return res
+        .status(400)
+        .json({ error: "Invalid or missing 'name' parameter" });
     }
 
     // Perform the patient search by name (partial match)
-    const patients = await Patient.find({ name: { $regex: name, $options: 'i' } });
-    
+    const patients = await Patient.find({
+      name: { $regex: name, $options: "i" },
+    });
+
     if (patients.length === 0) {
       return res.status(404).json({ error: "Patient not found" });
     }
-    
+
     // Send a successful response with a 200 status code
-    res.status(200).json({ message: "Patients retrieved successfully", patients });
+    res
+      .status(200)
+      .json({ message: "Patients retrieved successfully", patients });
   } catch (error) {
     console.error("Error searching for patients by name:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -121,20 +150,30 @@ const patientsInUpcomingApointments = async (req, res) => {
     });
 
     if (!upcomingAppointments || upcomingAppointments.length === 0) {
-      return res.status(404).json({ error: "No upcoming appointments found for the specified doctor" });
+      return res
+        .status(404)
+        .json({
+          error: "No upcoming appointments found for the specified doctor",
+        });
     }
 
     // Extract patient IDs from upcoming appointments
-    const patientIds = upcomingAppointments.map(appointment => appointment.pID);
+    const patientIds = upcomingAppointments.map(
+      (appointment) => appointment.pID
+    );
 
     // Find the associated patients
     const patients = await Patient.find({ _id: { $in: patientIds } });
 
     if (!patients || patients.length === 0) {
-      return res.status(404).json({ error: "No patients found for upcoming appointments" });
+      return res
+        .status(404)
+        .json({ error: "No patients found for upcoming appointments" });
     }
 
-    return res.status(200).json({ message: "Patients in upcoming appointments", patients });
+    return res
+      .status(200)
+      .json({ message: "Patients in upcoming appointments", patients });
   } catch (error) {
     console.error("Error retrieving patients in upcoming appointments:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -150,6 +189,11 @@ const filterPrescriptions = async (patientId, filters) => {
     doctorID, // The doctor's ID to filter by (optional)
     status, // The status to filter by (optional)
   } = filters;
+
+  // Check if no filters are provided
+  if (!date && !doctorID && !status) {
+    return { error: "At least one filter input is required" };
+  }
 
   // Build the query based on the provided filters
   const query = {
@@ -179,29 +223,40 @@ const filterPrescriptions = async (patientId, filters) => {
     }
 
     // Filter prescriptions based on the provided criteria
-    const filteredPrescriptions = patient.perscriptions.filter((prescription) => {
-      let match = true;
-      if (date && prescription.datePrescribed.toDateString() !== new Date(date).toDateString()) {
-        match = false;
+    const filteredPrescriptions = patient.perscriptions.filter(
+      (prescription) => {
+        let match = true;
+        if (
+          date &&
+          prescription.datePrescribed.toDateString() !==
+            new Date(date).toDateString()
+        ) {
+          match = false;
+        }
+        if (doctorID && prescription.doctorID.id !== doctorID) {
+          match = false;
+        }
+        if (status && prescription.status !== status) {
+          match = false;
+        }
+        return match;
       }
-      if (doctorID && prescription.doctorID.id !== doctorID) {
-        match = false;
-      }
-      if (status && prescription.status !== status) {
-        match = false;
-      }
-      return match;
-    });
+    );
 
-    return { message: "Prescriptions filtered successfully", prescriptions: filteredPrescriptions };
+    return {
+      message: "Prescriptions filtered successfully",
+      prescriptions: filteredPrescriptions,
+    };
   } catch (error) {
     console.error("Error filtering prescriptions:", error);
     return { error: "Internal Server Error" };
   }
 };
 
-
-
-
-
-module.exports={addDoctor, getPatients, searchPatientByName, patientsInUpcomingApointments, filterPrescriptions};
+module.exports = {
+  addDoctor,
+  getPatients,
+  searchPatientByName,
+  patientsInUpcomingApointments,
+  filterPrescriptions,
+};

@@ -69,41 +69,53 @@ const viewPatients = async (req, res) => {
 };
 
 const deletePatient = async (req, res) => {
+  const patientId = req.params.id; // Assuming the ID is passed as a parameter
+
   try {
-    const patient = await Patient.deleteOne({ username: req.query.username });
-    const user = await User.deleteOne({ username: req.query.username });
-    res
-      .status(201)
-      .json({ message: "patient r deleted  successfully", patient });
+    const patient = await Patient.findByIdAndDelete(patientId);
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // You may also want to delete the associated user
+    const user = await User.findOneAndDelete({ username: patient.username });
+
+    res.status(201).json({ message: "Patient deleted successfully", patient });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error deleting patient:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 const deleteDoctor = async (req, res) => {
-  try {
-    ///
-    const doctor = await Doctor.deleteOne({
-      username: req.query.username,
-    });
-    const user = await User.deleteOne({ username: req.query.username });
+  const doctorId = req.params.id; // Assuming the ID is passed as a parameter
 
-    res
-      .status(201)
-      .json({ message: "doctor r got successfully", doctor });
+  try {
+    const doctor = await Doctor.findByIdAndDelete(doctorId);
+    if (!doctor) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    // You may also want to delete the associated user
+    const user = await User.findOneAndDelete({ username: doctor.username });
+
+    res.status(201).json({ message: "Doctor deleted successfully", doctor });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error deleting doctor:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 const deleteAdmin = async (req, res) => {
-  try {
-    ///
-    const admin = await User.deleteOne({ username: req.query.username });
+  const adminId = req.params.id; // Assuming the ID is passed as a parameter
 
-    res.status(201).json({ message: "doctor r got successfully", admin });
+  try {
+    const admin = await User.findByIdAndDelete(adminId);
+    if (!admin) {
+      return res.status(404).json({ error: "Admin not found" });
+    }
+
+    res.status(201).json({ message: "Admin deleted successfully", admin });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error deleting admin:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -130,11 +142,15 @@ const deleteAdmin = async (req, res) => {
 ///HEalth pack
 
 const deletePack = async (req, res) => {
-  try {
-    ///
-    const package = await HPackages.deleteOne({ type: req.query.type });
+  const packageId = req.params.id; // Assuming the ID is passed as a parameter
 
-    res.status(201).json({ message: "package r got successfully", package });
+  try {
+    const package = await HPackages.findByIdAndDelete(packageId);
+    if (!package) {
+      return res.status(404).json({ error: "Package not found" });
+    }
+
+    res.status(201).json({ message: "Package deleted successfully", package });
   } catch (error) {
     console.error("Error deleting package:", error);
     res.status(500).json({ error: "Internal Server Error" });
