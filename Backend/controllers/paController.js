@@ -160,6 +160,51 @@ const viewDoctors = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const searchDoctorByName = async (req, res) => {
+  try {
+    const { name } = req.query;
 
+    // Validate the 'name' parameter
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ error: "Invalid or missing 'name' parameter" });
+    }
 
-module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors};
+    // Perform the doctor search by name
+    const doctors = await Doctor.find({ name: { $regex: name, $options: 'i' } });
+
+    if (!doctors || doctors.length === 0) {
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    // Prepare the response with the found doctors
+    return res.status(200).json({ message: "Doctors retrieved successfully", doctors });
+  } catch (error) {
+    console.error("Error searching for doctor by name:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const searchDoctorBySpecialty = async (req, res) => {
+  try {
+    const { specialty } = req.query;
+
+    // Validate the 'specialty' parameter
+    if (!specialty || specialty.trim() === "") {
+      return res.status(400).json({ error: "Invalid or missing 'specialty' parameter" });
+    }
+
+    // Perform the doctor search by specialty
+    const doctors = await Doctor.find({ affilation: { $regex: specialty, $options: 'i' } });
+
+    if (!doctors || doctors.length === 0) {
+      return res.status(404).json({ error: "Doctors with the specified specialty not found" });
+    }
+
+    // Prepare the response with the found doctors
+    return res.status(200).json({ message: "Doctors retrieved successfully", doctors });
+  } catch (error) {
+    console.error("Error searching for doctor by specialty:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors, searchDoctorByName, searchDoctorBySpecialty};
