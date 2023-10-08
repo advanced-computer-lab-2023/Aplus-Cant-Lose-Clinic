@@ -1,6 +1,7 @@
 const Patient = require("../Models/patient");
 const User = require("../Models/user");
 const Doctor = require("../Models/doctor");
+const Pharmacist = require("../Models/pharmacist");
 const validator = require('validator');
 const addPatient = async (req, res) => {
   try {
@@ -26,7 +27,8 @@ const addPatient = async (req, res) => {
     // Check if the email is already in use
     const emailFound = await Patient.findOne({ email });
     const emailFound2 = await Doctor.findOne({ email });
-    if (emailFound || emailFound2) {
+    const emailFound3 = await Pharmacist.findOne({ email });
+    if (emailFound || emailFound2 || emailFound3) {
       return res.status(400).json({ error: "Email already exists" });
     }
 

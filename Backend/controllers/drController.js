@@ -2,6 +2,7 @@ const Doctor = require("../Models/doctor");
 const User = require("../Models/user");
 const Patient = require("../Models/patient");
 const validator = require('validator');
+const Appointment = require('../Models/appointment');
 
 const addDoctor = async (req, res) => {
   try {
@@ -25,9 +26,10 @@ const addDoctor = async (req, res) => {
       return res.status(400).json({ error: "Username already exists" });
     }
 
-    const emailFoundPatient = await Patient.findOne({ email });
-    const emailFoundDoctor = await Doctor.findOne({ email });
-    if (emailFoundPatient || emailFoundDoctor) {
+    const emailFound = await Patient.findOne({ email });
+    const emailFound2 = await Doctor.findOne({ email });
+    const emailFound3 = await Pharmacist.findOne({ email });
+    if (emailFound || emailFound2 || emailFound3) {
       return res.status(400).json({ error: "Email already exists" });
     }
 
@@ -106,8 +108,42 @@ const searchPatientByName = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const patientsInUpcomingApointments = async (req, res) => {
+  try {
+    const { doctorId } = req.params; // Assuming the doctor's ID is provided in the request parameters
+
+    const currentDate = new Date();
+
+    // Find upcoming appointments for the specific doctor where the appointment date is greater than the current date
+    const upcomingAppointments = await Appointment.find({
+      drID: doctorId,
+      Date: { $gt: currentDate },
+    });
+
+    if (!upcomingAppointments || upcomingAppointments.length === 0) {
+      return res.status(404).json({ error: "No upcoming appointments found for the specified doctor" });
+    }
+
+    // Extract patient IDs from upcoming appointments
+    const patientIds = upcomingAppointments.map(appointment => appointment.pID);
+
+    // Find the associated patients
+    const patients = await Patient.find({ _id: { $in: patientIds } });
+
+    if (!patients || patients.length === 0) {
+      return res.status(404).json({ error: "No patients found for upcoming appointments" });
+    }
+
+    return res.status(200).json({ message: "Patients in upcoming appointments", patients });
+  } catch (error) {
+    console.error("Error retrieving patients in upcoming appointments:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
 
-module.exports={addDoctor, getPatients};
+
+
+module.exports={addDoctor, getPatients, searchPatientByName, patientsInUpcomingApointments};
