@@ -86,6 +86,12 @@ const paSchema = new mongoose.Schema(
         },
       },
     ],
+    records: [
+      {
+        url: String, // Store the URL to the uploaded image
+        desc: String, // Optional description for the image
+      },
+    ],
   }
 );
 
