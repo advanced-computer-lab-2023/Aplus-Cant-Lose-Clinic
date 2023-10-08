@@ -83,7 +83,29 @@ const getPatients = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const searchPatientByName = async (req, res) => {
+  try {
+    const { name } = req.query;
 
+    // Validate the 'name' parameter
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ error: "Invalid or missing 'name' parameter" });
+    }
+
+    // Perform the patient search by name (partial match)
+    const patients = await Patient.find({ name: { $regex: name, $options: 'i' } });
+    
+    if (patients.length === 0) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+    
+    // Send a successful response with a 200 status code
+    res.status(200).json({ message: "Patients retrieved successfully", patients });
+  } catch (error) {
+    console.error("Error searching for patients by name:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
