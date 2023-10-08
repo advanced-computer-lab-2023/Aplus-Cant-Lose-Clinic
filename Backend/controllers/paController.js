@@ -160,7 +160,7 @@ const viewDoctors = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const searchDoctors = async (req, res) => {
+const searchDoctorsByNameOrSpecialty = async (req, res) => {
   try {
     const { name, specialty } = req.query;
     const query = {};
@@ -188,5 +188,51 @@ const searchDoctors = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
+  try {
+    const { searchTime, specialty } = req.query;
 
-module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors, searchDoctors};
+    // Check if neither 'searchTime' nor 'specialty' is provided
+    if (!searchTime && (!specialty || specialty.trim() === '')) {
+      return res.status(400).json({ error: "At least one input (searchTime or specialty) is required" });
+    }
+
+    // Convert 'searchTime' to a Date object if provided
+    const searchDateTime = searchTime ? new Date(searchTime) : null;
+
+    // Find appointments that overlap with the specified time if 'searchTime' is provided
+    const overlappingAppointments = searchDateTime
+      ? await Appointment.find({
+          startDate: { $lt: searchDateTime },
+          endDate: { $gt: searchDateTime },
+        })
+      : [];
+
+    // Get the list of doctor IDs from the overlapping appointments
+    const doctorIds = overlappingAppointments.map(appointment => appointment.drID);
+
+    // Build the query to find available doctors based on specialty and/or availability
+    const query = {};
+    if (searchDateTime) {
+      query._id = { $nin: doctorIds };
+    }
+    if (specialty && specialty.trim() !== "") {
+      query.affilation = { $regex: specialty, $options: 'i' };
+    }
+
+    // Find available doctors who match the specified criteria
+    const availableDoctors = await Doctor.find(query);
+
+    if (!availableDoctors || availableDoctors.length === 0) {
+      return res.status(404).json({ error: "No available doctors found matching the criteria" });
+    }
+
+    // Prepare the response with the available doctors
+    return res.status(200).json({ message: "Available doctors retrieved successfully", availableDoctors });
+  } catch (error) {
+    console.error("Error searching for available doctors:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+module.exports={addPatient, addFamilyMember, viewFamilyMembers, viewDoctors, searchDoctorsByNameOrSpecialty, searchDoctorsBySpecialtyOrAvailability};

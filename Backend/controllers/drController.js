@@ -117,7 +117,7 @@ const patientsInUpcomingApointments = async (req, res) => {
     // Find upcoming appointments for the specific doctor where the appointment date is greater than the current date
     const upcomingAppointments = await Appointment.find({
       drID: doctorId,
-      Date: { $gt: currentDate },
+      startDate: { $gt: currentDate },
     });
 
     if (!upcomingAppointments || upcomingAppointments.length === 0) {
