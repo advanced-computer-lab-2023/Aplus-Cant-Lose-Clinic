@@ -2,7 +2,7 @@ const Doctor = require("../Models/doctor");
 const User = require("../Models/user");
 const Patient = require("../Models/patient");
 const validator = require("validator");
-const Appointment = require("../Models/appointment");
+const Appointment = require("../Models/appointments");
 
 const addDoctor = async (req, res) => {
   try {

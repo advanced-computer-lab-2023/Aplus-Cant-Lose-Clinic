@@ -29,7 +29,7 @@ router.get("/viewPatients", viewPatients);
 router.delete("/deletePatient", deletePatient);
 router.delete("/deleteDoctor", deleteDoctor);
 router.delete("/deleteAdmin", deleteAdmin);
-router.add("/addPack", addPack);
+router.post("/addPack", addPack);
 router.delete("/deletePack", deletePack);
 router.put("/updatePack", updatePack);
 
