@@ -3,7 +3,11 @@ const Doctor = require("../Models/doctor");
 const Patient = require("../Models/patient");
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+function generateToken(data) {
+  return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
 const createAdmin = async (req, res) => {
   const { username, password } = req.body;
 

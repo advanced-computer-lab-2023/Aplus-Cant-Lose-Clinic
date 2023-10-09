@@ -6,6 +6,90 @@ const Medicine = require("../Models/medicine");
 const Appointment = require("../Models/appointments");
 const validator = require("validator");
 const HPackages = require("../Models/hpackages");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const Prescription = require("../Models/prescription");
+function generateToken(data) {
+  return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
+
+const createAppointment = async (req, res) => {
+  try {
+    const { startDate, endDate, drID, Description } = req.body;
+    const pID = req.params.patientID; // Retrieve patient ID from route parameter
+
+    // Validate inputs
+    if (!startDate || !endDate || !drID || !Description) {
+      return res.status(400).json({ error: "Missing required input fields" });
+    }
+
+    // Check if the doctor is already in the patient's doctors set
+    const patient = await Patient.findById(pID);
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Check if the doctor has any overlapping appointments
+    const doctorHasOverlappingAppointments = await Appointment.exists({
+      drID: drID,
+      $and: [
+        { startDate: { $lt: endDate } }, // Check if the new appointment starts before the end of an existing one
+        { endDate: { $gt: startDate } }, // Check if the new appointment ends after the start of an existing one
+      ],
+    });
+
+    if (doctorHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Doctor already has appointments during this time" });
+    }
+
+    // Check if the patient has any overlapping appointments
+    const patientHasOverlappingAppointments = await Appointment.exists({
+      pID: pID,
+      $and: [
+        { startDate: { $lt: endDate } }, // Check if the new appointment starts before the end of an existing one
+        { endDate: { $gt: startDate } }, // Check if the new appointment ends after the start of an existing one
+      ],
+    });
+
+    if (patientHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Patient already has appointments during this time" });
+    }
+
+    // Create a new appointment instance with the provided data
+    const appointment = new Appointment({
+      startDate,
+      endDate,
+      drID,
+      pID,
+      Description,
+    });
+
+    // Save the appointment to the database
+    const savedAppointment = await appointment.save();
+
+    // Update the patient's doctors array with the new doctor only if not already present
+    const isDoctorInArray = patient.doctors.some((doc) =>
+      doc.doctorID.equals(drID)
+    );
+    if (!isDoctorInArray) {
+      await Patient.findByIdAndUpdate(pID, {
+        $addToSet: { doctors: { doctorID: drID } },
+      });
+    }
+
+    res.status(201).json({
+      message: "Appointment created successfully",
+      appointment: savedAppointment,
+    });
+  } catch (error) {
+    console.error("Error creating appointment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const addPatient = async (req, res) => {
   try {
@@ -68,14 +152,21 @@ const addPatient = async (req, res) => {
       mobile,
       emergencyContact,
     });
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const data = {
+      _id: patient._id,
+    };
+    const token = generateToken(data);
     const user = await User.create({
       username,
-      password,
+      password: hashedPassword,
       role: "patient",
     });
 
-    res.status(201).json({ message: "Patient created successfully", patient });
+    res
+      .status(201)
+      .json({ message: "Patient created successfully", patient, token });
   } catch (error) {
     console.error("Error creating patient:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -109,11 +200,9 @@ const addFamilyMember = async (req, res) => {
     }
 
     if (relation !== "spouse" && relation !== "child") {
-      return res
-        .status(400)
-        .json({
-          error: "Invalid relation. Allowed values are 'spouse' or 'child'",
-        });
+      return res.status(400).json({
+        error: "Invalid relation. Allowed values are 'spouse' or 'child'",
+      });
     }
 
     // Create the family member object
@@ -189,8 +278,7 @@ const viewDoctors = async (req, res) => {
 
       if (healthPackage) {
         sessionPrice *= 1.1 * (1 - healthPackage.doctorDisc / 100);
-      }
-      else{
+      } else {
         sessionPrice *= 1.1;
       }
 
@@ -216,10 +304,12 @@ const viewDoctors = async (req, res) => {
 const searchDoctorsByNameOrSpecialty = async (req, res) => {
   try {
     const { name, specialty } = req.query;
-    
+
     // Validate that at least one input is provided
     if (!name && (!specialty || specialty.trim() === "")) {
-      return res.status(400).json({ error: "At least one input (name or specialty) is required" });
+      return res
+        .status(400)
+        .json({ error: "At least one input (name or specialty) is required" });
     }
 
     const query = {};
@@ -280,11 +370,9 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
 
     // Check if neither 'searchTime' nor 'specialty' is provided
     if (!searchTime && (!specialty || specialty.trim() === "")) {
-      return res
-        .status(400)
-        .json({
-          error: "At least one input (searchTime or specialty) is required",
-        });
+      return res.status(400).json({
+        error: "At least one input (searchTime or specialty) is required",
+      });
     }
 
     // Convert 'searchTime' to a Date object if provided
@@ -346,12 +434,10 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
       })
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Available doctors retrieved successfully",
-        doctors: doctorInfo,
-      });
+    return res.status(200).json({
+      message: "Available doctors retrieved successfully",
+      doctors: doctorInfo,
+    });
   } catch (error) {
     console.error("Error searching for available doctors:", error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -360,24 +446,22 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
 
 const viewPrescriptions = async (req, res) => {
   try {
-    const { username } = req.query;
+    const { patientId } = req.params;
 
-    // Validate the 'username' parameter
-    if (!username || username.trim() === "") {
-      return res
-        .status(400)
-        .json({ error: "Invalid or missing 'username' parameter" });
+    // Validate the 'patientId' parameter
+    if (!patientId) {
+      return res.status(400).json({ error: "Patient ID is required" });
     }
 
-    // Find the patient by username
-    const patient = await Patient.findOne({ username });
+    // Find the patient by patientId
+    const patient = await Patient.findById(patientId);
 
     if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
     }
 
-    // Extract the list of prescription details from the patient's prescriptions array
-    let prescriptions = patient.perscriptions;
+    // Fetch details about each prescription, including medicine and doctor
+    const prescriptions = await Prescription.find({ patientID: patient._id }).populate("medID doctorID");
 
     if (!prescriptions || prescriptions.length === 0) {
       return res
@@ -385,42 +469,17 @@ const viewPrescriptions = async (req, res) => {
         .json({ error: "No prescriptions found for the patient" });
     }
 
-    // Fetch details about each medicine
-    const medicineDetails = await Promise.all(
-      prescriptions.map(async (prescription) => {
-        const medID = prescription.medID;
-        const medicine = await Medicine.findById(medID);
-
-        if (!medicine) {
-          return null; // Medicine not found for this prescription
-        }
-
-        return {
-          prescription,
-          medicine,
-        };
-      })
-    );
-
-    // Filter out any prescriptions without matching medicines
-    const validPrescriptions = medicineDetails.filter((item) => item !== null);
-
-    if (validPrescriptions.length === 0) {
-      return res.status(404).json({ error: "No matching prescriptions found" });
-    }
-
-    // Prepare the response with the filtered prescriptions and medicine details
-    return res
-      .status(200)
-      .json({
-        message: "Prescriptions retrieved successfully",
-        prescriptions: validPrescriptions,
-      });
+    // Prepare the response with the prescriptions, medicine, and doctor details
+    return res.status(200).json({
+      message: "Prescriptions retrieved successfully",
+      prescriptions,
+    });
   } catch (error) {
     console.error("Error retrieving prescriptions:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const patientFilterAppointments = async (req, res) => {
   const { patientId, startDate, endDate, status } = req.query;
 
@@ -461,6 +520,84 @@ const patientFilterAppointments = async (req, res) => {
   }
 };
 
+
+
+const  filterPrescriptions = async (req, res) => {
+  try {
+    const { date, doctorNameInput, doctorSpecialtyInput, status } = req.query;
+    const patientId = req.params.patientId; // Retrieve patient ID from route parameter
+
+    if (!patientId) {
+      return res.status(400).json({ error: "Patient ID is required" });
+    }
+
+    // Check if no filters are provided
+    if (!date && !doctorNameInput && !doctorSpecialtyInput && !status) {
+      return res
+        .status(400)
+        .json({ error: "At least one filter input is required" });
+    }
+
+    // Build the query based on the provided filters
+    const query = {
+      patientID: patientId, // Use patientID instead of _id
+    };
+
+    if (date) {
+      query.datePrescribed = date;
+    }
+
+    if (status) {
+      query.status = status;
+    }
+
+    // Find prescriptions based on the query
+    const prescriptions = await Prescription.find(query).populate("medID doctorID");
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res.status(404).json({ error: "No prescriptions found" });
+    }
+
+    // Filter prescriptions based on the provided criteria
+    const filteredPrescriptions = prescriptions.filter((prescription) => {
+      let match = true;
+
+      // Check doctor name if doctorNameInput is provided
+      if (doctorNameInput) {
+        const doctorName = prescription.doctorID.name.toLowerCase();
+        const input = doctorNameInput.toLowerCase();
+
+        if (!doctorName.includes(input)) {
+          match = false;
+        }
+      }
+
+      // Check doctor specialty if doctorSpecialtyInput is provided
+      if (doctorSpecialtyInput) {
+        const doctorSpecialty = prescription.doctorID.specialty.toLowerCase();
+        const input = doctorSpecialtyInput.toLowerCase();
+
+        if (!doctorSpecialty.includes(input)) {
+          match = false;
+        }
+      }
+
+      return match;
+    });
+
+    res.status(200).json({
+      message: "Prescriptions filtered successfully",
+      prescriptions: filteredPrescriptions,
+    });
+  } catch (error) {
+    console.error("Error filtering prescriptions:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
 module.exports = {
   addPatient,
   addFamilyMember,
@@ -469,5 +606,7 @@ module.exports = {
   searchDoctorsByNameOrSpecialty,
   searchDoctorsBySpecialtyOrAvailability,
   viewPrescriptions,
-  patientFilterAppointments
+  patientFilterAppointments,
+  createAppointment,
+  filterPrescriptions,
 };

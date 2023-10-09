@@ -9,19 +9,29 @@ const {
   searchDoctorsByNameOrSpecialty,
   searchDoctorsBySpecialtyOrAvailability,
   viewPrescriptions,
+  filterPrescriptions,
   patientFilterAppointments,
+  createAppointment,
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
 
+router.post("/createAppointment/:patientID", createAppointment);
 router.post("/addPatient", addPatient);
 router.post("/addFamilyMember/:patientId", addFamilyMember);
 router.get("/viewFamilyMembers/:patientId", viewFamilyMembers);
 router.get("/viewDoctors/:patientId", viewDoctors);
-router.get("/searchDoctorsByNameOrSpecialty/:patientId", searchDoctorsByNameOrSpecialty);
-router.get("/searchDoctorsBySpecialtyOrAvailability/:patientId", searchDoctorsBySpecialtyOrAvailability);
-router.get("/viewPrescriptions", viewPrescriptions);
+router.get(
+  "/searchDoctorsByNameOrSpecialty/:patientId",
+  searchDoctorsByNameOrSpecialty
+);
+router.get(
+  "/searchDoctorsBySpecialtyOrAvailability/:patientId",
+  searchDoctorsBySpecialtyOrAvailability
+);
+router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 router.get("/patientFilterAppointments", patientFilterAppointments);
+router.get("/filterPrescriptions/:patientId", filterPrescriptions);
 
 router.get("/getUser", getUser);
 
