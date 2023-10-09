@@ -1,4 +1,5 @@
 const Doctor = require("../Models/doctor");
+const Pharmacist = require("../Models/pharmacist");
 const User = require("../Models/user");
 const Patient = require("../Models/patient");
 const validator = require("validator");
