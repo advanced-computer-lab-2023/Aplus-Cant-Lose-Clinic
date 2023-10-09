@@ -133,11 +133,11 @@ const addFamilyMember = async (req, res) => {
 };
 
 const viewFamilyMembers = async (req, res) => {
-  const { username } = req.query;
+  const { patientId } = req.params;
 
   try {
-    // Find the patient by username
-    const patient = await Patient.findOne({ username });
+    // Find the patient by ID
+    const patient = await Patient.findById(patientId);
 
     if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
@@ -146,17 +146,16 @@ const viewFamilyMembers = async (req, res) => {
     // Retrieve the family members of the patient
     const familyMembers = patient.family;
 
-    return res
-      .status(200)
-      .json({
-        message: "Family members retrieved successfully",
-        familyMembers,
-      });
+    return res.status(200).json({
+      message: "Family members retrieved successfully",
+      familyMembers,
+    });
   } catch (error) {
     console.error("Error retrieving family members:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const viewDoctors = async (req, res) => {
   try {
     // Find all doctors
