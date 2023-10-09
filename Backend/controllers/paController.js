@@ -5,6 +5,8 @@ const Pharmacist = require("../Models/pharmacist");
 const Medicine = require("../Models/medicine");
 const Appointment = require("../Models/appointments");
 const validator = require("validator");
+const HPackages = require("../Models/hpackages");
+
 const addPatient = async (req, res) => {
   try {
     const {
@@ -158,28 +160,39 @@ const viewFamilyMembers = async (req, res) => {
 
 const viewDoctors = async (req, res) => {
   try {
-    // Find all doctors
-    const doctors = await Doctor.find();
+    const { patientId } = req.params;
+
+    // Find the patient by patientId
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Find doctors with status "accepted"
+    const doctors = await Doctor.find({ status: "accepted" });
 
     if (!doctors || doctors.length === 0) {
-      return res.status(404).json({ error: "No doctors found" });
+      return res.status(404).json({ error: "No accepted doctors found" });
     }
 
     // Prepare an array to store doctor information
     const doctorInfo = [];
 
-    // Iterate through each doctor
+    // Iterate through each accepted doctor
     for (const doctor of doctors) {
       // Find the health package associated with the patient
-      const healthPackage = await HPackages.findById(req.patient.hPackage);
-
-      if (!healthPackage) {
-        return res.status(404).json({ error: "Health package not found" });
-      }
+      const healthPackage = await HPackages.findById(patient.hPackage);
 
       // Calculate session price based on doctor's rate, health package, and fee
-      const sessionPrice =
-        doctor.rate * 1.1 * (1 - healthPackage.doctorDisc / 100);
+      let sessionPrice = doctor.rate;
+
+      if (healthPackage) {
+        sessionPrice *= 1.1 * (1 - healthPackage.doctorDisc / 100);
+      }
+      else{
+        sessionPrice *= 1.1;
+      }
 
       // Prepare doctor information object
       const doctorInfoItem = {
@@ -193,12 +206,13 @@ const viewDoctors = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: "Doctors information", doctors: doctorInfo });
+      .json({ message: "Accepted doctors information", doctors: doctorInfo });
   } catch (error) {
-    console.error("Error retrieving doctors information:", error);
+    console.error("Error retrieving accepted doctors information:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const searchDoctorsByNameOrSpecialty = async (req, res) => {
   try {
     const { name, specialty } = req.query;
