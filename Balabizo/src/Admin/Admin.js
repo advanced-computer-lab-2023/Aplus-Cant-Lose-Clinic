@@ -6,6 +6,7 @@ import PackageList from './Components/PackageList';
 import AddPackageForm from './Components/AddPackageForm';
 import PharmacistList from './Components/PharmacistList';
 import PatientList from './Components/PatientList'
+import InfoCard from './Components/InfoCard'
 
 
 function Admin() {
@@ -30,6 +31,16 @@ function Admin() {
     // Implement the logic to add a new package to the 'packages' state
     // For example: setPackages([...packages, newPackage]);
   };
+
+  const handleView = (activeItem) => {
+    setActiveItem(activeItem);
+    console.log(activeItem);
+    
+    // Implement the logic to add a new package to the 'packages' state
+    // For example: setPackages([...packages, newPackage]);
+  };
+
+
   const packageData = [
     {
       id: 1,
@@ -177,12 +188,14 @@ function Admin() {
    const contentComponents = {
     ADD_ADMIN: <AddAdmin onSave={()=>{}} onCancel={selectItem}/>,
     VIEW_REMOVE_ADMIN: <div>View/Remove Admin Content</div>,
-    VIEW_Pharmacists_Join_Requests: <PharmacistList pharmacists={Usernames} onRemove={()=>{}}/>,
-    VIEW_REMOVE_Pharmacists: <PharmacistList pharmacists={Usernames} onRemove={()=>{}}/>,
-    VIEW_REMOVE_Patients: <PatientList patients={Usernames} onRemove={()=>{}}/>,
+    VIEW_Pharmacists_Join_Requests: <PharmacistList pharmacists={Usernames} onRemove={()=>{}}  onView={handleView}  onReject={()=>{}} type={'Info_Request'}/>,
+    VIEW_REMOVE_Pharmacists: <PharmacistList pharmacists={Usernames} onRemove={()=>{}}   onView={selectItem} type={'Info_View'}/>,
+    VIEW_REMOVE_Patients: <PatientList patients={Usernames} onRemove={()=>{}}  onView={selectItem}/>,
     VIEW_All_Medicine: <div>View All Available Medicines Content</div>,
-    VIEW_Health_Package: <PackageList packages={packageData} onAddPackageClick={handleAddPackageClick}/>,
+    VIEW_Health_Package: <PackageList packages={packageData} onAddPackageClick={selectItem}/>,
     ADD_PACKAGE:<AddPackageForm onAdd={()=>{}} onCancel={selectItem}/>,
+    Info_View:<InfoCard info={['ahmed','20 years','temp','temp',]} type={'notrequest'} />,
+    Info_Request:<InfoCard info={['ahmed','20 years','temp','temp',]} type={'request'} />,
     Nothing:<></>,
   };
 

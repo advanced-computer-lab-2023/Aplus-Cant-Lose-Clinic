@@ -19,6 +19,7 @@
   border: none;
   padding: 5px 10px;
   cursor: pointer;
+  max-width: 30%;
 }
 
 .patient button:hover {

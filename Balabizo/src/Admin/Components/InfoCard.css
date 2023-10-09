@@ -1,0 +1,50 @@
+/* InfoCard.css */
+
+.info-card {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  margin: 10px;
+  text-align: center;
+  margin-right: 50%;
+}
+
+.info-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-card li {
+  margin-bottom: 5px;
+ 
+}
+
+.action-buttons {
+  text-align: center;
+  margin-top: 10px;
+
+  
+
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+
+}
+
+button:hover {
+  background-color: #0056b3;
+}
