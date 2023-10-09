@@ -15,7 +15,7 @@ const {
 const { getUser } = require("../controllers/userController");
 
 router.post("/addPatient", addPatient);
-router.post("/addFamilyMember", addFamilyMember);
+router.post("/addFamilyMember/:patientId", addFamilyMember);
 router.get("/viewFamilyMembers", viewFamilyMembers);
 router.get("/viewDoctors", viewDoctors);
 router.get("/searchDoctorsByNameOrSpecialty", searchDoctorsByNameOrSpecialty);

@@ -80,16 +80,17 @@ const addPatient = async (req, res) => {
   }
 };
 const addFamilyMember = async (req, res) => {
-  const { username, fullName, NID, age, gender, relation } = req.body;
+  const { fullName, NID, age, gender, relation } = req.body;
+  const { patientId } = req.params; // Get patientId from URL parameters
 
   try {
     // Validate input fields
-    if (!username || !fullName || !NID || !age || !gender || !relation) {
+    if (!patientId || !fullName || !NID || !age || !gender || !relation) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    // Check if the patient exists by username
-    const patient = await Patient.findOne({ username });
+    // Check if the patient exists by ID
+    const patient = await Patient.findById(patientId);
 
     if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
@@ -130,6 +131,7 @@ const addFamilyMember = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const viewFamilyMembers = async (req, res) => {
   const { username } = req.query;
 
