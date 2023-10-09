@@ -216,6 +216,12 @@ const viewDoctors = async (req, res) => {
 const searchDoctorsByNameOrSpecialty = async (req, res) => {
   try {
     const { name, specialty } = req.query;
+    
+    // Validate that at least one input is provided
+    if (!name && (!specialty || specialty.trim() === "")) {
+      return res.status(400).json({ error: "At least one input (name or specialty) is required" });
+    }
+
     const query = {};
 
     // Build the query based on provided parameters
@@ -234,15 +240,40 @@ const searchDoctorsByNameOrSpecialty = async (req, res) => {
       return res.status(404).json({ error: "No matching doctors found" });
     }
 
-    // Prepare the response with the found doctors
+    // Prepare the response with the found doctors and consider the patient-specific health package
+    const doctorInfo = await Promise.all(
+      doctors.map(async (doctor) => {
+        const patientId = req.params.patientId;
+        const patient = await Patient.findById(patientId);
+
+        if (!patient) {
+          return {
+            name: doctor.name,
+            specialty: doctor.affilation,
+            sessionPrice: doctor.rate * 1.1, // Assuming no health package
+          };
+        }
+
+        const healthPackage = await HPackages.findById(patient.hPackage);
+
+        return {
+          name: doctor.name,
+          specialty: doctor.affilation,
+          sessionPrice:
+            doctor.rate * 1.1 * (1 - (healthPackage?.doctorDisc || 0) / 100),
+        };
+      })
+    );
+
     return res
       .status(200)
-      .json({ message: "Doctors retrieved successfully", doctors });
+      .json({ message: "Doctors retrieved successfully", doctors: doctorInfo });
   } catch (error) {
     console.error("Error searching for doctors:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
   try {
     const { searchTime, specialty } = req.query;
@@ -290,18 +321,43 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
         .json({ error: "No available doctors found matching the criteria" });
     }
 
-    // Prepare the response with the available doctors
+    // Prepare the response with the available doctors and consider the patient-specific health package
+    const doctorInfo = await Promise.all(
+      availableDoctors.map(async (doctor) => {
+        const patientId = req.params.patientId;
+        const patient = await Patient.findById(patientId);
+
+        if (!patient) {
+          return {
+            name: doctor.name,
+            specialty: doctor.affilation,
+            sessionPrice: doctor.rate * 1.1, // Assuming no health package
+          };
+        }
+
+        const healthPackage = await HPackages.findById(patient.hPackage);
+
+        return {
+          name: doctor.name,
+          specialty: doctor.affilation,
+          sessionPrice:
+            doctor.rate * 1.1 * (1 - (healthPackage?.doctorDisc || 0) / 100),
+        };
+      })
+    );
+
     return res
       .status(200)
       .json({
         message: "Available doctors retrieved successfully",
-        availableDoctors,
+        doctors: doctorInfo,
       });
   } catch (error) {
     console.error("Error searching for available doctors:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const viewPrescriptions = async (req, res) => {
   try {
     const { username } = req.query;

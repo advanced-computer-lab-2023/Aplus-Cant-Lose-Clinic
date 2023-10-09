@@ -18,8 +18,8 @@ router.post("/addPatient", addPatient);
 router.post("/addFamilyMember/:patientId", addFamilyMember);
 router.get("/viewFamilyMembers/:patientId", viewFamilyMembers);
 router.get("/viewDoctors/:patientId", viewDoctors);
-router.get("/searchDoctorsByNameOrSpecialty", searchDoctorsByNameOrSpecialty);
-router.get("/searchDoctorsBySpecialtyOrAvailability", searchDoctorsBySpecialtyOrAvailability);
+router.get("/searchDoctorsByNameOrSpecialty/:patientId", searchDoctorsByNameOrSpecialty);
+router.get("/searchDoctorsBySpecialtyOrAvailability/:patientId", searchDoctorsBySpecialtyOrAvailability);
 router.get("/viewPrescriptions", viewPrescriptions);
 router.get("/patientFilterAppointments", patientFilterAppointments);
 
