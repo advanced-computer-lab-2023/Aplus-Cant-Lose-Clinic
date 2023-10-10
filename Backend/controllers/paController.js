@@ -142,6 +142,20 @@ const addPatient = async (req, res) => {
       return res.status(400).json({ error: "Password not strong enough" });
     }
 
+    // Calculate age based on date of birth
+    const today = new Date();
+    const birthDate = new Date(dBirth);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    // Check if the patient is at least 18 years old and not over 150 years old
+    if (age < 18 || age > 150) {
+      return res.status(400).json({ error: "Patient must be at least 18 and within reasonable age" });
+    }
+
     // Create the patient and user records
     const patient = await Patient.create({
       name,
@@ -172,6 +186,7 @@ const addPatient = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const addFamilyMember = async (req, res) => {
   const { fullName, NID, age, gender, relation } = req.body;
   const { patientId } = req.params; // Get patientId from URL parameters
