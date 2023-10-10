@@ -213,10 +213,11 @@ const editDoctor = async (req, res) => {
   }
 };
 const doctorFilterAppointments = async (req, res) => {
-  const { doctorId, startDate, endDate, status } = req.query;
+  const { doctorId } = req.params; // Get doctorId from URL parameters
+  const { startDate, endDate, status } = req.query;
 
   // Check if at least one filter parameter is provided
-  if (!doctorId && !startDate && !endDate && !status) {
+  if (!startDate && !endDate && !status) {
     return res
       .status(400)
       .json({ error: "At least one filter parameter is required" });
@@ -236,7 +237,7 @@ const doctorFilterAppointments = async (req, res) => {
   }
 
   if (status) {
-    query.Description = status;
+    query.status = status;
   }
 
   try {
@@ -251,6 +252,7 @@ const doctorFilterAppointments = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // Import the Patient model
 

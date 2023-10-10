@@ -19,6 +19,6 @@ router.get("/getPatients/:id", getPatients);
 router.get("/searchPatientByName", searchPatientByName);
 router.get("/patientsInUpcomingApointments/:doctorId", patientsInUpcomingApointments);
 router.put("/editDoctor/:id", editDoctor);
-router.get("/doctorFilterAppointments", doctorFilterAppointments);
+router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 
 module.exports = router;
