@@ -1,8 +1,14 @@
 const Doctor = require("../Models/doctor");
+const Pharmacist = require("../Models/pharmacist");
 const User = require("../Models/user");
 const Patient = require("../Models/patient");
 const validator = require("validator");
 const Appointment = require("../Models/appointments");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+function generateToken(data) {
+  return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
 
 const addDoctor = async (req, res) => {
   try {
@@ -59,6 +65,20 @@ const addDoctor = async (req, res) => {
       return res.status(400).json({ error: "Password not strong enough" });
     }
 
+    // Calculate age based on date of birth
+    const today = new Date();
+    const birthDate = new Date(dBirth);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    // Check if the doctor is at least 18 years old and not over 150 years old
+    if (age < 18 || age > 150) {
+      return res.status(400).json({ error: "Doctor must be at least 18 and within reasonable age" });
+    }
+
     // Default status is "pending"
     const status = "pending";
 
@@ -75,39 +95,28 @@ const addDoctor = async (req, res) => {
       docs,
       status,
     });
-
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     const user = await User.create({
       username,
-      password,
+      password: hashedPassword,
       role: "doctor",
     });
+    const data = {
+      _id: doctor._id,
+    };
 
-    res.status(201).json({ message: "Doctor created successfully", doctor });
+    const token = generateToken(data);
+    res
+      .status(201)
+      .json({ message: "Doctor created successfully", doctor, token });
   } catch (error) {
     console.error("Error creating doctor:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const getPatients = async (req, res) => {
-  const { username } = req.query;
 
-  try {
-    // Validate the 'username' parameter
-    if (!username || username.trim() === "") {
-      return res
-        .status(400)
-        .json({ error: "Invalid or missing 'username' parameter" });
-    }
 
-    // Find patients where the doctor's username exists in the 'doctors' array
-    const patients = await Patient.find({ "doctors.username": username });
-
-    return res.status(200).json({ message: "Patients found", patients });
-  } catch (error) {
-    console.error("Error finding patients:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
-};
 const searchPatientByName = async (req, res) => {
   try {
     const { name } = req.query;
@@ -150,11 +159,9 @@ const patientsInUpcomingApointments = async (req, res) => {
     });
 
     if (!upcomingAppointments || upcomingAppointments.length === 0) {
-      return res
-        .status(404)
-        .json({
-          error: "No upcoming appointments found for the specified doctor",
-        });
+      return res.status(404).json({
+        error: "No upcoming appointments found for the specified doctor",
+      });
     }
 
     // Extract patient IDs from upcoming appointments
@@ -179,79 +186,9 @@ const patientsInUpcomingApointments = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const filterPrescriptions = async (patientId, filters) => {
-  if (!patientId) {
-    return { error: "Patient ID is required" };
-  }
 
-  const {
-    date, // The date to filter by (optional)
-    doctorID, // The doctor's ID to filter by (optional)
-    status, // The status to filter by (optional)
-  } = filters;
 
-  // Check if no filters are provided
-  if (!date && !doctorID && !status) {
-    return { error: "At least one filter input is required" };
-  }
 
-  // Build the query based on the provided filters
-  const query = {
-    _id: patientId,
-  };
-
-  if (date) {
-    query["perscriptions.datePrescribed"] = date;
-  }
-
-  if (doctorID) {
-    query["perscriptions.doctorID"] = doctorID;
-  }
-
-  if (status) {
-    query["perscriptions.status"] = status;
-  }
-
-  try {
-    // Find the patient document based on the patient ID and apply the filters
-    const patient = await Patient.findOne(query).populate({
-      path: "perscriptions.medID perscriptions.doctorID",
-    });
-
-    if (!patient) {
-      return { error: "Patient not found" };
-    }
-
-    // Filter prescriptions based on the provided criteria
-    const filteredPrescriptions = patient.perscriptions.filter(
-      (prescription) => {
-        let match = true;
-        if (
-          date &&
-          prescription.datePrescribed.toDateString() !==
-            new Date(date).toDateString()
-        ) {
-          match = false;
-        }
-        if (doctorID && prescription.doctorID.id !== doctorID) {
-          match = false;
-        }
-        if (status && prescription.status !== status) {
-          match = false;
-        }
-        return match;
-      }
-    );
-
-    return {
-      message: "Prescriptions filtered successfully",
-      prescriptions: filteredPrescriptions,
-    };
-  } catch (error) {
-    console.error("Error filtering prescriptions:", error);
-    return { error: "Internal Server Error" };
-  }
-};
 const editDoctor = async (req, res) => {
   const { id } = req.params; // Get the ID from the request parameters
   const { email, rate, affiliation } = req.body; // Get the updated values from the request body
@@ -263,7 +200,10 @@ const editDoctor = async (req, res) => {
 
   try {
     // Check for email duplicates in doctor, patient, and pharmacist tables
-    const emailExists = await Doctor.findOne({ email }) || await Patient.findOne({ email }) || await Pharmacist.findOne({ email });
+    const emailExists =
+      (await Doctor.findOne({ email })) ||
+      (await Patient.findOne({ email })) ||
+      (await Pharmacist.findOne({ email }));
     if (emailExists) {
       return res.status(400).json({ error: "Email already exists" });
     }
@@ -279,18 +219,23 @@ const editDoctor = async (req, res) => {
       return res.status(404).json({ error: "Doctor not found" });
     }
 
-    res.status(200).json({ message: "Doctor updated successfully", doctor: updatedDoctor });
+    res
+      .status(200)
+      .json({ message: "Doctor updated successfully", doctor: updatedDoctor });
   } catch (error) {
     console.error("Error updating doctor:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 const doctorFilterAppointments = async (req, res) => {
-  const { doctorId, startDate, endDate, status } = req.query;
+  const { doctorId } = req.params; // Get doctorId from URL parameters
+  const { startDate, endDate, status } = req.query;
 
   // Check if at least one filter parameter is provided
-  if (!doctorId && !startDate && !endDate && !status) {
-    return res.status(400).json({ error: "At least one filter parameter is required" });
+  if (!startDate && !endDate && !status) {
+    return res
+      .status(400)
+      .json({ error: "At least one filter parameter is required" });
   }
 
   // Build the query object based on the provided parameters
@@ -307,26 +252,84 @@ const doctorFilterAppointments = async (req, res) => {
   }
 
   if (status) {
-    query.Description = status;
+    query.status = status;
   }
 
   try {
     // Find appointments that match the query
     const appointments = await Appointment.find(query);
 
-    res.status(200).json({ message: "Appointments filtered successfully", appointments });
+    res
+      .status(200)
+      .json({ message: "Appointments filtered successfully", appointments });
   } catch (error) {
     console.error("Error filtering appointments:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
+
+// Import the Patient model
+
+const getPatients = async (req, res) => {
+  try {
+    const doctorID = req.params.id; // Retrieve doctor ID from route parameter
+
+    // Find patients associated with the specified doctor ID
+    const patients = await Patient.find({ "doctors.doctorID": doctorID });
+
+    if (!patients || patients.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No patients found for this doctor" });
+    }
+
+    res.status(200).json({ patients });
+  } catch (error) {
+    console.error("Error getting patients:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const Prescription = require('../Models/prescription'); // Import the Prescription model
+
+const addPrescription = async (req, res) => {
+  try {
+    const { medID, patientID, doctorID, datePrescribed } = req.body;
+
+    // Validate inputs
+    if (!medID || !patientID || !doctorID || !datePrescribed ) {
+      return res.status(400).json({ error: "Missing required  input fields" });
+    }
+
+    // Create a new prescription instance with the provided data
+    const prescription = new Prescription({
+      medID,
+      patientID,
+      doctorID,
+      datePrescribed,
+      
+    });
+
+    // Save the prescription to the database
+    const savedPrescription = await prescription.save();
+
+    res.status(201).json({
+      message: "Prescription added successfully",
+      prescription: savedPrescription,
+    });
+  } catch (error) {
+    console.error("Error adding prescription:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
 module.exports = {
   addDoctor,
   getPatients,
   searchPatientByName,
   patientsInUpcomingApointments,
-  filterPrescriptions,
+  addPrescription,
   editDoctor,
-  doctorFilterAppointments
+  doctorFilterAppointments,
 };

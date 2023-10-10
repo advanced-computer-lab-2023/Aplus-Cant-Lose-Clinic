@@ -3,7 +3,11 @@ const Doctor = require("../Models/doctor");
 const Patient = require("../Models/patient");
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
-
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+function generateToken(data) {
+  return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
 const createAdmin = async (req, res) => {
   const { username, password } = req.body;
 
@@ -77,6 +81,12 @@ const deletePatient = async (req, res) => {
       return res.status(404).json({ error: "Patient not found" });
     }
 
+    // Delete associated appointments
+    await Appointment.deleteMany({ pID: patientId });
+
+    // Delete associated prescriptions
+    await Prescription.deleteMany({ patientID: patientId });
+
     // You may also want to delete the associated user
     const user = await User.findOneAndDelete({ username: patient.username });
 
@@ -94,6 +104,18 @@ const deleteDoctor = async (req, res) => {
     if (!doctor) {
       return res.status(404).json({ error: "Doctor not found" });
     }
+
+    // Delete associated appointments
+    await Appointment.deleteMany({ drID: doctorId });
+
+    // Delete associated prescriptions
+    await Prescription.deleteMany({ doctorID: doctorId });
+
+    // Remove doctor references from patients
+    await Patient.updateMany(
+      { "doctors.doctorID": doctorId },
+      { $pull: { doctors: { doctorID: doctorId } } }
+    );
 
     // You may also want to delete the associated user
     const user = await User.findOneAndDelete({ username: doctor.username });

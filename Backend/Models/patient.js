@@ -63,29 +63,6 @@ const paSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "HPackages", // Reference to the HPackages model
     },
-    perscriptions: [
-      {
-        medID: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Medicine", // Reference to the Medicine model
-          required: true,
-        },
-        doctorID: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Doctor", // Reference to the Doctor model
-          required: true,
-        },
-        datePrescribed: {
-          type: Date,
-          required: true,
-        },
-        status: {
-          type: String,
-          enum: ["filled", "unfilled"], // Define allowed values for status
-          default: "unfilled",
-        },
-      },
-    ],
     records: [
       {
         url: String, // Store the URL to the uploaded image

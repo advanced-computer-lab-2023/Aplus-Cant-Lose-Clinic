@@ -2,7 +2,12 @@ const User = require("../Models/user.js");
 const Doctor = require("../Models/doctor.js");
 const Patient = require("../Models/patient.js");
 const { default: mongoose } = require("mongoose");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
+function generateToken(data) {
+  return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+}
 const createUser = async (req, res) => {
   const { username, password, role } = req.body;
   try {
@@ -20,9 +25,73 @@ const createUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    // Find the user by username
+
+    const user = await User.findOne({ username: req.body.username });
+    console.log(user.username);
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const data = {
+      _id: user._id,
+    };
+
+    // If the password is valid, generate a JWT token
+    const token = generateToken(data);
+
+    // Fetch additional user data based on the user's role directly here
+    let userData = { fUser: user }; // Initialize with the user data
+
+    switch (user.role) {
+      case "patient":
+        try {
+          const pa = await Patient.findByUsername(user.username);
+          userData.pa = pa;
+        } catch (err) {
+          console.error("Error handling patient:", err);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        break;
+      case "doctor":
+        try {
+          const dr = await Doctor.findByUsername(user.username);
+          userData.dr = dr;
+        } catch (error) {
+          console.error("Error handling doctor:", error);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        break;
+      // No need for "admin" case here since "userData" already contains "fUser"
+
+      default:
+        return res.status(400).json({ error: "Unknown role" });
+    }
+
+    res.status(201).json({
+      message: "User logged in successfully",
+      role: user.role,
+      userData,
+      token,
+    });
+  } catch (error) {
+    console.error("Error during login:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const getUser = async (req, res) => {
-  const username = req.query.username;
+  const username = req.body.username;
   console.log(username);
   try {
     const fUser = await User.findOne({ username: username });
@@ -32,10 +101,9 @@ const getUser = async (req, res) => {
       case "patient":
         try {
           const pa = await Patient.findByUsername(fUser.username);
-          res
-            .status(201)
-            .json({ message: "User created successfully", user: { fUser, pa }});
-          return { fUser, pa };
+          return { user: { fUser, pa }};
+        
+
         } catch (err) {
           console.error("Error handling patient:", err);
           res.status(500).json({ error: "Internal Server Error" });
@@ -44,10 +112,8 @@ const getUser = async (req, res) => {
       case "doctor":
         try {
           const dr = await Doctor.findByUsername(fUser.username);
-          res
-            .status(201)
-            .json({ message: "User created successfully", user: { fUser, dr }});
-          return { fUser, dr };
+          return { user: { fUser, pa }};
+
         } catch (error) {
           console.error("Error handling doctor:", error);
           res.status(500).json({ error: "Internal Server Error" });
@@ -118,4 +184,5 @@ module.exports = {
   checkUser,
   updateUser,
   deleteUser,
+  login,
 };

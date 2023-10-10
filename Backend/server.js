@@ -13,14 +13,6 @@ app.use(express.json());
 
 const MongoURI = process.env.MONGO_URI ;
 
-// Importing the adRouter
-const adRouter = require('./Routes/adRoutes');
-app.use('/api/admin', adRouter);
-const paRouter = require('./Routes/paRoutes');
-app.use('/api/patient', paRouter);
-const drRouter = require('./Routes/drRoutes');
-app.use('/api/doctor', drRouter);
-
 
 // configurations
 // Mongo DB
@@ -34,7 +26,15 @@ connectDB()
   });
 })
 .catch(err => console.log(err));
-
+// Importing the adRouter
+const adRouter = require('./Routes/adRoutes');
+app.use('/api/admin', adRouter);
+const paRouter = require('./Routes/paRoutes');
+app.use('/api/patient', paRouter);
+const drRouter = require('./Routes/drRoutes');
+app.use('/api/doctor', drRouter);
+const { login } = require('./controllers/userController');
+app.post("/api/login",login);
 // Rest of your code
 app.get("/home", (req, res) => {
   res.status(200).send("You have everything installed!");
