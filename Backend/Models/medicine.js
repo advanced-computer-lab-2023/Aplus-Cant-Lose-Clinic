@@ -8,6 +8,7 @@ const medicineSchema = new mongoose.Schema(
     name: String,
     amount: Number,
     imgurl: String,
+    sales: Number
   }
 );
 
