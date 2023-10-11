@@ -32,25 +32,25 @@ const paSchema = new mongoose.Schema(
       mobile: Number,
       relation: String,
     },
-    // family: [
-    //   {
-    //     fullName: String,
-    //     NID: {
-    //       type: Number,
+    family: [
+      {
+        fullName: String,
+        NID: {
+          type: Number,
           
-    //     },
-    //     age: Number,
-    //     gender:{
-    //       type: String,
-    //       enum: ["male", "female", "none"], // Define allowed values for the 'role' field
-    //       default: "none",
-    //     },
-    //     relation: {
-    //       type: String,
-    //       enum: ["spouse", "child"] // Define allowed values for the 'role' field
-    //     },
-    //   }
-    // ],
+        },
+        age: Number,
+        gender:{
+          type: String,
+          enum: ["male", "female", "none"], // Define allowed values for the 'role' field
+          default: "none",
+        },
+        relation: {
+          type: String,
+          enum: ["spouse", "child"] // Define allowed values for the 'role' field
+        },
+      }
+    ],
     doctors: [
       {
         doctorID: {
