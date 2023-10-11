@@ -290,6 +290,7 @@ const getPatients = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const Prescription = require('../Models/prescription'); // Import the Prescription model
 
 const addPrescription = async (req, res) => {

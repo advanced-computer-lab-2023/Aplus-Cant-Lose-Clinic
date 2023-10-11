@@ -16,6 +16,7 @@ router.post("/addPrescription", addPrescription);
 router.post("/getUser", getUser);
 router.post("/addDoctor", addDoctor);
 router.get("/getPatients/:id", getPatients);
+
 router.get("/searchPatientByName", searchPatientByName);
 router.get("/patientsInUpcomingApointments/:doctorId", patientsInUpcomingApointments);
 router.put("/editDoctor/:id", editDoctor);
