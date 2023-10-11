@@ -8,6 +8,7 @@ const {
 const {
   createAdmin,
   viewPendDr,
+
   viewJoinedDr,
   viewPatients,
   deletePatient,
@@ -26,11 +27,11 @@ router.post("/createAdmin", createAdmin);
 router.get("/viewPendDr", viewPendDr);
 router.get("/viewJoinedDr", viewJoinedDr);
 router.get("/viewPatients", viewPatients);
-router.delete("/deletePatient", deletePatient);
-router.delete("/deleteDoctor", deleteDoctor);
-router.delete("/deleteAdmin", deleteAdmin);
+router.delete("/deletePatient/:id", deletePatient);
+router.delete("/deleteDoctor/:id", deleteDoctor);
+router.delete("/deleteAdmin/:id", deleteAdmin);
 router.post("/addPack", addPack);
-router.delete("/deletePack", deletePack);
-router.put("/updatePack", updatePack);
+router.delete("/deletePack/:id", deletePack);
+router.put("/updatePack/:id", updatePack);
 
 module.exports = router; // Export the router instance
