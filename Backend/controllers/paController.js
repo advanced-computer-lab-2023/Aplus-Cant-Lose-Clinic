@@ -300,7 +300,7 @@ const viewDoctors = async (req, res) => {
       // Prepare doctor information object
       const doctorInfoItem = {
         name: doctor.name,
-        specialty: doctor.affilation,
+        speciality: doctor.speciality,
         sessionPrice,
       };
 
@@ -316,15 +316,15 @@ const viewDoctors = async (req, res) => {
   }
 };
 
-const searchDoctorsByNameOrSpecialty = async (req, res) => {
+const searchDoctorsByNameOrspeciality = async (req, res) => {
   try {
-    const { name, specialty } = req.query;
+    const { name, speciality } = req.query;
 
     // Validate that at least one input is provided
-    if (!name && (!specialty || specialty.trim() === "")) {
+    if (!name && (!speciality || speciality.trim() === "")) {
       return res
         .status(400)
-        .json({ error: "At least one input (name or specialty) is required" });
+        .json({ error: "At least one input (name or speciality) is required" });
     }
 
     const query = {};
@@ -334,8 +334,8 @@ const searchDoctorsByNameOrSpecialty = async (req, res) => {
       query.name = { $regex: name, $options: "i" };
     }
 
-    if (specialty && specialty.trim() !== "") {
-      query.affilation = { $regex: specialty, $options: "i" };
+    if (speciality && speciality.trim() !== "") {
+      query.speciality = { $regex: speciality, $options: "i" };
     }
 
     // Perform the doctor search with the constructed query
@@ -354,7 +354,7 @@ const searchDoctorsByNameOrSpecialty = async (req, res) => {
         if (!patient) {
           return {
             name: doctor.name,
-            specialty: doctor.affilation,
+            speciality: doctor.speciality,
             sessionPrice: doctor.rate * 1.1, // Assuming no health package
           };
         }
@@ -363,7 +363,7 @@ const searchDoctorsByNameOrSpecialty = async (req, res) => {
 
         return {
           name: doctor.name,
-          specialty: doctor.affilation,
+          speciality: doctor.speciality,
           sessionPrice:
             doctor.rate * 1.1 * (1 - (healthPackage?.doctorDisc || 0) / 100),
         };
@@ -379,14 +379,14 @@ const searchDoctorsByNameOrSpecialty = async (req, res) => {
   }
 };
 
-const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
+const searchDoctorsByspecialityOrAvailability = async (req, res) => {
   try {
-    const { searchTime, specialty } = req.query;
+    const { searchTime, speciality } = req.query;
 
-    // Check if neither 'searchTime' nor 'specialty' is provided
-    if (!searchTime && (!specialty || specialty.trim() === "")) {
+    // Check if neither 'searchTime' nor 'speciality' is provided
+    if (!searchTime && (!speciality || speciality.trim() === "")) {
       return res.status(400).json({
-        error: "At least one input (searchTime or specialty) is required",
+        error: "At least one input (searchTime or speciality) is required",
       });
     }
 
@@ -406,13 +406,13 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
       (appointment) => appointment.drID
     );
 
-    // Build the query to find available doctors based on specialty and/or availability
+    // Build the query to find available doctors based on speciality and/or availability
     const query = {};
     if (searchDateTime) {
       query._id = { $nin: doctorIds };
     }
-    if (specialty && specialty.trim() !== "") {
-      query.affilation = { $regex: specialty, $options: "i" };
+    if (speciality && speciality.trim() !== "") {
+      query.speciality = { $regex: speciality, $options: "i" };
     }
 
     // Find available doctors who match the specified criteria
@@ -433,7 +433,7 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
         if (!patient) {
           return {
             name: doctor.name,
-            specialty: doctor.affilation,
+            speciality: doctor.speciality,
             sessionPrice: doctor.rate * 1.1, // Assuming no health package
           };
         }
@@ -442,7 +442,7 @@ const searchDoctorsBySpecialtyOrAvailability = async (req, res) => {
 
         return {
           name: doctor.name,
-          specialty: doctor.affilation,
+          speciality: doctor.speciality,
           sessionPrice:
             doctor.rate * 1.1 * (1 - (healthPackage?.doctorDisc || 0) / 100),
         };
@@ -539,7 +539,7 @@ const patientFilterAppointments = async (req, res) => {
 
 const  filterPrescriptions = async (req, res) => {
   try {
-    const { date, doctorNameInput, doctorSpecialtyInput, status } = req.query;
+    const { date, doctorNameInput, doctorspecialityInput, status } = req.query;
     const patientId = req.params.patientId; // Retrieve patient ID from route parameter
 
     if (!patientId) {
@@ -547,7 +547,7 @@ const  filterPrescriptions = async (req, res) => {
     }
 
     // Check if no filters are provided
-    if (!date && !doctorNameInput && !doctorSpecialtyInput && !status) {
+    if (!date && !doctorNameInput && !doctorspecialityInput && !status) {
       return res
         .status(400)
         .json({ error: "At least one filter input is required" });
@@ -587,12 +587,12 @@ const  filterPrescriptions = async (req, res) => {
         }
       }
 
-      // Check doctor specialty if doctorSpecialtyInput is provided
-      if (doctorSpecialtyInput) {
-        const doctorSpecialty = prescription.doctorID.specialty.toLowerCase();
-        const input = doctorSpecialtyInput.toLowerCase();
+      // Check doctor speciality if doctorspecialityInput is provided
+      if (doctorspecialityInput) {
+        const doctorspeciality = prescription.doctorID.speciality.toLowerCase();
+        const input = doctorspecialityInput.toLowerCase();
 
-        if (!doctorSpecialty.includes(input)) {
+        if (!doctorspeciality.includes(input)) {
           match = false;
         }
       }
@@ -618,8 +618,8 @@ module.exports = {
   addFamilyMember,
   viewFamilyMembers,
   viewDoctors,
-  searchDoctorsByNameOrSpecialty,
-  searchDoctorsBySpecialtyOrAvailability,
+  searchDoctorsByNameOrspeciality,
+  searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
