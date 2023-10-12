@@ -18,7 +18,7 @@ const addDoctor = async (req, res) => {
       username,
       dBirth,
       gender,
-      rate,
+      rate,speciality,
       affilation,
       background,
       docs,
@@ -36,7 +36,7 @@ const addDoctor = async (req, res) => {
       !affilation ||
       !background ||
       !docs ||
-      !password
+      !password || !speciality
     ) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -93,6 +93,7 @@ const addDoctor = async (req, res) => {
       affilation,
       background,
       docs,
+      speciality,
       status,
     });
     const salt = await bcrypt.genSalt(10);
