@@ -1,31 +1,35 @@
+const cors = require('cors');
 const express = require("express");
 const mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
 require("dotenv").config();
-
 const connectDB = require('./config/db')
 
 // App variables
 const app = express(); // Move this line to the top
 const port = process.env.PORT || "8000";
+app.use(
+  cors(
+  )
+);
 
 app.use(express.json());
 
-const MongoURI = process.env.MONGO_URI ;
+const MongoURI = process.env.MONGO_URI;
 
 
 // configurations
 // Mongo DB
 connectDB()
-.then(() => {
-  console.log("MongoDB is now connected!");
+  .then(() => {
+    console.log("MongoDB is now connected!");
 
-  // Starting server
-  app.listen(port, () => {
-    console.log(`Listening to requests on http://localhost:${port}`);
-  });
-})
-.catch(err => console.log(err));
+    // Starting server
+    app.listen(port, () => {
+      console.log(`Listening to requests on http://localhost:${port}`);
+    });
+  })
+  .catch(err => console.log(err));
 // Importing the adRouter
 const adRouter = require('./Routes/adRoutes');
 app.use('/api/admin', adRouter);
@@ -34,7 +38,7 @@ app.use('/api/patient', paRouter);
 const drRouter = require('./Routes/drRoutes');
 app.use('/api/doctor', drRouter);
 const { login } = require('./controllers/userController');
-app.post("/api/login",login);
+app.post("/api/login", login);
 // Rest of your code
 app.get("/home", (req, res) => {
   res.status(200).send("You have everything installed!");

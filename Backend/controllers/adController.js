@@ -27,9 +27,17 @@ const createAdmin = async (req, res) => {
     if (!validator.isStrongPassword(password)) {
       return res.status(400).json({ error: "Password not strong enough" });
     }
+    const salt = await bcrypt.genSalt(10);
 
+    const hashedPassword = await bcrypt.hash(password, salt);
     // Create the admin user record
-    const newAdmin = await User.create({ username, password, role: "admin" });
+    const newAdmin = await User.create({ username, password: hashedPassword, role: "admin" });
+    const data = {
+      _id: newAdmin._id,
+    };
+    const token = generateToken(data);
+
+
 
     res.status(201).json({ message: "Admin user created successfully", user: newAdmin });
   } catch (error) {
@@ -243,4 +251,4 @@ module.exports = {
   addPack,
   deletePack,
   updatePack,
-  };
+};

@@ -31,7 +31,7 @@ const login = async (req, res) => {
     // Find the user by username
 
     const user = await User.findOne({ username: req.body.username });
-    console.log(user.username);
+ 
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -52,8 +52,24 @@ const login = async (req, res) => {
 
     // Fetch additional user data based on the user's role directly here
     let userData = { fUser: user }; // Initialize with the user data
-
+    console.log(user.role);
     switch (user.role) {
+    
+      case "admin":
+        try {
+          console.log(user.username);
+          res.status(201).json({
+            message: "User logged in successfully",
+            role: user.role,
+            userData,
+            token,
+          });
+        } catch (error) {
+          console.error("Error handling doctor:", error);
+          return res.status(500).json({ error: "Internal Server Error" });
+        }
+        break;
+
       case "patient":
         try {
           const pa = await Patient.findOne({ username: req.body.username });
@@ -72,6 +88,7 @@ const login = async (req, res) => {
           return res.status(500).json({ error: "Internal Server Error" });
         }
         break;
+
       // No need for "admin" case here since "userData" already contains "fUser"
 
       default:
