@@ -16,7 +16,7 @@ const addDoctor = async (req, res) => {
       name,
       email,
       username,
-      dBirth,
+      Dbirth,
       gender,
       rate,speciality,
       affilation,
@@ -25,13 +25,13 @@ const addDoctor = async (req, res) => {
       password,
       
     } = req.body;
-
+console.log(req.body);
     // Validate input fields
     if (
       !name ||
       !email ||
       !username ||
-      !dBirth ||
+      !Dbirth ||
       !gender ||
       !rate ||
       !affilation ||
@@ -39,7 +39,7 @@ const addDoctor = async (req, res) => {
       !docs ||
       !password || !speciality
     ) {
-      return res.status(400).json({ error: "All fields are required" });
+      // return res.status(400).json({ error: "All fields are required" });
     }
 
     // Validate email format
@@ -68,7 +68,7 @@ const addDoctor = async (req, res) => {
 
     // Calculate age based on date of birth
     const today = new Date();
-    const birthDate = new Date(dBirth);
+    const birthDate = new Date(Dbirth);
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
     if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
@@ -88,7 +88,7 @@ const addDoctor = async (req, res) => {
       name,
       email,
       username,
-      dBirth,
+      Dbirth,
       gender,
       rate,
       affilation,

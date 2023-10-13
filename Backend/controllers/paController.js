@@ -478,11 +478,11 @@ const viewAppoints = async (req, res) => {
     // Fetch details about each prescription, including medicine and doctor
     const Appointments = await Appointment.find({ pID: patient._id }).populate("pID");
 
-    if (!Appointments || Appointments.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No Appointments found for the patient" });
-    }
+    // if (!Appointments || Appointments.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ error: "No Appointments found for the patient" });
+    // }
 
     // Prepare the response with the prescriptions, medicine, and doctor details
     return res.status(200).json({
@@ -494,6 +494,7 @@ const viewAppoints = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const viewPrescriptions = async (req, res) => {
   try {
     const { patientId } = req.params;
@@ -653,11 +654,11 @@ module.exports = {
   viewFamilyMembers,
   viewDoctors,
   searchDoctorsByNameOrspeciality,
-  
+  viewAppoints,
   searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
-  getAppointments
+
   
 };

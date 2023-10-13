@@ -9,9 +9,9 @@ const {
   searchDoctorsByNameOrspeciality,
   searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
-  filterPrescriptions,
   patientFilterAppointments,
   createAppointment,
+  viewAppoints
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -31,7 +31,8 @@ router.get(
 );
 router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 router.get("/patientFilterAppointments", patientFilterAppointments);
-router.get("/filterPrescriptions/:patientId", filterPrescriptions);
+router.get("/viewAppoints/:patientId", viewAppoints);
+
 
 router.get("/getUser", getUser);
 
