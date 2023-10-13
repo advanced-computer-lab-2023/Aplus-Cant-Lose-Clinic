@@ -56,8 +56,8 @@ const login = async (req, res) => {
     switch (user.role) {
       case "patient":
         try {
-          const pa = await Patient.findByUsername(user.username);
-          userData.pa = pa;
+          const pa = await Patient.findOne({ username: req.body.username });
+          userData.fUser = pa;
         } catch (err) {
           console.error("Error handling patient:", err);
           return res.status(500).json({ error: "Internal Server Error" });
@@ -65,8 +65,8 @@ const login = async (req, res) => {
         break;
       case "doctor":
         try {
-          const dr = await Doctor.findByUsername(user.username);
-          userData.dr = dr;
+          const dr = await Doctor.findOne({ username: req.body.username });
+          userData.fUser = dr;
         } catch (error) {
           console.error("Error handling doctor:", error);
           return res.status(500).json({ error: "Internal Server Error" });

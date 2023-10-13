@@ -14,7 +14,7 @@ const drSchema = new mongoose.Schema(
     speciality:{  
       type: String,
       required: true // Email is required
-    }
+    },
     username: {
       type: String,
       required: true,

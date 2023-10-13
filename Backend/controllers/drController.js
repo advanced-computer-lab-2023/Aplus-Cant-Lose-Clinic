@@ -23,6 +23,7 @@ const addDoctor = async (req, res) => {
       background,
       docs,
       password,
+      
     } = req.body;
 
     // Validate input fields

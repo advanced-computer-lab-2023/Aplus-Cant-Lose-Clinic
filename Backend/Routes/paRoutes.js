@@ -6,8 +6,8 @@ const {
   addFamilyMember,
   viewFamilyMembers,
   viewDoctors,
-  searchDoctorsByNameOrSpecialty,
-  searchDoctorsBySpecialtyOrAvailability,
+  searchDoctorsByNameOrspeciality,
+  searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
   filterPrescriptions,
   patientFilterAppointments,
@@ -22,12 +22,12 @@ router.post("/addFamilyMember/:patientId", addFamilyMember);
 router.get("/viewFamilyMembers/:patientId", viewFamilyMembers);
 router.get("/viewDoctors/:patientId", viewDoctors);
 router.get(
-  "/searchDoctorsByNameOrSpecialty/:patientId",
-  searchDoctorsByNameOrSpecialty
+  "/searchDoctorsByNameOrspeciality/:patientId",
+  searchDoctorsByNameOrspeciality
 );
 router.get(
   "/searchDoctorsBySpecialtyOrAvailability/:patientId",
-  searchDoctorsBySpecialtyOrAvailability
+  searchDoctorsByspecialityOrAvailability
 );
 router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 router.get("/patientFilterAppointments", patientFilterAppointments);

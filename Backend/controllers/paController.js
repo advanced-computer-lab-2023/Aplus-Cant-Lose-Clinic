@@ -198,7 +198,7 @@ const addFamilyMember = async (req, res) => {
     }
 
     // Check if the patient exists by ID
-    const patient = await Patient.findById(patientId);
+    const patient = await Patient.findById(req.params.patientId);
 
     if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
@@ -459,6 +459,41 @@ const searchDoctorsByspecialityOrAvailability = async (req, res) => {
   }
 };
 
+const viewAppoints = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // Validate the 'patientId' parameter
+    if (!patientId) {
+      return res.status(400).json({ error: "Patient ID is required" });
+    }
+
+    // Find the patient by patientId
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Fetch details about each prescription, including medicine and doctor
+    const Appointments = await Appointment.find({ pID: patient._id }).populate("pID");
+
+    if (!Appointments || Appointments.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No Appointments found for the patient" });
+    }
+
+    // Prepare the response with the prescriptions, medicine, and doctor details
+    return res.status(200).json({
+      message: "Appointments retrieved successfully",
+      Appointments,
+    });
+  } catch (error) {
+    console.error("Error retrieving prescriptions:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 const viewPrescriptions = async (req, res) => {
   try {
     const { patientId } = req.params;
@@ -494,7 +529,6 @@ const viewPrescriptions = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const patientFilterAppointments = async (req, res) => {
   const { patientId, startDate, endDate, status } = req.query;
 
@@ -619,9 +653,11 @@ module.exports = {
   viewFamilyMembers,
   viewDoctors,
   searchDoctorsByNameOrspeciality,
+  
   searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
-  filterPrescriptions,
+  getAppointments
+  
 };
