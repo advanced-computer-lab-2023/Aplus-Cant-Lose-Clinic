@@ -82,7 +82,7 @@ const login = async (req, res) => {
       default:
         return res.status(400).json({ error: "Unknown role" });
     }
-
+console.log(userData.fUser._id);
     // Send the response once after the switch statement
     res.status(201).json({
       message: "User logged in successfully",

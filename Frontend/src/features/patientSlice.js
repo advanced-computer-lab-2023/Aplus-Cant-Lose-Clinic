@@ -17,23 +17,37 @@ export const viewFamilyMembers = createAsyncThunk(
 );
 export const viewPrescriptions = createAsyncThunk(
   "patient/viewPrescriptions",
-  async (data) => {
+  async (patientId) => {
     const response = await axios.get(
-      `${API_URL}/patient/viewPrescriptions/${data.patientId}`
+      `${API_URL}/patient/viewPrescriptions/${patientId}`
     );
-    console.log(data.patientId);
+    console.log(patientId);
 
     console.log(response);
     return response;
   }
 );
+//<------------------------------------------------------------------------------------------------
+export const viewPrescription = createAsyncThunk(
+  "patient/viewPrescription",
+  async (patientId) => {
+    const response = await axios.get(
+      `${API_URL}/patient/viewPrescription/${patientId}`
+    );
+    console.log(patientId);
+
+    console.log(response);
+    return response;
+  }
+);
+//<------------------------------------------------------------------------------------------------
+
 export const viewAppoints = createAsyncThunk(
   "patient/viewAppoints",
   async (data) => {
     const response = await axios.get(
-      `${API_URL}/patient/viewAppoints/${data.patientId}`
+      `${API_URL}/patient/viewAppoints/${data}`
     );
-    console.log(data.patientId);
 
     console.log(response);
     return response;
@@ -66,11 +80,12 @@ export const addFamilyMember = createAsyncThunk(
     const response = await axios.post(
       `${API_URL}/patient/addFamilyMember/${data.id}`,
       {
+       
         fullName: data.guest.fullName,
         NID: data.guest.NID,
         age: data.guest.age,
-        dBirth: data.guest.dBirth,
-        mobile: data.guest.mobile,
+        
+        
         gender: data.guest.gender,
         relation: data.guest.relation,
       }
@@ -81,11 +96,11 @@ export const addFamilyMember = createAsyncThunk(
 );
 
 const patientInitial = {
-  status: true,
+  // status: "unfilled",
   loading: false,
   username: "none",
   password: "none",
-  role: "none",
+  // role: "none",
   error: "",
   response: "",
   fMembers: [],
@@ -136,7 +151,8 @@ const patient = createSlice({
 
       .addCase(viewAppoints.fulfilled, (state, action) => {
         state.loading = false;
-        state.appoints = action.payload.data.appoints;
+        state.appoints = action.payload.data.Appointments;
+        console.log(state.appoints);
       })
       .addCase(viewAppoints.rejected, (state, action) => {
         state.loading = false;

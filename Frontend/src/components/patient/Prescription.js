@@ -9,11 +9,14 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import {viewPrescriptions} from "../../features/patientSlice"
 import { Link } from "react-router-dom";
 
 const App = () => {
   const dispatch = useDispatch();
   const presc = useSelector((state) => state.patient.presc);
+  const patientId = useSelector((state) => state.user.id);
+
   const Info = {
     margin: "20px 20px",
     alignItems: "baseline",
@@ -25,7 +28,7 @@ const App = () => {
     margin: "0px 103px",
   };
   useEffect(() => {
-    dispatch();
+    dispatch(viewPrescriptions(patientId));
   }, [dispatch]);
 
   return (
@@ -42,19 +45,19 @@ const App = () => {
           <Grid item xs={12} md={4}>
             <Box style={Info}>
               <Typography sx={{ fontSize: "16px" }}>
-                {" "}
+                
                 <strong>Patient Name : </strong>Nardy Michelle
               </Typography>
               <Typography sx={{ fontSize: "16px" }}>
-                {" "}
+                
                 <strong>Age : </strong>20y
               </Typography>
               <Typography sx={{ fontSize: "16px" }}>
-                {" "}
+                
                 <strong>Gender : </strong>Male
               </Typography>
               <Typography sx={{ fontSize: "16px" }}>
-                {" "}
+                
                 <strong>Date : </strong>11/11/2011
               </Typography>
             </Box>

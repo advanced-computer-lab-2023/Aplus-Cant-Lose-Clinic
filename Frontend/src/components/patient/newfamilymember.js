@@ -48,7 +48,7 @@ const NewFamilyMemberForm = () => {
     event.preventDefault();
 
     const guest = {
-      fullName: event.target.elements.NID.value,
+      fullName: event.target.elements.fullName.value,
       age: event.target.elements.age.value,
       relation: event.target.elements.relation.value,
       gender: event.target.elements.gender.value,
