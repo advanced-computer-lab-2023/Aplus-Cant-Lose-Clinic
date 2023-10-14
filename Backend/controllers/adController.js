@@ -5,6 +5,8 @@ const HPackages = require("../Models/hpackages");
 const validator = require('validator');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Medicine = require("../Models/medicine");
+
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 }
@@ -49,10 +51,10 @@ const createAdmin = async (req, res) => {
 
 const viewPendDr = async (req, res) => {
   try {
-    const doctors = await Doctor.find({ status: "pending" });
+    const pendDoctors = await Doctor.find({ status: "pending" });
     res
       .status(201)
-      .json({ message: "pending doctor r got successfully", doctors });
+      .json({ message: "pending doctor r got successfully", pendDoctors});
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -60,10 +62,10 @@ const viewPendDr = async (req, res) => {
 };
 const viewJoinedDr = async (req, res) => {
   try {
-    const doctors = await Doctor.find({ status: "accepted" });
+    const joinDoctors = await Doctor.find({ status: "accepted" });
     res
       .status(201)
-      .json({ message: "accepted doctor r got successfully", doctors });
+      .json({ message: "accepted doctor r got successfully", joinDoctors });
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -79,6 +81,16 @@ const viewPatients = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const viewMedicine = async (req, res) => {
+  try {
+    const medicines= await Medicine.find();
+    res.status(201).json({ message: "medicinesss r got successfully", medicines});
+  } catch (error) {
+    console.error("Error creating user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 const deletePatient = async (req, res) => {
   const patientId = req.params.id; // Assuming the ID is passed as a parameter
@@ -240,6 +252,26 @@ const updatePack = async (req, res) => {
   }
 };
 
+const viewHealthP = async (req, res) => {
+  try {
+    const HealthPack = await HPackages.find();
+    res.status(201).json({ message: "health pack got successfully", HealthPack });
+  } catch (error) {
+    console.error("Error creating health pack:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const viewAdmin = async(req, res) => {
+  try{
+    const AdminView = await User.find();
+    res.status(201).json({ message: "Admin got successfully", AdminView });
+  }catch(error){
+    console.error("error creating user",error);
+    res.status(500).json({error:"internal server error"});
+  }
+}
+
 module.exports = {
   createAdmin,
   viewPendDr,
@@ -250,5 +282,8 @@ module.exports = {
   deleteAdmin,
   addPack,
   deletePack,
+  viewMedicine,
   updatePack,
+  viewHealthP,
+  viewAdmin,
 };

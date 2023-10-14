@@ -28,10 +28,10 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    // Find the user by username
 
-    const user = await User.findOne({ username: req.body.username });
- 
+    // Find the user by username
+    const user = await User.findOne({ username });
+
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -50,38 +50,27 @@ const login = async (req, res) => {
     // If the password is valid, generate a JWT token
     const token = generateToken(data);
 
-    // Fetch additional user data based on the user's role directly here
+    // Fetch additional user data based on the user's role
     let userData = { fUser: user }; // Initialize with the user data
-    console.log(user.role);
+
     switch (user.role) {
-    
       case "admin":
-        try {
-          console.log(user.username);
-          res.status(201).json({
-            message: "User logged in successfully",
-            role: user.role,
-            userData,
-            token,
-          });
-        } catch (error) {
-          console.error("Error handling doctor:", error);
-          return res.status(500).json({ error: "Internal Server Error" });
-        }
+        // Handle admin-specific data here if needed
         break;
 
       case "patient":
         try {
-          const pa = await Patient.findOne({ username: req.body.username });
+          const pa = await Patient.findOne({ username });
           userData.fUser = pa;
         } catch (err) {
           console.error("Error handling patient:", err);
           return res.status(500).json({ error: "Internal Server Error" });
         }
         break;
+
       case "doctor":
         try {
-          const dr = await Doctor.findOne({ username: req.body.username });
+          const dr = await Doctor.findOne({ username });
           userData.fUser = dr;
         } catch (error) {
           console.error("Error handling doctor:", error);
@@ -89,12 +78,11 @@ const login = async (req, res) => {
         }
         break;
 
-      // No need for "admin" case here since "userData" already contains "fUser"
-
       default:
         return res.status(400).json({ error: "Unknown role" });
     }
 
+    // Send the response once after the switch statement
     res.status(201).json({
       message: "User logged in successfully",
       role: user.role,
@@ -106,6 +94,7 @@ const login = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const getUser = async (req, res) => {
   const username = req.body.username;

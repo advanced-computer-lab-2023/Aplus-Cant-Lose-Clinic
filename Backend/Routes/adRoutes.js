@@ -8,7 +8,7 @@ const {
 const {
   createAdmin,
   viewPendDr,
-
+  viewMedicine,
   viewJoinedDr,
   viewPatients,
   deletePatient,
@@ -16,13 +16,15 @@ const {
   deleteAdmin,
   addPack,
   deletePack,
+  viewHealthP,
   updatePack,
+  viewAdmin,
 } = require("../controllers/adController");
 
 // Define your routes and route handlers
 router.get("/getUser", getUser);
-
-
+router.get("/viewAdmin",viewAdmin);
+router.get("/viewMedicine", viewMedicine);
 router.post("/createAdmin", createAdmin);
 router.get("/viewPendDr", viewPendDr);
 router.get("/viewJoinedDr", viewJoinedDr);
@@ -33,5 +35,5 @@ router.delete("/deleteAdmin/:id", deleteAdmin);
 router.post("/addPack", addPack);
 router.delete("/deletePack/:id", deletePack);
 router.put("/updatePack/:id", updatePack);
-
+router.get("/viewHealthP", viewHealthP);
 module.exports = router; // Export the router instance

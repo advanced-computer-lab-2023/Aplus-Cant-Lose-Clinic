@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+import './AddAdmin.css';
+import { createAdmin } from '../../features/adminSlice'
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useContext } from 'react';
+import {addHpackages } from '../../features/adminSlice';
+import { useNavigate } from "react-router-dom";
+import { SnackbarContext } from "../../App";
+import { AutoFixNormal } from '@mui/icons-material';
+
+  //<------------------------------------------------------------------------------------
+  const AddPack = () => {
+    const dispatch=useDispatch();
+    const snackbarMessage = useContext(SnackbarContext);
+    const navigate = useNavigate();
+    
+    const [packData, setPackData] = useState({
+      type: '',
+      rate: 0,
+      doctorDisc: 0,
+      medicineDisc: 0,
+      familyDisc: 0,
+    });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setPackData({ ...packData, [name]: value });
+      };
+      
+  const handleSave = (event) => {
+    event.preventDefault();
+
+    const sampleData = {
+      type :event.target.elements.type.value,
+      rate :event.target.elements.rate.value,
+      doctorDisc :event.target.elements.doctorDisc.value,
+      medicineDisc :event.target.elements.medicineDisc.value,
+      familyDisc :event.target.elements.familyDisc.value,
+    };
+
+    console.log(sampleData);
+
+    const response = dispatch(addHpackages(sampleData));
+    response.then((responseData) => {
+      console.log(responseData);
+      if (responseData.payload===undefined) {
+        snackbarMessage(`error: Healthpackage already exist has occurred`, "error");
+      } else {
+    
+        snackbarMessage("You have successfully added", "success");
+     
+      }
+    });
+  };
+
+
+//<------------------------------------------------------------------------------------
+
+    //   type,
+    //   rate,
+    //   doctorDisc,
+    //   medicineDisc,
+    //   familyDisc,
+
+    const handleGoBack = () => {
+        navigate(-1); // Go back one step in history
+      };
+ 
+    return (
+        <div className="admin-form">
+            <h2>Add Medicine</h2>
+            <form onSubmit={handleSave}>
+                <div className="form-group">
+                    <label htmlFor="type">Type</label>
+                    <input
+                        type="text"
+                        id="type"
+                        name="type"
+
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="rate"
+                    >Rate</label>
+                    <input
+                        type="number"
+                        id="rate"
+                        name="rate"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="doctorDisc">DoctorDisc</label>
+                    <input
+                        type="number"
+                        id="doctorDisc"
+                        name="doctorDisc"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="medicineDisc">MedicineDisc</label>
+                    <input
+                        type="number"
+                        id="medicineDisc"
+                        name="medicineDisc"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="familyDisc">FamilyDisc</label>
+                    <input
+                        type="number"
+                        id="familyDisc"
+                        name="familyDisc"
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+
+                <div className="button-group">
+                    <button type="submit" >Save</button>
+                    <button type="button" onClick={handleGoBack }>Cancel</button>
+                </div>
+            </form>
+        </div>
+    );
+};
+
+export default AddPack;
