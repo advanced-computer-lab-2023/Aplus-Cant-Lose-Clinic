@@ -4,12 +4,16 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home'; // Import the Home icon
-
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getPatients } from "../../features/doctorSlice";
 import { useNavigate } from 'react-router-dom';
+
 const styles = {
   paper: {
     padding: '20px',
-    backgroundColor: '#EBEBEB',
+    backgroundColor: 'pink',
+    marginBottom: '10px'
   },
   mainHeader: {
     fontSize: '35px',
@@ -31,81 +35,75 @@ const styles = {
 
 function PatientDetails() {
   // Dummy patient data (you can replace this with actual data)
-  const initialPatientData = {
-    name: 'John Doe',
-    age: 35,
-    gender: 'Male',
-    registrationDate: '2023-10-15',
-    healthRecords: [
-      'Checkup - 2023-10-15',
-      'Prescription - 2023-10-20',
-      'Lab Results - 2023-10-25',
-    ],
-  };
+  const drId = useSelector((state) => state.user.id);
+  const dispatch= useDispatch();
+  useEffect(() => {
+    dispatch(getPatients(drId));
+  }, [dispatch]);
 
-  const [patientData, setPatientData] = useState(initialPatientData);
-  const [newHealthRecord, setNewHealthRecord] = useState('');
+  const rows = useSelector((state) => state.doctor.patientsList);
 
-  const handleAddRecord = () => {
-    if (newHealthRecord.trim() === '') {
-      return;
-    }
-    const updatedHealthRecords = [...patientData.healthRecords, newHealthRecord];
-    setPatientData({ ...patientData, healthRecords: updatedHealthRecords });
-    setNewHealthRecord('');
-  };
+
   const navigate = useNavigate();
   return (
     <div>
-      <Paper elevation={3} style={styles.paper}>
-        <i>
-          <IconButton
+      {rows.map((row, index) => (
+        <Paper elevation={3} style={styles.paper}  key={index}>
+          <i>
+            <IconButton
+              color="primary"
+              aria-label="Back to Home"
+              style={{ position: 'absolute', bottom: '10px', right: '10px' }}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <HomeIcon />
+            </IconButton>
+          </i>
+
+          <Typography variant="h4" style={styles.mainHeader}>
+            Patient Details
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            Name: {row.name}
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            email: {row.email}
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            Age: {row.age}
+          </Typography>
+          <Typography variant="body1" style={styles.text}>
+            Gender: {row.gender}
+          </Typography>
+  
+
+          <Typography variant="h5" style={styles.subHeader}>
+            Health Records
+          </Typography>
+          <ul>
+            {row.records.map((record, index) => (
+              <ul key={index} >
+              <li style={styles.text}>
+                {record.url}
+              </li>
+              <li style={styles.text}>
+                {record.desc}
+              </li>
+              
+</ul>
+            ))}
+          </ul>
+          <Button
+            variant="contained"
             color="primary"
-            aria-label="Back to Home"
-            style={{ position: 'absolute', bottom: '10px', right: '10px' }}
-            onClick={() => {
-              navigate(-1);
-            }}
+           
+            style={styles.button}
           >
-            <HomeIcon />
-          </IconButton>
-        </i>
-
-        <Typography variant="h4" style={styles.mainHeader}>
-          Patient Details
-        </Typography>
-        <Typography variant="body1" style={styles.text}>
-          Name: {patientData.name}
-        </Typography>
-        <Typography variant="body1" style={styles.text}>
-          Age: {patientData.age}
-        </Typography>
-        <Typography variant="body1" style={styles.text}>
-          Gender: {patientData.gender}
-        </Typography>
-        <Typography variant="body1" style={styles.text}>
-          Registration Date: {patientData.registrationDate}
-        </Typography>
-
-        <Typography variant="h5" style={styles.subHeader}>
-          Health Records
-        </Typography>
-        <ul>
-          {patientData.healthRecords.map((record, index) => (
-            <li key={index} style={styles.text}>
-              {record}
-            </li>
-          ))}
-        </ul>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleAddRecord}
-          style={styles.button}
-        >
-          Add Record
-        </Button>
-      </Paper>
+            Add Record
+          </Button>
+        </Paper>))}
     </div>
   );
 }

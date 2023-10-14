@@ -12,6 +12,7 @@ const doctorState = {
   patientsList: [],
   error: "",
   response: "",
+  appointments:[]
 
 };
 
@@ -29,7 +30,7 @@ const doctorState = {
 export const registerDoctor = createAsyncThunk(
   "doctor/registerDoctor",
   async (data) => {
-    const response = await axios.post(`${API_URL}/doctor/addDoctor`,{
+    const response = await axios.post(`${API_URL}/doctor/addDoctor`, {
       ...data
     });
     return response;
@@ -39,38 +40,42 @@ export const registerDoctor = createAsyncThunk(
 export const editDoctorCredentials = createAsyncThunk(
   "doctor/editDoctorCredentials",
   async (data) => {
-    // TODO: Add proper API call here
-    // const response = await axios.post(`${API_URL}/doctor/addDoctor`,{
-    //   ...data
-    // });
-    return null;
+    try {
+      const response = await axios.put(`${API_URL}/doctor/editDoctor/${data.id}`, data);
+      return response; // Return the response data
+    } catch (error) {
+      throw error; // Rethrow any errors for handling in your component
+    }
   }
 );
 
-export const fetchPatientList = createAsyncThunk(
-  "doctor/fetchPatientList",
-  async () => {
-    // TODO: Add proper API call here
-    // const response = await axios.post(`${API_URL}/doctor/addDoctor`,{
-    //   ...data
-    // });
+//
+//  const { id } = req.params; // Get the ID from the request parameters
 
-    // For now will use dummy data
-    const dummy_data = [
-      {name: 'First Patient',
-       appointmentDate: '2021-10-18',
-       status: 'Follow Up',
-      },
-      {
-        name: 'Second Patient',
-        appointmentDate: '2024-10-18',
-        status: 'Appointment',
-      }
-    ]
 
-    return dummy_data;
+
+export const getPatients = createAsyncThunk(
+  "doctor/getPatients",
+  async (id) => {
+
+  
+
+    const response = await axios.get(`${API_URL}/doctor/getPatients/${id}`);
+
+    return response;
   }
 );
+
+export const appointmentPatients = createAsyncThunk(
+  "doctor/appointmentPatients",
+  async (id) => {
+
+    const response = await axios.get(`${API_URL}/doctor/appointmentPatients/${id}`);
+
+    return response;
+  }
+);
+
 
 
 export const doctor = createSlice({
@@ -89,30 +94,44 @@ export const doctor = createSlice({
   },
   extraReducers: (builder) => {
     builder
-    .addCase(registerDoctor.pending, (state) => {
-      state.loading = true;
-    })
-    .addCase(registerDoctor.fulfilled, (state, action) => {
-      state.loading = false;
-    })
-    .addCase(registerDoctor.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    });
-
+      .addCase(registerDoctor.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(registerDoctor.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(registerDoctor.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+      
     builder
-    .addCase(fetchPatientList.pending, (state) => {
-      state.loading = true;
-    })
-    .addCase(fetchPatientList.fulfilled, (state, action) => {
-      state.patientsList = action.payload;
+      .addCase(getPatients.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getPatients.fulfilled, (state, action) => {
+        state.patientsList = action.payload.data.patients;
 
-      state.loading = false;
-    })
-    .addCase(fetchPatientList.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message;
-    });
+        state.loading = false;
+      })
+      .addCase(getPatients.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+      builder
+      .addCase(appointmentPatients.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(appointmentPatients.fulfilled, (state, action) => {
+        state.appointments = action.payload.data.appointments;
+        state.loading = false;
+      })
+      .addCase(appointmentPatients.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+      
 
   },
 });

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {TextField, Select, MenuItem, Checkbox, Typography, Divider} from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import { fetchPatientList } from '../../features/doctorSlice'
+import { appointmentPatients } from '../../features/doctorSlice'
 import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -15,11 +15,12 @@ export default function DocPatients() {
 
     const dispatch = useDispatch();
 
+    const id= useSelector((state) => state.user.id);
     useEffect(() => {
-        dispatch(fetchPatientList());
+        dispatch(appointmentPatients(id));
     },[dispatch])
 
-    const { patientsList } = useSelector((state) => state.doctor);
+    const appointmnets = useSelector((state) => state.doctor.appointments);
 
 
   return (
@@ -58,21 +59,22 @@ export default function DocPatients() {
                 <Checkbox value={upcomingFilter} onChange={(event) => {setUpcomingFilter(event.target.checked)}}/>
             </div>
         </div>
-        <div style={{backgroundColor:'white',  display: 'flex', flexDirection: 'column'}}>
-            {patientsList
-            .filter((patient) =>{
-                return nameFilter === '' || patient.name.toLowerCase().includes(nameFilter.toLowerCase())
+        {/* <div style={{backgroundColor:'white',  display: 'flex', flexDirection: 'column'}}>
+            {appointmnets
+            .filter((res) =>{
+                return nameFilter === '' || res.pID.name.toLowerCase().includes(nameFilter.toLowerCase())
             })
-            .filter((patient) =>{
-                return dateFilter === '' || patient.appointmentDate === dateFilter
+            .filter((res) =>{
+                return dateFilter === '' || res.startDate === dateFilter
             })
-            .filter((patient) =>{
-                return statusFilter === 'Any' || patient.status === statusFilter
+            .filter((res) =>{
+                return statusFilter === 'Any' || res.status === statusFilter
             })
-            .filter((patient) =>{
-                return upcomingFilter === false || (new Date(patient.appointmentDate) - new Date > 0)
+            .filter((res) => {
+                return upcomingFilter === false || (new Date(res.startDate) - new Date() > 0); // Missing () after new Date
             })
-            .map((patient) => {
+            
+            .map((res) => {
                 return (
                     <Accordion>
                     <AccordionSummary
@@ -80,31 +82,31 @@ export default function DocPatients() {
                         aria-controls="panel1a-content"
                         id="panel1a-header"
                     >
-                        <Typography>{patient.name}</Typography>
+                        <Typography>{res.pID.name}</Typography>
                         <div style={{marginLeft: 'auto'}}></div>
-                        <Typography>{patient.status}</Typography>
-                        <Typography sx={{marginLeft: '10px'}}>{patient.appointmentDate}</Typography>
+                        <Typography>{res.status}</Typography>
+                        <Typography sx={{marginLeft: '10px'}}>{res.startDate}</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
                         <div style={{ display:'flex', flexDirection: 'row'}}>
-                            <Typography sx={{width: '300px'}}>Patient Name: </Typography>
-                            <Typography >{patient.name} </Typography>
+                            <Typography sx={{width: '300px'}}>res Name: </Typography>
+                            <Typography >{res.pID.name} </Typography>
                         </div>
                         <Divider/>
                         <div style={{ display:'flex', flexDirection: 'row'}}>
                             <Typography sx={{width: '300px'}}>Appointment Status: </Typography>
-                            <Typography >{patient.status} </Typography>
+                            <Typography >{res.status} </Typography>
                         </div>
                         <Divider/>
                         <div style={{ display:'flex', flexDirection: 'row'}}>
                             <Typography sx={{width: '300px'}}>Appointment Date: </Typography>
-                            <Typography >{patient.appointmentDate} </Typography>
+                            <Typography >{res.startDate} </Typography>
                         </div>
                     </AccordionDetails>
                     </Accordion>
                 )
             })}
-        </div>
+        </div> */}
 
 
     </div>
