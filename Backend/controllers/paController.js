@@ -476,7 +476,7 @@ const viewAppoints = async (req, res) => {
     }
 
     // Fetch details about each prescription, including medicine and doctor
-    const Appointments = await Appointment.find({ pID: patient._id }).populate("pID");
+    const Appointments = await Appointment.find({ pID: patient._id }).populate("drID");
 
     // if (!Appointments || Appointments.length === 0) {
     //   return res
