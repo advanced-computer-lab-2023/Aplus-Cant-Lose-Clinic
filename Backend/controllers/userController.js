@@ -71,6 +71,7 @@ const login = async (req, res) => {
       case "doctor":
         try {
           const dr = await Doctor.findOne({ username });
+          if(dr.status==="pending") throw error;
           userData.fUser = dr;
         } catch (error) {
           console.error("Error handling doctor:", error);

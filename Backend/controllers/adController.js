@@ -1,6 +1,8 @@
 const User = require("../Models/user");
 const Doctor = require("../Models/doctor");
 const Patient = require("../Models/patient");
+const Appointment=require("../Models/appointments");
+const Prescription = require("../Models/prescription")
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
 const bcrypt = require("bcrypt");
@@ -221,7 +223,7 @@ const updatePack = async (req, res) => {
   const packageId = req.params.id; // Assuming the package ID is passed as a parameter
 
   // Define the fields that can be updated
-  const allowedFields = ["rate", "doctorDisc", "medicineDisc", "familyDisc"];
+  const allowedFields = ["type", "rate", "doctorDisc", "medicineDisc", "familyDisc"];
 
   // Extract the fields to update from the request body
   const updates = {};
@@ -264,7 +266,7 @@ const viewHealthP = async (req, res) => {
 
 const viewAdmin = async(req, res) => {
   try{
-    const AdminView = await User.find();
+    const AdminView = await User.find({role:'admin'});
     res.status(201).json({ message: "Admin got successfully", AdminView });
   }catch(error){
     console.error("error creating user",error);
