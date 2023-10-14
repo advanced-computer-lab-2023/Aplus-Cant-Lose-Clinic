@@ -229,6 +229,21 @@ const editDoctor = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const appointmentPatients = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
+
+    // Use Mongoose to find all appointments for the specified doctor
+    const appointments = await Appointment.find({ drID: doctorId })
+      .populate('pID') // Populate the 'pID' field to get patient data
+      .exec();
+
+    res.json(appointments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 const doctorFilterAppointments = async (req, res) => {
   const { doctorId } = req.params; // Get doctorId from URL parameters
   const { startDate, endDate, status } = req.query;
@@ -286,7 +301,7 @@ const getPatients = async (req, res) => {
         .json({ error: "No patients found for this doctor" });
     }
 
-    res.status(200).json({ patients });
+    res.status(200).json( patients );
   } catch (error) {
     console.error("Error getting patients:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -335,4 +350,5 @@ module.exports = {
   addPrescription,
   editDoctor,
   doctorFilterAppointments,
+  appointmentPatients
 };

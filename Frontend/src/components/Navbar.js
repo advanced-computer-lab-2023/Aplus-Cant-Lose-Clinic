@@ -2,7 +2,6 @@ import { Button } from '@mui/material'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
 export default function Navbar() {
     const navigate = useNavigate()
     const {role } = useSelector((state) => state.user)
@@ -25,6 +24,7 @@ export default function Navbar() {
         <>
         <Button onClick={() => {navigate('/Profile')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Profile</Button>
         <Button onClick={() => {navigate('/Logout')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Logout</Button>
+        <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button>
         </>}
 
 

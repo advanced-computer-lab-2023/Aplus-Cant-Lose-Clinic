@@ -51,6 +51,8 @@ import RegisterAsDoctor from "./components/Authentication/RegisterAsDoctor";
 import ProfileDirect from "./ProfileDirect";
 import DocPatients from "./components/doctor/DocPatients";
 import AddPack from "./components/Adminstrator/AddPack"
+import PatientView from "./components/doctor/PatientView";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -76,7 +78,7 @@ const router = createBrowserRouter(
       <Route path="DoctorsList" element={<DoctorsList />} />
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
-
+      <Route path="/PatientsList" element={<PatientView />} />
     </Route>
   )
 );
