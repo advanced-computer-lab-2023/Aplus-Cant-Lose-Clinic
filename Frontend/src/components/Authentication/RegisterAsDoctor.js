@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../Consts.js";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-
+import { registerDoctor } from "../../features/doctorSlice";
 import { SnackbarContext } from "../../App";
 function RegisterAsDoctor() {
   const dispatch = useDispatch();
@@ -32,16 +32,17 @@ function RegisterAsDoctor() {
     };
     //  name,
 
-    // const response = dispatch(addDoctor(sampleData));
-    // response.then((responseData) => {
-    //   console.log(responseData);
-    //   if (responseData.payload.status < 300) {
-    //     snackbarMessage("You have successfully registered", "success");
-    //     navigate("/login");
-    //   } else {
-    //     snackbarMessage(`error: ${responseData} has occurred`, "error");
-    //   }
-    // });
+    const response = dispatch(registerDoctor(sampleData));
+    response.then((responseData) => {
+      console.log(responseData);
+      if (responseData.payload.status === undefined) {
+        snackbarMessage(`error: ${responseData} has occurred`, "error");
+
+      } else {
+        snackbarMessage("You have successfully registered", "success");
+        navigate("/login");
+      }
+    });
   };
 
   return (
@@ -81,6 +82,7 @@ function RegisterAsDoctor() {
           style={{ width: "92%" }}
           type="password"
           id="password"
+          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
           placeholder="Enter your password here..."
           required
         />
@@ -95,14 +97,14 @@ function RegisterAsDoctor() {
         <label className="form__label" for="dBirth">
           Date of Birth
         </label>
-        <input type="date" id="dBirth" required />
+        <input type="date" id="dBirth" max="2002-10-15" required />
 
         <label for="rate">Hourly Rate</label>
         <input
           style={{ width: "92%" }}
           type="number"
           id="rate"
-          placeholder="10.00$"
+          placeholder="10.00$ "
           required
         />
 

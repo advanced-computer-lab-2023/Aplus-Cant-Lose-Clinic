@@ -18,13 +18,14 @@ export default function Navbar() {
         }
         {role === 'doctor' &&
         <>
-        <Button onClick={() => {navigate('/DocPatients')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Patients</Button>
+        <Button onClick={() => {navigate('/DocPatients')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Appointments</Button>
         </>}
         {role !== '' &&
         <>
         <Button onClick={() => {navigate('/Profile')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Profile</Button>
-        <Button onClick={() => {navigate('/Logout')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Logout</Button>
-        <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button>
+   {/* <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button> */}
+        <Button onClick={() => {navigate('/Logout')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: 'red'}}>Logout</Button>
+
         </>}
 
 

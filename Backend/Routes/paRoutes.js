@@ -12,7 +12,7 @@ const {
   patientFilterAppointments,
   createAppointment,
   viewAppoints,
-  viewSpecificPrescription
+  viewSpecificPrescription,getAlldoctors
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -37,5 +37,6 @@ router.get("/viewAppoints/:patientId", viewAppoints);
 
 
 router.get("/getUser", getUser);
+router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
 module.exports = router;

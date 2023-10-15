@@ -12,7 +12,8 @@ const doctorState = {
   patientsList: [],
   error: "",
   response: "",
-  appointments:[]
+  appointments:[],
+  info:{},
 
 };
 
@@ -30,9 +31,7 @@ const doctorState = {
 export const registerDoctor = createAsyncThunk(
   "doctor/registerDoctor",
   async (data) => {
-    const response = await axios.post(`${API_URL}/doctor/addDoctor`, {
-      ...data
-    });
+    const response = await axios.post(`${API_URL}/doctor/addDoctor`,data);
     return response;
   }
 );
@@ -61,6 +60,15 @@ export const getPatients = createAsyncThunk(
   
 
     const response = await axios.get(`${API_URL}/doctor/getPatients/${id}`);
+
+    return response;
+  }
+);
+export const getDr = createAsyncThunk(
+  "doctor/getDr",
+  async (id) => {
+
+    const response = await axios.get(`${API_URL}/doctor/getDr/${id}`);
 
     return response;
   }
@@ -113,8 +121,8 @@ export const doctor = createSlice({
         state.loading = true;
       })
       .addCase(getPatients.fulfilled, (state, action) => {
-        state.patientsList = action.payload.data.patients;
-
+        state.patientsList = action.payload.data;
+console.log(state.patientsList);
         state.loading = false;
       })
       .addCase(getPatients.rejected, (state, action) => {
@@ -134,6 +142,14 @@ export const doctor = createSlice({
         state.loading = false;
         state.error = action.error.message;
       });
+      builder
+      
+      .addCase(getDr.fulfilled, (state, action) => {
+        state.info = action.payload.data.dr;
+        console.log(state.info);
+        state.loading = false;
+      })
+    
       
 
   },

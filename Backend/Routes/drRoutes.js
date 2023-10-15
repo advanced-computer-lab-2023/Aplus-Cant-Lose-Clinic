@@ -10,13 +10,15 @@ const {
   patientsInUpcomingApointments,
   editDoctor,
   doctorFilterAppointments,
-  appointmentPatients
+  appointmentPatients,getDr
 } = require("../controllers/drController");
 
 router.post("/addPrescription", addPrescription);
 router.post("/getUser", getUser);
 router.post("/addDoctor", addDoctor);
 router.get("/getPatients/:id", getPatients);
+router.get("/getDr/:id", getDr);
+
 
 router.get("/searchPatientByName", searchPatientByName);
 router.get("/patientsInUpcomingApointments/:doctorId", patientsInUpcomingApointments);

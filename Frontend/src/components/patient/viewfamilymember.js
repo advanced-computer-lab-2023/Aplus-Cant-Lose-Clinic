@@ -22,11 +22,10 @@ import { Link } from "react-router-dom";
 
 export default function ButtonAppBar() {
   const dispatch = useDispatch();
-  const patientId = useSelector((state) => state.user.id);
-  console.log(patientId);
   useEffect(() => {
     dispatch(viewFamilyMembers({patientId}));
   }, [dispatch]);
+  const patientId = useSelector((state) => state.user.id);
 
 
   const iconStyle = {

@@ -189,10 +189,10 @@ const addPatient = async (req, res) => {
 
 const addFamilyMember = async (req, res) => {
   const { fullName, NID, age, gender, relation } = req.body;
-  const { patientId } = req.params; // Get patientId from URL parameters
+  const  patientId  = req.params.patientId; // Get patientId from URL parameters
 
   try {
-    // Validate input fields
+    // Validate input fie.familyMembers
     if (!patientId || !fullName || !NID || !age || !gender || !relation) {
       return res.status(400).json({ error: "All fields are required" });
     }
@@ -678,12 +678,27 @@ const viewSpecificPrescription = async (req, res) => {
   }
 }
 
+// Import your Doctor schema/model
+const  getAlldoctors = async (req, res) => {
+  try {
+    // Use the Mongoose 'find' method to retrieve all doctors
+    const doctors = await Doctor.find();
+    res.json(doctors);
+  } catch (error) {
+    // Handle any errors that may occur during the database query
+    console.error('Error fetching doctors:', error);
+    res.status(500).json({ error: 'An error occurred while fetching doctors.' });
+  }
+}
+
+
 
 module.exports = {
   addPatient,
   addFamilyMember,
   viewFamilyMembers,
   viewDoctors,
+  getAlldoctors,
   searchDoctorsByNameOrspeciality,
   viewAppoints,
   searchDoctorsByspecialityOrAvailability,

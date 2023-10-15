@@ -95,14 +95,7 @@ function PatientDetails() {
 </ul>
             ))}
           </ul>
-          <Button
-            variant="contained"
-            color="primary"
-           
-            style={styles.button}
-          >
-            Add Record
-          </Button>
+      
         </Paper>))}
     </div>
   );

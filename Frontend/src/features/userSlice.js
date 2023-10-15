@@ -10,14 +10,17 @@ const userInitial = {
   error: "",
   response: "",
   id: "652854c4fdc81066580f578e",
+  error:""
 };
-export const loginGuest = createAsyncThunk("user/loginGuest", async (data) => {
+export const loginGuest = createAsyncThunk("user/loginGuest", async (data,thunkAPI) => {
+
   const response = await axios.post(`${API_URL}/login`, {
     username: data.username,
 
     // docs: data.docs,
     password: data.password,
   });
+
 
   return response;
 });
@@ -45,6 +48,8 @@ const user = createSlice({
         state.username = "";
         state.id = 0;
         state.role = "none";
+      state.error=action.payload
+       console.log(state.error);
       });
   },
 });

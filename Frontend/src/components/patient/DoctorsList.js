@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { viewDoctors } from "../../features/patientSlice";
+import { getAlldoctors } from "../../features/patientSlice";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -18,16 +18,24 @@ import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 import { InputBase, styled, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 
 export default function ButtonAppBar() {
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
+  const [availFilter, setAvailFilter] = useState("");
+
+
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.id);
 
   useEffect(() => {
-    dispatch(viewDoctors(id));
-  }, [dispatch, id]);
+    dispatch(getAlldoctors());
+  }, [dispatch]);
 
   const iconStyle = {
     color: "white",
@@ -114,6 +122,33 @@ export default function ButtonAppBar() {
             variant="filled"
           />
         </Toolbar>
+        <Box item>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  components={["DateTimePicker", "DateTimePicker"]}
+                >
+                  <div >
+                    <DateTimePicker
+                      label="Doctor Available at"
+                      viewRenderers={{
+                        hours: renderTimeViewClock,
+                        minutes: renderTimeViewClock,
+                        seconds: renderTimeViewClock,
+                      }}
+                      value={availFilter} // Add this line
+                      onChange={(date) => setAvailFilter(date)}
+                    />
+                  </div>
+                </DemoContainer>
+              </LocalizationProvider>
+              <span
+                onClick={() => {
+                  setAvailFilter("");
+                }}
+              >
+                <Typography>Cancel</Typography>
+              </span>
+            </Box>
       </AppBar>
       <BasicTable nameFilter={nameFilter} specialityFilter={specialityFilter} />
     </Box>
@@ -147,9 +182,9 @@ function BasicTable({ nameFilter, specialityFilter }) {
             <TableCell align="right" style={cellStyle}>
               Specialty
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            {/* <TableCell align="right" style={cellStyle}>
               Username
-            </TableCell>
+            </TableCell> */}
             <TableCell align="right" style={cellStyle}>
               Gender
             </TableCell>
@@ -164,6 +199,9 @@ function BasicTable({ nameFilter, specialityFilter }) {
             </TableCell>
             <TableCell align="right" style={cellStyle}>
               Docs
+            </TableCell>
+            <TableCell align="right" style={cellStyle}>
+              Session Price
             </TableCell>
           </TableRow>
         </TableHead>
@@ -186,9 +224,9 @@ function BasicTable({ nameFilter, specialityFilter }) {
                 <TableCell align="right" style={cellStyle}>
                   {row.speciality}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                {/* <TableCell align="right" style={cellStyle}>
                   {row.username}
-                </TableCell>
+                </TableCell> */}
                 <TableCell align="right" style={cellStyle}>
                   {row.gender}
                 </TableCell>
@@ -196,13 +234,16 @@ function BasicTable({ nameFilter, specialityFilter }) {
                   {row.rate}
                 </TableCell>
                 <TableCell align="right" style={cellStyle}>
-                  {row.affiliation}
+                  {row.affilation}
                 </TableCell>
                 <TableCell align="right" style={cellStyle}>
                   {row.background}
                 </TableCell>
                 <TableCell align="right" style={cellStyle}>
                   {`${row.docs.url}, ${row.docs.desc}`}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  23
                 </TableCell>
               </TableRow>
             ))}

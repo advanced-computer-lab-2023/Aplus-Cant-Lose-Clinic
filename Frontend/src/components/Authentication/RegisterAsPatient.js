@@ -35,11 +35,12 @@ function RegisterAsPatient() {
     const response = dispatch(addPatient(sampleData));
     response.then((responseData) => {
       console.log(responseData);
-      if (responseData.payload.status < 300) {
+      if (responseData.payload=== undefined) {
+        snackbarMessage(`error: ${responseData} has occurred`, "error");
+
+      } else {
         snackbarMessage("You have successfully registered", "success");
         navigate("/login");
-      } else {
-        snackbarMessage(`error: ${responseData} has occurred`, "error");
       }
     });
   
@@ -79,13 +80,14 @@ function RegisterAsPatient() {
           style={{ width: "92%" }}
           type="password"
           id="password"
+          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
           placeholder="Enter your password here..."
           required
         />
         <label className="form__label" for="pmobile">
           mobile number
         </label>
-        <input type="number" id="pmobile" required />
+        <input  id="pmobile"  type="number"  name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required />
 
         <label for="gender">Gender</label>
         <select style={{ width: "92%" }} id="gender" name="Gender">
@@ -96,7 +98,7 @@ function RegisterAsPatient() {
         <label className="form__label" for="dBirth">
           Date of Birth
         </label>
-        <input type="date" id="dBirth" required />
+        <input type="date" id="dBirth" max="2001-10-15" required />
         <label className="form__label" style={{marginTop:'10px',marginBottom:'10px',marginLeft:'30%'}} for="dBirth">
           {" "}
           Emergency Contact{" "}

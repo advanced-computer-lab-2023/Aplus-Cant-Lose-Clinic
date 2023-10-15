@@ -49,23 +49,23 @@ const NewFamilyMemberForm = () => {
 
     const guest = {
       fullName: event.target.elements.fullName.value,
-      age: event.target.elements.age.value,
+      age: parseInt(event.target.elements.age.value, 10),
       relation: event.target.elements.relation.value,
       gender: event.target.elements.gender.value,
-      NID: event.target.elements.NID.value,
+      NID: parseInt(event.target.elements.NID.value, 10),
     };
-console.log(guest);
-    const response = dispatch(addFamilyMember({id,guest}));
+    console.log(guest);
+    const response = dispatch(addFamilyMember({ id, guest }));
 
-    // response.then((responseData) => {
-    //   console.log(responseData);
-    //   if (responseData.payload === undefined) {
-    //     snackbarMessage(`error: user not found`, "error");
-    //   } else {
-    //     snackbarMessage("You have successfully logged in", "success");
-    //     navigate("/Home");
-    //   }
-    // });
+    response.then((responseData) => {
+      console.log(responseData);
+      if (responseData.payload === undefined) {
+        snackbarMessage(`error: error`, "error");
+      } else {
+        snackbarMessage("You have successfully added family member", "success");
+        navigate(-1);
+      }
+    });
   };
   return (
     <form onSubmit={handleSubmit} method="post" style={formStyle}>

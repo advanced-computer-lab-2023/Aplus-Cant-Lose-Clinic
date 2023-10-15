@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 import Paper from '@mui/material/Paper';
 import TableContainer from '@mui/material/TableContainer';
@@ -19,23 +19,30 @@ import HomeIcon from '@mui/icons-material/Home'; // Import the Home icon
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
+import { useDispatch, useSelector } from 'react-redux';
+import { appointmentPatients } from '../../features/doctorSlice';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
 
 function Appointments() {
-  const [appointments, setAppointments] = useState([
-    { id: 1, finished: false, date: '2023-10-10', patient: 'John Doe', status: 'Upcoming' },
-    { id: 2, finished: true, date: '2023-10-12', patient: 'Jane Smith', status: 'Completed' },
-    { id: 3, finished: false, date: '2023-10-15', patient: 'Bob Johnson', status: 'Upcoming' },
-    { id: 4, finished: false, date: '2023-10-20', patient: 'Alice Johnson', status: 'Cancelled' },
-    { id: 5, finished: true, date: '2023-10-22', patient: 'Eva Brown', status: 'Completed' },
-  ]);
+  const id = useSelector((state) => state.user.id); // Access the counter value from the Redux store
+  const navigate=useNavigate();
+const dispatch= useDispatch();
+useEffect(() => {
+  dispatch(appointmentPatients(id));
+}, [dispatch]);
+const res = useSelector((state) => state.doctor.appointments);
+
+  const [appointments, setAppointments] = useState(res);
 
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('Status');
+  const [selectedStatus, setSelectedStatus] = useState('uncompleted');
   const [customDate, setCustomDate] = useState('');
 
   const handleCheckboxChange = (appointmentId, isChecked) => {
+  
     const updatedAppointments = appointments.map((appointment) =>
-      appointment.id === appointmentId ? { ...appointment, finished: isChecked } : appointment
+      appointment._id === appointmentId ? { ...appointment, status: isChecked } : appointment
     );
     setAppointments(updatedAppointments);
   };
@@ -72,7 +79,22 @@ function Appointments() {
 
   return (
     <div>
+      
+  
+
       <Paper elevation={3} style={{ padding: '20px' }}>
+      <i>
+            <IconButton
+              color="primary"
+              aria-label="Back to Home"
+              style={{ position: 'absolute', bottom: '10px', right: '10px' }}
+              onClick={() => {
+                navigate(-1);
+              }}
+            >
+              <HomeIcon />
+            </IconButton>
+          </i>
         <h2>Appointments</h2>
 
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
@@ -96,11 +118,10 @@ function Appointments() {
             variant="outlined"
             style={{ marginLeft: '20px' }}
           >
-            <MenuItem value="Status">Status</MenuItem>
-            <MenuItem value="Upcoming">Upcoming</MenuItem>
-            <MenuItem value="Completed">Completed</MenuItem>
-            <MenuItem value="Cancelled">Cancelled</MenuItem>
-            <MenuItem value="Rescheduled">Rescheduled</MenuItem>
+          
+            <MenuItem value="completed">completed</MenuItem>
+            <MenuItem value="uncompleted">uncompleted</MenuItem>
+
           </Select>
 
           <TextField
@@ -130,16 +151,12 @@ function Appointments() {
             </TableHead>
             <TableBody>
               {appointments.map((appointment) => (
-                <TableRow key={appointment.id}>
+                <TableRow key={appointment._id}>
                   <TableCell>
-                    <Checkbox
-                      checked={appointment.finished}
-                      onChange={(e) => handleCheckboxChange(appointment.id, e.target.checked)}
-                      color="primary"
-                    />
+                
                   </TableCell>
-                  <TableCell>{appointment.date}</TableCell>
-                  <TableCell>{appointment.patient}</TableCell>
+                  <TableCell>{appointment.startDate}</TableCell>
+                  <TableCell>{appointment.pID.name}</TableCell>
                   <TableCell>{appointment.status}</TableCell>
                   <TableCell>
                     {/* Use Link to navigate to the patient details page */}
@@ -155,16 +172,8 @@ function Appointments() {
           </Table>
         </TableContainer>
 
-        <IconButton
-          color="primary"
-          aria-label="Back to Home"
-          style={{ position: 'absolute', bottom: '10px', right: '10px' }}
-        >
-          <Link to="/Home"> {/* Use Link to navigate back to the home page */}
-            <HomeIcon />
-          </Link>
-        </IconButton>
       </Paper>
+
     </div>
   );
 }

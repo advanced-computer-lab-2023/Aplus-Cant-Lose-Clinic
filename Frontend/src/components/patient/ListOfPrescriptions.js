@@ -28,6 +28,9 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
+import { TextField } from "@mui/material";
+
+// ...
 import {
   viewPrescriptions,
   viewPrescription,
@@ -38,6 +41,10 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const App = () => {
   const dispatch = useDispatch();
+  const [specialityFilter, setSpecialityFilter] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [isFilled, setIsFilled] = useState(false);
 
   const patientId = useSelector((state) => state.user.id);
   const rows = useSelector((state) => state.patient.presc);
@@ -102,12 +109,15 @@ const App = () => {
   }, [dispatch, patientId]);
 
   const handleView = (id) => {
-    setPrescriptionid(rows.find(row => row._id === id));
+    setPrescriptionid(rows.find((row) => row._id === id));
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <Dialog open={Boolean(prescriptionid)} sx={{"width" : "100%","height":"100%"}}>
+      <Dialog
+        open={Boolean(prescriptionid)}
+        sx={{ width: "100%", height: "100%" }}
+      >
         {prescriptionid && prescriptionid.patientID ? (
           <Paper
             sx={{
@@ -145,26 +155,23 @@ const App = () => {
                 </Box>
               </Grid>
             </Grid>
-              <Grid item xs={12} md={4}>
-                <Box sx={{ margin: "20px 20px 0px 80px" }}>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    Medicine Name :
-                    {prescriptionid.medID.name}
-                  </Typography>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    Medicine Active elements:
-                    {prescriptionid.medID.activeElement}
-                  </Typography>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    Medicine Used for :
-                    {prescriptionid.medID.use}
-                  </Typography>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    Medicine Frequency :
-                    {prescriptionid.medID.amount}
-                  </Typography>
-                </Box>
-              </Grid>
+            <Grid item xs={12} md={4}>
+              <Box sx={{ margin: "20px 20px 0px 80px" }}>
+                <Typography sx={{ fontSize: "16px" }}>
+                  Medicine Name :{prescriptionid.medID.name}
+                </Typography>
+                <Typography sx={{ fontSize: "16px" }}>
+                  Medicine Active elements:
+                  {prescriptionid.medID.activeElement}
+                </Typography>
+                <Typography sx={{ fontSize: "16px" }}>
+                  Medicine Used for :{prescriptionid.medID.use}
+                </Typography>
+                <Typography sx={{ fontSize: "16px" }}>
+                  Medicine Frequency :{prescriptionid.medID.amount}
+                </Typography>
+              </Box>
+            </Grid>
             <Paper
               sx={{
                 width: "100px",
@@ -190,7 +197,6 @@ const App = () => {
                     justifyItems: "center",
                     color: "black",
                     border: "black",
-                    
                   }}
                 >
                   <IconButton sx={{ paddingLeft: "0px" }}>
@@ -219,14 +225,21 @@ const App = () => {
               <Typography variant="h5">My Prescriptions</Typography>
             </Grid>
             <Grid item style={filterStyle}>
-              <FormControlLabel
-                control={<Checkbox color="default" />}
-                label="Filled"
-              />
+            <Checkbox
+            label="Filled"
+            sx={{color:"black"}}
+            value={isFilled}
+            onChange={(event) => {
+              setIsFilled(event.target.checked);
+            }}
+          />
+          <Typography>filled</Typography>
             </Grid>
             <Grid item>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["DateTimePicker", "DateTimePicker"]}>
+                <DemoContainer
+                  components={["DateTimePicker", "DateTimePicker"]}
+                >
                   <div style={dateTimePickerContainer}>
                     <DateTimePicker
                       label="Prescription Issued In"
@@ -235,32 +248,58 @@ const App = () => {
                         minutes: renderTimeViewClock,
                         seconds: renderTimeViewClock,
                       }}
+                      value={selectedDate} // Add this line
+                      onChange={(date) => setSelectedDate(date)}
                     />
                   </div>
                 </DemoContainer>
               </LocalizationProvider>
+              <span
+                onClick={() => {
+                  setSelectedDate("");
+                }}
+              >
+                <Typography>Cancel</Typography>
+              </span>
             </Grid>
             <Grid item>
               <Search>
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Doctor's Name"
-                  inputProps={{ "aria-label": "search" }}
-                />
+                <Grid item>
+                  <TextField
+                    value={nameFilter}
+                    onChange={(e) => {
+                      setNameFilter(e.target.value);
+                    }}
+                    sx={{
+                      height: "80%",
+                      borderRadius: "15px",
+                      backgroundColor: "white",
+                      color: "white !important",
+                    }}
+                    label="Name..."
+                    variant="filled"
+                  />
+                </Grid>
               </Search>
             </Grid>
             <Grid item>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Doctor's Speciality"
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </Search>
+              <TextField
+                value={specialityFilter}
+                onChange={(e) => {
+                  setSpecialityFilter(e.target.value);
+                }}
+                sx={{
+                  height: "80%",
+                  borderRadius: "15px",
+                  backgroundColor: "white",
+                  color: "white !important",
+                }}
+                label="Speciality..."
+                variant="filled"
+              />
             </Grid>
           </Grid>
         </Toolbar>
@@ -285,25 +324,57 @@ const App = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map((row, index) => (
-                <TableRow key={index} hover role="checkbox" tabIndex={-1}>
-                  <TableCell align="left">
-                    <FormControlLabel
-                      disabled
-                      control={<Checkbox checked={row.status === "filled"} />}
-                      label="Disabled"
-                    />
-                  </TableCell>
-                  <TableCell align="left">{row.datePrescribed}</TableCell>
-                  <TableCell align="left">{row.doctorID.name}</TableCell>
-                  <TableCell align="left">{row.doctorID.speciality}</TableCell>
-                  <TableCell align="left">
-                    <IconButton onClick={() => handleView(row._id)}>
-                      <VaccinesIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {rows
+                .filter((row) => {
+                  return (
+                    nameFilter === "" ||
+                    row.doctorID.name
+                      .toLowerCase()
+                      .includes(nameFilter.toLowerCase())
+
+                    // Add this line
+                  );
+                })
+                .filter((row) => {
+                  return (
+                    specialityFilter === "" ||
+                    row.doctorID.speciality
+                      .toLowerCase()
+                      .includes(specialityFilter.toLowerCase())
+                  );
+                })
+                .filter((row) => {
+                  return (
+                    selectedDate === "" ||
+                    new Date(row.datePrescribed) >=new Date(selectedDate)
+                  );
+                }).filter((row) => {
+                  return (
+                    isFilled === false ||
+                    row.status==="filled"
+                  );
+                })
+                .map((row, index) => (
+                  <TableRow key={index} hover role="checkbox" tabIndex={-1}>
+                    <TableCell align="left">
+                      <FormControlLabel
+                        disabled
+                        control={<Checkbox checked={row.status === "filled"} />}
+                        label="Disabled"
+                      />
+                    </TableCell>
+                    <TableCell align="left">{row.datePrescribed}</TableCell>
+                    <TableCell align="left">{row.doctorID.name}</TableCell>
+                    <TableCell align="left">
+                      {row.doctorID.speciality}
+                    </TableCell>
+                    <TableCell align="left">
+                      <IconButton onClick={() => handleView(row._id)}>
+                        <VaccinesIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>

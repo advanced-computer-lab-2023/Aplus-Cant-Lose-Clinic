@@ -64,7 +64,7 @@ const login = async (req, res) => {
           userData.fUser = pa;
         } catch (err) {
           console.error("Error handling patient:", err);
-          return res.status(500).json({ error: "Internal Server Error" });
+          return res.status(500).json({ error: "user not found" });
         }
         break;
 
@@ -80,7 +80,7 @@ const login = async (req, res) => {
         break;
 
       default:
-        return res.status(400).json({ error: "Unknown role" });
+        return res.status(500).json({ error: "Unknown role" });
     }
 console.log(userData.fUser._id);
     // Send the response once after the switch statement

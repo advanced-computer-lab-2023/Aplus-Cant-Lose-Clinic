@@ -54,9 +54,9 @@ export const viewAppoints = createAsyncThunk(
   }
 );
 
-export const viewDoctors = createAsyncThunk("patient/viewDoctors", async (id) => {
+export const getAlldoctors = createAsyncThunk("patient/getAlldoctors", async () => {
   const response = await axios.get(
-    `${API_URL}/patient/viewDoctors/${id}`
+    `${API_URL}/patient/getAlldoctors`
   );
   return response;
 });
@@ -81,26 +81,25 @@ export const addPatient = createAsyncThunk(
 );
 export const addFamilyMember = createAsyncThunk(
   "patient/addFamilyMember",
-
   async (data) => {
     console.log(data.id);
+    console.log(data);
     const response = await axios.post(
       `${API_URL}/patient/addFamilyMember/${data.id}`,
       {
-       
         fullName: data.guest.fullName,
         NID: data.guest.NID,
         age: data.guest.age,
-        
-        
         gender: data.guest.gender,
         relation: data.guest.relation,
       }
     );
 
+    // Return the response data
     return response;
   }
 );
+
 
 
 const patientInitial = {
@@ -130,21 +129,35 @@ const patient = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(viewDoctors.fulfilled,(state,action) => {
+      .addCase(getAlldoctors.fulfilled,(state,action) => {
         state.loading = false;
-        state.doctors = action.payload.data.doctors;
+        state.doctors = action.payload.data;
+        console.log(state.doctors);
       });
 
     builder
 
       .addCase(addFamilyMember.fulfilled, (state, action) => {
         state.loading = false;
-        state.fMembers.push(action.payload.data.familyMembers);
+        state.fMembers.push(action.payload.data.patient.family);
+        console.log(state.fMembers);
       })
       .addCase(addFamilyMember.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });
+      builder
+
+      .addCase(viewFamilyMembers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.fMembers=(action.payload.data.familyMembers);        console.log(state.fMembers);
+
+      })
+      .addCase(viewFamilyMembers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
     builder
 
       .addCase(viewPrescriptions.fulfilled, (state, action) => {

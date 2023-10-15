@@ -47,7 +47,7 @@ import { AutoFixNormal } from '@mui/icons-material';
       } else {
     
         snackbarMessage("You have successfully added", "success");
-     
+        navigate("/Home");
       }
     });
   };
@@ -67,7 +67,7 @@ import { AutoFixNormal } from '@mui/icons-material';
  
     return (
         <div className="admin-form">
-            <h2>Add Medicine</h2>
+            <h2>Add Health Package</h2>
             <form onSubmit={handleSave}>
                 <div className="form-group">
                     <label htmlFor="type">Type</label>
@@ -92,7 +92,7 @@ import { AutoFixNormal } from '@mui/icons-material';
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="doctorDisc">DoctorDisc</label>
+                    <label htmlFor="doctorDisc">Doctor Discount</label>
                     <input
                         type="number"
                         id="doctorDisc"
@@ -102,7 +102,7 @@ import { AutoFixNormal } from '@mui/icons-material';
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="medicineDisc">MedicineDisc</label>
+                    <label htmlFor="medicineDisc">Medicine Discount</label>
                     <input
                         type="number"
                         id="medicineDisc"
@@ -112,7 +112,7 @@ import { AutoFixNormal } from '@mui/icons-material';
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="familyDisc">FamilyDisc</label>
+                    <label htmlFor="familyDisc">Family Discount</label>
                     <input
                         type="number"
                         id="familyDisc"

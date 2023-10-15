@@ -206,16 +206,11 @@ const editDoctor = async (req, res) => {
       (await Doctor.findOne({ email })) ||
       (await Patient.findOne({ email })) ||
       (await Pharmacist.findOne({ email }));
-    if (emailExists) {
-      return res.status(400).json({ error: "Email already exists" });
-    }
+  
 
     // Find the doctor by ID and update the specified fields
-    const updatedDoctor = await Doctor.findByIdAndUpdate(
-      id,
-      { email, rate, affiliation },
-      { new: true } // Return the updated document
-    );
+    const updatedDoctor = await Doctor  .updateOne({ _id: id }, { $set: { email, rate, affiliation } })
+  
 
     if (!updatedDoctor) {
       return res.status(404).json({ error: "Doctor not found" });
@@ -341,7 +336,23 @@ const addPrescription = async (req, res) => {
   }
 };
 
+const getDr = async (req, res) => {
+  const  doctorId = req.params.id; // Get doctorId from URL parameters
 
+
+
+  try {
+    // Find appointments that match the query
+    const dr = await Doctor.findById(doctorId);
+
+    res
+      .status(200)
+      .json({ message: "dr found successfully", dr });
+  } catch (error) {
+    console.error("Error filtering appointments:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 module.exports = {
   addDoctor,
   getPatients,
@@ -350,5 +361,6 @@ module.exports = {
   addPrescription,
   editDoctor,
   doctorFilterAppointments,
-  appointmentPatients
+  appointmentPatients,
+  getDr
 };
