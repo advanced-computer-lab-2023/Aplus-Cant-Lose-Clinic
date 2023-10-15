@@ -1,5 +1,4 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { viewDoctors } from "../../features/patientSlice";
 import AppBar from "@mui/material/AppBar";
@@ -9,8 +8,6 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
-import Fab from "@mui/material/Fab";
-import AddIcon from "@mui/icons-material/Add";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,17 +16,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
-import {InputBase,  styled,
-} from "@mui/material";
+import { InputBase, styled, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 export default function ButtonAppBar() {
+  const [specialityFilter, setSpecialityFilter] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
   const dispatch = useDispatch();
-const id= useSelector((state) => state.user.id);
+  const id = useSelector((state) => state.user.id);
+
   useEffect(() => {
     dispatch(viewDoctors(id));
-  }, [dispatch]);
-
+  }, [dispatch, id]);
 
   const iconStyle = {
     color: "white",
@@ -37,6 +35,7 @@ const id= useSelector((state) => state.user.id);
     marginLeft: "-40px",
     paddingLeft: "0px",
   };
+
   const Search = styled("div")(({ theme }) => ({
     display: "flex", // Add this to make the search fields horizontally centered
     alignItems: "center", // Vertically center the items
@@ -70,51 +69,60 @@ const id= useSelector((state) => state.user.id);
       },
     },
   }));
-  
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          />
+          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} />
           <Link to="/Home" color="white">
-            <Button Speciality="large">
-              <IconButton Speciality="Large" style={iconStyle}>
+            <Button size="large">
+              <IconButton size="large" style={iconStyle}>
                 <HomeIcon />
               </IconButton>
             </Button>
           </Link>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, marginLeft: "-20px" }}
-          >
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: "-20px" }}>
             Current Doctors
           </Typography>
-          <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Doctor's Name"
-                  inputProps={{ "aria-label": "search" }}
-                />
-              </Search>
+          <TextField
+            value={specialityFilter}
+            onChange={(e) => {
+              setSpecialityFilter(e.target.value);
+            }}
+            sx={{
+              height: "80%",
+              borderRadius: "15px",
+              backgroundColor: "white",
+              color: "white !important",
+            }}
+            label="Specialty..."
+            variant="filled"
+          />
+          <TextField
+            value={nameFilter}
+            onChange={(e) => {
+              setNameFilter(e.target.value);
+            }}
+            sx={{
+              height: "80%",
+              borderRadius: "15px",
+              backgroundColor: "white",
+              color: "white !important",
+            }}
+            label="Name..."
+            variant="filled"
+          />
         </Toolbar>
       </AppBar>
-      <BasicTable  />
+      <BasicTable nameFilter={nameFilter} specialityFilter={specialityFilter} />
     </Box>
   );
 }
 
-function BasicTable() {
+function BasicTable({ nameFilter, specialityFilter }) {
   const rows = useSelector((state) => state.patient.doctors);
-  console.log(rows);
+
   const tableStyle = {
     width: "80%",
     marginLeft: "50px",
@@ -132,76 +140,72 @@ function BasicTable() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell style={cellStyle}>name</TableCell>
+            <TableCell style={cellStyle}>Name</TableCell>
             <TableCell align="right" style={cellStyle}>
-            email
+              Email
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-              speciality
+              Specialty
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-            username
-            </TableCell>
-            {/* <TableCell align="right" style={cellStyle}>
-            Dbirth
-            </TableCell> */}
-            <TableCell align="right" style={cellStyle}>
-            gender
+              Username
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-            rate
+              Gender
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-            affilation
+              Rate
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-            background
+              Affiliation
             </TableCell>
             <TableCell align="right" style={cellStyle}>
-            docs
+              Background
             </TableCell>
-            
+            <TableCell align="right" style={cellStyle}>
+              Docs
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, index) => (
-            <TableRow
-              key={index}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.email}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.speciality}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.username}
-              </TableCell>
-              {/* <TableCell align="right" style={cellStyle}>
-                {row.Dbirth}
-              </TableCell> */}
-              <TableCell align="right" style={cellStyle}>
-                {row.gender}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.rate}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.affilation}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-                {row.background}
-              </TableCell>
-              <TableCell align="right" style={cellStyle}>
-              {`${row.docs.url}, ${row.docs.desc}`}
-              </TableCell>
-              
-            </TableRow>
-          ))}
+          {rows
+            .filter((row) => {
+              return (
+                (nameFilter === "" || row.name.toLowerCase().includes(nameFilter.toLowerCase())) &&
+                (specialityFilter === "" || row.speciality.toLowerCase().includes(specialityFilter.toLowerCase()))
+              );
+            })
+            .map((row, index) => (
+              <TableRow key={index} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.email}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.speciality}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.username}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.gender}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.rate}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.affiliation}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {row.background}
+                </TableCell>
+                <TableCell align="right" style={cellStyle}>
+                  {`${row.docs.url}, ${row.docs.desc}`}
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
