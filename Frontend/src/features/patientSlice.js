@@ -29,12 +29,12 @@ export const viewPrescriptions = createAsyncThunk(
 );
 //<------------------------------------------------------------------------------------------------
 export const viewPrescription = createAsyncThunk(
-  "patient/viewPrescription",
-  async (patientId) => {
+  "patient/viewSpecificPrescription/",
+  async (prescriptionId) => {
     const response = await axios.get(
-      `${API_URL}/patient/viewPrescription/${patientId}`
+      `${API_URL}/patient/viewSpecificPrescription/${prescriptionId}`
     );
-    console.log(patientId);
+    console.log(prescriptionId);
 
     console.log(response);
     return response;
@@ -53,6 +53,13 @@ export const viewAppoints = createAsyncThunk(
     return response;
   }
 );
+
+export const viewDoctors = createAsyncThunk("patient/viewDoctors", async (id) => {
+  const response = await axios.get(
+    `${API_URL}/patient/viewDoctors/${id}`
+  );
+  return response;
+});
 
 export const addPatient = createAsyncThunk(
   "patient/addPatient",
@@ -95,6 +102,7 @@ export const addFamilyMember = createAsyncThunk(
   }
 );
 
+
 const patientInitial = {
   // status: "unfilled",
   loading: false,
@@ -105,8 +113,12 @@ const patientInitial = {
   response: "",
   fMembers: [],
   presc: [],
-  appoints:[]
+  appoints:[],
+  doctors:[],
 };
+
+
+
 const patient = createSlice({
   name: "patient",
   initialState: patientInitial,
@@ -118,15 +130,11 @@ const patient = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
-      .addCase(viewFamilyMembers.fulfilled, (state, action) => {
+      .addCase(viewDoctors.fulfilled,(state,action) => {
         state.loading = false;
-        state.fMembers = action.payload.data.familyMembers;
-      })
-      .addCase(viewFamilyMembers.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message;
+        state.doctors = action.payload.data.doctors;
       });
+
     builder
 
       .addCase(addFamilyMember.fulfilled, (state, action) => {
@@ -144,6 +152,17 @@ const patient = createSlice({
         state.presc = action.payload.data.prescriptions;
       })
       .addCase(viewPrescriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+      builder
+
+      .addCase(viewPrescription.fulfilled, (state, action) => {
+        state.loading = false;
+        state.presc = action.payload.data.prescription;
+      })
+      .addCase(viewPrescription.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

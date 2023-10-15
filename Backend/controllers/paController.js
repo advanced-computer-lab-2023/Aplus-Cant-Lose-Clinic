@@ -256,7 +256,7 @@ const viewFamilyMembers = async (req, res) => {
 
 const viewDoctors = async (req, res) => {
   try {
-    const { patientId } = req.params;
+    const patientId = req.params.patientId;
 
     // Find the patient by patientId
     const patient = await Patient.findById(patientId);
@@ -275,7 +275,7 @@ const viewDoctors = async (req, res) => {
     // Prepare an array to store doctor information
     const doctorInfo = [];
 
-    // Iterate through each accepted doctor
+    // Iterate through each accepted doctor and include all doctor information
     for (const doctor of doctors) {
       // Find the health package associated with the patient
       const healthPackage = await HPackages.findById(patient.hPackage);
@@ -289,24 +289,24 @@ const viewDoctors = async (req, res) => {
         sessionPrice *= 1.1;
       }
 
-      // Prepare doctor information object
+      // Include all doctor information and the session price
       const doctorInfoItem = {
-        name: doctor.name,
-        speciality: doctor.speciality,
-        sessionPrice,
+        ...doctor.toObject(), // Include all doctor information
+        sessionPrice, // Include the session price
       };
 
       doctorInfo.push(doctorInfoItem);
     }
 
-    return res
-      .status(200)
-      .json({ message: "Accepted doctors information", doctors: doctorInfo });
+    return res.status(200).json({ message: "Accepted doctors information", doctors: doctorInfo });
   } catch (error) {
     console.error("Error retrieving accepted doctors information:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
 
 const searchDoctorsByNameOrspeciality = async (req, res) => {
   try {
@@ -649,7 +649,34 @@ const  filterPrescriptions = async (req, res) => {
   }
 };
 
+const viewSpecificPrescription = async (req, res) => {
+  try {
+    const prescriptionId = req.params.id; // Get the prescription ID from the query
 
+    // Check if the prescription ID is provided in the query
+    if (!prescriptionId) {
+      return res.status(400).json({ error: "Prescription ID is required in the query" });
+    }
+
+    // Find the prescription by its ID and populate related data
+    const prescription = await Prescription.findById(prescriptionId)
+      .populate("medID") // Populate the Medicine
+      .populate("patientID") // Populate the Patient
+      .populate("doctorID"); // Populate the Doctor
+
+    if (!prescription) {
+      return res.status(404).json({ error: "Prescription not found" });
+    }
+
+    return res.status(200).json({
+      message: "Prescription and related data retrieved successfully",
+      prescription,
+    });
+  } catch (error) {
+    console.error("Error retrieving prescription:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 
 module.exports = {
@@ -663,6 +690,6 @@ module.exports = {
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
-
+  viewSpecificPrescription
   
 };
