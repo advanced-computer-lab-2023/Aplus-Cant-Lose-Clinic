@@ -41,9 +41,9 @@ export default function Hpackages() {
     console.log(id);
     setIdx(idx);
   };
-  useEffect(() => {
-    console.log(id); // This will log the updated id value
-  }, [handleEditClick]);
+  // useEffect(() => {
+  //   console.log(id); // This will log the updated id value
+  // }, [handleEditClick]);
   const handleSave = (event) => {
     event.preventDefault();
 
