@@ -71,8 +71,10 @@ export const appointmentPatients = createAsyncThunk(
   async (id) => {
 
     const response = await axios.get(`${API_URL}/doctor/appointmentPatients/${id}`);
-
+    console.log(response);
     return response;
+
+    
   }
 );
 
@@ -124,7 +126,7 @@ export const doctor = createSlice({
         state.loading = true;
       })
       .addCase(appointmentPatients.fulfilled, (state, action) => {
-        state.appointments = action.payload.data.appointments;
+        state.appointments = action.payload.data;
         state.loading = false;
       })
       .addCase(appointmentPatients.rejected, (state, action) => {

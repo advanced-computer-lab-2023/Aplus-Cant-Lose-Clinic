@@ -1,114 +1,127 @@
-import React from 'react'
-import { useState } from 'react'
-import {TextField, Select, MenuItem, Checkbox, Typography, Divider} from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
-import { appointmentPatients } from '../../features/doctorSlice'
-import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material'
+import React from 'react';
+import { useState } from 'react';
+import { TextField, Select, MenuItem, Checkbox, Typography, Divider } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { appointmentPatients } from '../../features/doctorSlice';
+import { Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export default function DocPatients() {
-    const [nameFilter, setNameFilter] = useState('')
-    const [dateFilter, setDateFilter] = useState('')
-    const [statusFilter,setStatusFilter] = useState('Any')
-    const [upcomingFilter,setUpcomingFilter] = useState(false)
+  const [nameFilter, setNameFilter] = useState('');
+  const [startDateFilter, setStartDateFilter] = useState('');
+  const [endDateFilter, setEndDateFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Any');
+  const [upcomingFilter, setUpcomingFilter] = useState(false);
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const id = useSelector((state) => state.user.id);
 
-    const id= useSelector((state) => state.user.id);
-    useEffect(() => {
-        dispatch(appointmentPatients(id));
-    },[dispatch])
+  useEffect(() => {
+    dispatch(appointmentPatients(id));
+  }, [dispatch]);
 
-    const appointmnets = useSelector((state) => state.doctor.appointments);
+  const appointments = useSelector((state) => state.doctor.appointments);
 
+  console.log(appointments);
 
   return (
-    <div style={{ display: 'flex', height: '100%', flexDirection:'row'}}>
-        <div style={{display:'flex', flexDirection: 'column', zIndex: '30', gap: '30px', boxSizing: 'border-box', padding: '5px', backgroundColor: 'white', height: '100vh', boxShadow: '5px 5px 5px rgba(0,0,0,0.3)'}}>
-            <TextField value={nameFilter} onChange={(event) => {setNameFilter(event.target.value)}} label='Name Filter' />
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
+    <div style={{ display: 'flex', height: '100%', flexDirection: 'row' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', zIndex: '30', gap: '30px', boxSizing: 'border-box', padding: '5px', backgroundColor: 'white', height: '100vh', boxShadow: '5px 5px 5px rgba(0,0,0,0.3)' }}>
+        <TextField value={nameFilter} onChange={(event) => { setNameFilter(event.target.value); }} label='Name Filter' />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
+          <Typography>
+            Start Date Filter
+          </Typography>
+          <input type='date' value={startDateFilter} onChange={(event) => { setStartDateFilter(event.target.value); }} />
+          <span onClick={() => { setStartDateFilter(''); }}>
             <Typography>
-                    Date Filter
-                </Typography>
-                <input type='date' value={dateFilter} onChange={(event) => {setDateFilter(event.target.value); console.log(dateFilter)}} />
-                <span onClick={() => {setDateFilter('')}}>
-                    <Typography >
-                        Cancel
-                    </Typography>
-                </span>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
-            <Typography>
-                    Status Filter
-                </Typography>
-            <Select
-                value={statusFilter}
-                label="Status Filter"
-                onChange={(event) => {  setStatusFilter(event.target.value); }}
-            >
-                <MenuItem value={'Any'}>Any</MenuItem>
-                <MenuItem value={'Appointment'}>Appointment</MenuItem>
-                <MenuItem value={'Follow Up'}>Follow Up</MenuItem>
-            </Select>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row'}}>
-                <Typography>
-                    Upcoming Appointments
-                </Typography>
-                <Checkbox value={upcomingFilter} onChange={(event) => {setUpcomingFilter(event.target.checked)}}/>
-            </div>
+              Cancel
+            </Typography>
+          </span>
         </div>
-        {/* <div style={{backgroundColor:'white',  display: 'flex', flexDirection: 'column'}}>
-            {appointmnets
-            .filter((res) =>{
-                return nameFilter === '' || res.pID.name.toLowerCase().includes(nameFilter.toLowerCase())
-            })
-            .filter((res) =>{
-                return dateFilter === '' || res.startDate === dateFilter
-            })
-            .filter((res) =>{
-                return statusFilter === 'Any' || res.status === statusFilter
-            })
-            .filter((res) => {
-                return upcomingFilter === false || (new Date(res.startDate) - new Date() > 0); // Missing () after new Date
-            })
-            
-            .map((res) => {
-                return (
-                    <Accordion>
-                    <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                    >
-                        <Typography>{res.pID.name}</Typography>
-                        <div style={{marginLeft: 'auto'}}></div>
-                        <Typography>{res.status}</Typography>
-                        <Typography sx={{marginLeft: '10px'}}>{res.startDate}</Typography>
-                    </AccordionSummary>
-                    <AccordionDetails sx={{display: 'flex', flexDirection: 'column', gap: '10px'}}>
-                        <div style={{ display:'flex', flexDirection: 'row'}}>
-                            <Typography sx={{width: '300px'}}>res Name: </Typography>
-                            <Typography >{res.pID.name} </Typography>
-                        </div>
-                        <Divider/>
-                        <div style={{ display:'flex', flexDirection: 'row'}}>
-                            <Typography sx={{width: '300px'}}>Appointment Status: </Typography>
-                            <Typography >{res.status} </Typography>
-                        </div>
-                        <Divider/>
-                        <div style={{ display:'flex', flexDirection: 'row'}}>
-                            <Typography sx={{width: '300px'}}>Appointment Date: </Typography>
-                            <Typography >{res.startDate} </Typography>
-                        </div>
-                    </AccordionDetails>
-                    </Accordion>
-                )
-            })}
-        </div> */}
-
-
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
+          <Typography>
+            End Date Filter
+          </Typography>
+          <input type='date' value={endDateFilter} onChange={(event) => { setEndDateFilter(event.target.value); }} />
+          <span onClick={() => { setEndDateFilter(''); }}>
+            <Typography>
+              Cancel
+            </Typography>
+          </span>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
+          <Typography>
+            Status Filter
+          </Typography>
+          <Select
+            value={statusFilter}
+            label="Status Filter"
+            onChange={(event) => { setStatusFilter(event.target.value); }}
+          >
+            <MenuItem value={'Any'}>Any</MenuItem>
+            <MenuItem value={'completed'}>completed</MenuItem>
+            <MenuItem value={'uncompleted'}>uncompleted</MenuItem>
+          </Select>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row' }}>
+          <Typography>
+            Upcoming Appointments
+          </Typography>
+          <Checkbox value={upcomingFilter} onChange={(event) => { setUpcomingFilter(event.target.checked); }} />
+        </div>
+      </div>
+      <div style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column' }}>
+        {appointments
+          .filter((res) => {
+            return nameFilter === '' || res.pID.name.toLowerCase().includes(nameFilter.toLowerCase());
+          })
+          .filter((res) => {
+            return startDateFilter === '' || new Date(res.startDate) >= new Date(startDateFilter);
+          })
+          .filter((res) => {
+            return endDateFilter === '' || new Date(res.startDate) <= new Date(endDateFilter);
+          })
+          .filter((res) => {
+            return statusFilter === 'Any' || res.status === statusFilter;
+          })
+          .filter((res) => {
+            return upcomingFilter === false || (new Date(res.startDate) - new Date() > 0);
+          })
+          .map((res) => {
+            return (
+              <Accordion>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>{res.pID.name}</Typography>
+                  <div style={{ marginLeft: 'auto' }}></div>
+                  <Typography>{res.status}</Typography>
+                  <Typography sx={{ marginLeft: '10px' }}>{res.startDate}</Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Typography sx={{ width: '300px' }}>res Name: </Typography>
+                    <Typography >{res.pID.name} </Typography>
+                  </div>
+                  <Divider />
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Typography sx={{ width: '300px' }}>Appointment Status: </Typography>
+                    <Typography >{res.status} </Typography>
+                  </div>
+                  <Divider />
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <Typography sx={{ width: '300px' }}>Appointment Date: </Typography>
+                    <Typography >{res.startDate} </Typography>
+                  </div>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
+      </div>
     </div>
-  )
+  );
 }
