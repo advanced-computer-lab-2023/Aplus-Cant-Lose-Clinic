@@ -205,15 +205,7 @@ const addFamilyMember = async (req, res) => {
     }
 
     // Check if the user already has a spouse
-    if (
-      relation === "spouse" &&
-      patient.family.some((member) => member.relation === "spouse")
-    ) {
-      return res
-        .status(400)
-        .json({ error: "A patient can have only one spouse" });
-    }
-
+   
     if (relation !== "spouse" && relation !== "child") {
       return res.status(400).json({
         error: "Invalid relation. Allowed values are 'spouse' or 'child'",
@@ -476,7 +468,10 @@ const viewAppoints = async (req, res) => {
     }
 
     // Fetch details about each prescription, including medicine and doctor
-    const Appointments = await Appointment.find({ pID: patient._id }).populate("pID");
+    const Appointments = await Appointment.find({ pID: patient._id }).populate({
+      path: 'drID',
+      model: 'Doctor',
+    });
 
     // if (!Appointments || Appointments.length === 0) {
     //   return res
@@ -512,7 +507,15 @@ const viewPrescriptions = async (req, res) => {
     }
 
     // Fetch details about each prescription, including medicine and doctor
-    const prescriptions = await Prescription.find({ patientID: patient._id }).populate("medID doctorID");
+    const prescriptions = await Prescription.find({ patientID: patient._id })
+      .populate({
+        path: "doctorID",
+        model: "Doctor", // Reference to the Doctor model
+      })
+      .populate({
+        path: "medID",
+        model: "Medicine", // Reference to the Medicine model
+      });
 
     if (!prescriptions || prescriptions.length === 0) {
       return res
@@ -530,6 +533,7 @@ const viewPrescriptions = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 const patientFilterAppointments = async (req, res) => {
   const { patientId, startDate, endDate, status } = req.query;
 

@@ -24,7 +24,11 @@ import { useDispatch,useSelector } from 'react-redux';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import { Link } from 'react-router-dom';
+import { viewAppoints } from "../../features/patientSlice";
+import { useEffect } from "react";
+
 const Search = styled('div')(({ theme }) => ({
+  
   position: 'relative',
   borderRadius: theme.shape.borderRadius,
   backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -73,7 +77,15 @@ function BasicTable() {
     boxShadow: "5px 5px 5px 5px #8585854a",
 
   };
-  
+  const dispatch=useDispatch();
+  const pId=useSelector((state) => state.user.id);
+  const rows=useSelector((state) => state.patient.appoints);
+ 
+ 
+ useEffect(() => {
+   dispatch(viewAppoints(pId))
+ 
+ }, [dispatch]);
   return (
     <TableContainer component={Paper} style={tableContainerStyle}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -86,33 +98,29 @@ function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {/* {rows.map((row) => (
-            <TableRow key={row.DoctorName} >
-              <TableCell component="th" scope="row">
-                {row.DoctorName}
-              </TableCell>
-              <TableCell align="left">{row.DoctorSpeciality}</TableCell>
-              <TableCell align="left">
-                {row.Date.toLocaleDateString()}
-              </TableCell>
-              <TableCell align="left">{row.Status}</TableCell>
-            </TableRow>
-          ))} */}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          {console.log(rows)}
+      {rows.map((row, index) => (
+        <TableRow key={index}>
+          <TableCell component="th" scope="row">
+            {row.drID.name}
+          </TableCell>
+          <TableCell align="left">{row.drID.speciality}</TableCell>
+          <TableCell align="left">
+            {row.startDate && new Date(row.startDate).toLocaleDateString()}
+          </TableCell>
+          <TableCell align="left">{row.status}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</TableContainer>
+
   );
 }
 export default function SearchAppBar() {
-  const dispatch=useDispatch();
-  const rows=useSelector((state) => state.patient.appoint);
-
-// useEffect(() => {
-//   dispatch()
-
-// }, []);
 
 
+ 
 
   return (
     <Box sx={{ flexGrow: 1 }}>

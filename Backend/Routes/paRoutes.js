@@ -30,6 +30,7 @@ router.get(
   searchDoctorsByspecialityOrAvailability
 );
 router.get("/viewPrescriptions/:patientId", viewPrescriptions);
+
 router.get("/patientFilterAppointments", patientFilterAppointments);
 router.get("/viewAppoints/:patientId", viewAppoints);
 
