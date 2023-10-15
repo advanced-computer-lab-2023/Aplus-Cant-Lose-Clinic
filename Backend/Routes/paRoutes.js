@@ -12,6 +12,7 @@ const {
   patientFilterAppointments,
   createAppointment,
   viewAppoints
+  
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");

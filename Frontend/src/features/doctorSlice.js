@@ -78,6 +78,7 @@ export const appointmentPatients = createAsyncThunk(
 
 
 
+
 export const doctor = createSlice({
   name: "doctor",
   initialState: doctorState,

@@ -256,7 +256,7 @@ const viewFamilyMembers = async (req, res) => {
 
 const viewDoctors = async (req, res) => {
   try {
-    const { patientId } = req.params;
+    const patientId = req.params.patientId;
 
     // Find the patient by patientId
     const patient = await Patient.findById(patientId);
@@ -275,7 +275,7 @@ const viewDoctors = async (req, res) => {
     // Prepare an array to store doctor information
     const doctorInfo = [];
 
-    // Iterate through each accepted doctor
+    // Iterate through each accepted doctor and include all doctor information
     for (const doctor of doctors) {
       // Find the health package associated with the patient
       const healthPackage = await HPackages.findById(patient.hPackage);
@@ -289,24 +289,24 @@ const viewDoctors = async (req, res) => {
         sessionPrice *= 1.1;
       }
 
-      // Prepare doctor information object
+      // Include all doctor information and the session price
       const doctorInfoItem = {
-        name: doctor.name,
-        speciality: doctor.speciality,
-        sessionPrice,
+        ...doctor.toObject(), // Include all doctor information
+        sessionPrice, // Include the session price
       };
 
       doctorInfo.push(doctorInfoItem);
     }
 
-    return res
-      .status(200)
-      .json({ message: "Accepted doctors information", doctors: doctorInfo });
+    return res.status(200).json({ message: "Accepted doctors information", doctors: doctorInfo });
   } catch (error) {
     console.error("Error retrieving accepted doctors information:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
 
 const searchDoctorsByNameOrspeciality = async (req, res) => {
   try {
