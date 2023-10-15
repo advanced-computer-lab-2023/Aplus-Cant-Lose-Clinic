@@ -649,7 +649,34 @@ const  filterPrescriptions = async (req, res) => {
   }
 };
 
+const viewSpecificPrescription = async (req, res) => {
+  try {
+    const prescriptionId = req.params.id; // Get the prescription ID from the query
 
+    // Check if the prescription ID is provided in the query
+    if (!prescriptionId) {
+      return res.status(400).json({ error: "Prescription ID is required in the query" });
+    }
+
+    // Find the prescription by its ID and populate related data
+    const prescription = await Prescription.findById(prescriptionId)
+      .populate("medID") // Populate the Medicine
+      .populate("patientID") // Populate the Patient
+      .populate("doctorID"); // Populate the Doctor
+
+    if (!prescription) {
+      return res.status(404).json({ error: "Prescription not found" });
+    }
+
+    return res.status(200).json({
+      message: "Prescription and related data retrieved successfully",
+      prescription,
+    });
+  } catch (error) {
+    console.error("Error retrieving prescription:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}
 
 
 module.exports = {
@@ -663,6 +690,6 @@ module.exports = {
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
-
+  viewSpecificPrescription
   
 };

@@ -29,12 +29,12 @@ export const viewPrescriptions = createAsyncThunk(
 );
 //<------------------------------------------------------------------------------------------------
 export const viewPrescription = createAsyncThunk(
-  "patient/viewPrescription",
-  async (patientId) => {
+  "patient/viewSpecificPrescription/",
+  async (prescriptionId) => {
     const response = await axios.get(
-      `${API_URL}/patient/viewPrescription/${patientId}`
+      `${API_URL}/patient/viewSpecificPrescription/${prescriptionId}`
     );
-    console.log(patientId);
+    console.log(prescriptionId);
 
     console.log(response);
     return response;
@@ -144,6 +144,17 @@ const patient = createSlice({
         state.presc = action.payload.data.prescriptions;
       })
       .addCase(viewPrescriptions.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
+
+      builder
+
+      .addCase(viewPrescription.fulfilled, (state, action) => {
+        state.loading = false;
+        state.presc = action.payload.data.prescription;
+      })
+      .addCase(viewPrescription.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       });

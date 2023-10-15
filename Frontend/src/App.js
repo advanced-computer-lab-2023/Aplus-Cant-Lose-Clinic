@@ -72,7 +72,7 @@ const router = createBrowserRouter(
       />
       <Route path="ListOfPrescriptions" element={<ListOfPrescriptions />} />
       <Route
-        path="ListOfPrescriptions/Prescriptions"
+        path="viewSpecificPrescription/:id"
         element={<Prescriptions />}
       />
       <Route path="DoctorsList" element={<DoctorsList />} />
