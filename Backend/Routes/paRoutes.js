@@ -12,7 +12,7 @@ const {
   patientFilterAppointments,
   createAppointment,
   viewAppoints,
-  viewSpecificPrescription,getAlldoctors
+  viewSpecificPrescription, getAlldoctors, freeAppiontmentSlot,reserveAppointmentSlot
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -34,7 +34,8 @@ router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 
 router.get("/patientFilterAppointments", patientFilterAppointments);
 router.get("/viewAppoints/:patientId", viewAppoints);
-//router.patch("/",reserveAppiontmentSlot);
+router.get("/freeAppiontmentSlot/:doctorId",freeAppiontmentSlot);//used to show all the free slots of specific doctor
+router.patch("/reserveAppointmentSlot/:AppointmentId", reserveAppointmentSlot);
 router.get("/getUser", getUser);
 router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
