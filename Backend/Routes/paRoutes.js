@@ -34,8 +34,7 @@ router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 
 router.get("/patientFilterAppointments", patientFilterAppointments);
 router.get("/viewAppoints/:patientId", viewAppoints);
-
-
+//router.patch("/",reserveAppiontmentSlot);
 router.get("/getUser", getUser);
 router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
