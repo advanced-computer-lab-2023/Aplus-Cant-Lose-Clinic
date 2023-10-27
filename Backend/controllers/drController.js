@@ -18,14 +18,14 @@ const addDoctor = async (req, res) => {
       username,
       Dbirth,
       gender,
-      rate,speciality,
+      rate, speciality,
       affilation,
       background,
       docs,
       password,
-      
+
     } = req.body;
-console.log(req.body);
+    console.log(req.body);
     // Validate input fields
     if (
       !name ||
@@ -206,11 +206,11 @@ const editDoctor = async (req, res) => {
       (await Doctor.findOne({ email })) ||
       (await Patient.findOne({ email })) ||
       (await Pharmacist.findOne({ email }));
-  
+
 
     // Find the doctor by ID and update the specified fields
-    const updatedDoctor = await Doctor  .updateOne({ _id: id }, { $set: { email, rate, affiliation } })
-  
+    const updatedDoctor = await Doctor.updateOne({ _id: id }, { $set: { email, rate, affiliation } })
+
 
     if (!updatedDoctor) {
       return res.status(404).json({ error: "Doctor not found" });
@@ -224,21 +224,22 @@ const editDoctor = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-const appointmentPatients = async (req, res) => {
-  try {
-    const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
+const
+  appointmentPatients = async (req, res) => {
+    try {
+      const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
 
-    // Use Mongoose to find all appointments for the specified doctor
-    const appointments = await Appointment.find({ drID: doctorId })
-      .populate('pID') // Populate the 'pID' field to get patient data
-      .exec();
+      // Use Mongoose to find all appointments for the specified doctor
+      const appointments = await Appointment.find({ drID: doctorId })
+        .populate('pID') // Populate the 'pID' field to get patient data
+        .exec();
 
-    res.json(appointments);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+      res.json(appointments);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 const doctorFilterAppointments = async (req, res) => {
   const { doctorId } = req.params; // Get doctorId from URL parameters
   const { startDate, endDate, status } = req.query;
@@ -296,7 +297,7 @@ const getPatients = async (req, res) => {
         .json({ error: "No patients found for this doctor" });
     }
 
-    res.status(200).json( patients );
+    res.status(200).json(patients);
   } catch (error) {
     console.error("Error getting patients:", error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -310,7 +311,7 @@ const addPrescription = async (req, res) => {
     const { medID, patientID, doctorID, datePrescribed } = req.body;
 
     // Validate inputs
-    if (!medID || !patientID || !doctorID || !datePrescribed ) {
+    if (!medID || !patientID || !doctorID || !datePrescribed) {
       return res.status(400).json({ error: "Missing required  input fields" });
     }
 
@@ -320,7 +321,7 @@ const addPrescription = async (req, res) => {
       patientID,
       doctorID,
       datePrescribed,
-      
+
     });
 
     // Save the prescription to the database
@@ -337,7 +338,7 @@ const addPrescription = async (req, res) => {
 };
 
 const getDr = async (req, res) => {
-  const  doctorId = req.params.id; // Get doctorId from URL parameters
+  const doctorId = req.params.id; // Get doctorId from URL parameters
 
 
 
@@ -353,6 +354,114 @@ const getDr = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const addAppointmentTimeSlot = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
+    const { startDate,endDate} = req.body;
+
+    // Validate inputs
+    if (!startDate ||
+      !endDate ) {
+      return res.status(400).json({ error: "Missing required  input fields" });
+    }
+
+    // Create a new Appointment instance with the provided data
+    const appointment = await Appointment.create({
+      startDate:req.body.startDate,
+      endDate:req.body.endDate,
+      drID:doctorId,
+      pID:doctorId,
+      status:"uncompleted",
+      Description: "",
+    });
+
+    res.status(201).json({
+      message: "Appointment added successfully",
+      Appointment: appointment,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}// note that to initialize+ the PID it should have id which will be the doctors id
+const createFollowUpAppointment = async (req, res) => {
+  try {
+    const drID = req.params.drID; // Retrieve doctor ID
+    const { patientID } = req.query; // Retrieve patientID
+    const { startDate, endDate } = req.body;
+
+    // Validate inputs
+    if (!startDate || !endDate || !patientID) {
+      return res.status(400).json({ error: "Missing required input fields" });
+    }
+
+    const patient = await Patient.findById(patientID);
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Check if the doctor has any overlapping appointments
+    const doctorHasOverlappingAppointments = await Appointment.exists({
+      drID: drID,
+      $and: [
+        { startDate: { $lt: endDate } },
+        { endDate: { $gt: startDate } },
+      ],
+    });
+
+    if (doctorHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Doctor already has appointments during this time" });
+    }
+
+    // Check if the patient has any overlapping appointments
+    const patientHasOverlappingAppointments = await Appointment.exists({
+      pID: patientID,
+      $and: [
+        { startDate: { $lt: endDate } },
+        { endDate: { $gt: startDate } },
+      ],
+    });
+
+    if (patientHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Patient already has appointments during this time" });
+    }
+
+    // Create a new appointment instance with the provided data
+    const appointment = new Appointment({
+      startDate,
+      endDate,
+      drID,
+      pID: patientID, // Set the pID field with patientID
+      Description: "Follow Up Appointment",
+    });
+
+    // Save the appointment to the database
+    const savedAppointment = await appointment.save();
+
+    // Update the patient's doctors array with the new doctor only if not already present
+    const isDoctorInArray = patient.doctors.some((doc) =>
+      doc.doctorID.equals(drID)
+    );
+    if (!isDoctorInArray) {
+      await Patient.findByIdAndUpdate(patientID, {
+        $addToSet: { doctors: { doctorID: drID } },
+      });
+    }
+
+    res.status(201).json({
+      message: "Appointment created successfully",
+      appointment: savedAppointment,
+    });
+  } catch (error) {
+    console.error("Error creating appointment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+//pass appointment on check and doctor when opening doctor page and dates by date picker
 module.exports = {
   addDoctor,
   getPatients,
@@ -362,5 +471,7 @@ module.exports = {
   editDoctor,
   doctorFilterAppointments,
   appointmentPatients,
-  getDr
+  getDr,
+  addAppointmentTimeSlot,
+  createFollowUpAppointment
 };

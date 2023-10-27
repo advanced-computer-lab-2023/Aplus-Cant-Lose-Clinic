@@ -10,7 +10,9 @@ const {
   patientsInUpcomingApointments,
   editDoctor,
   doctorFilterAppointments,
-  appointmentPatients,getDr
+  appointmentPatients,getDr,
+  addAppointmentTimeSlot,
+  createFollowUpAppointment
 } = require("../controllers/drController");
 
 router.post("/addPrescription", addPrescription);
@@ -18,13 +20,12 @@ router.post("/getUser", getUser);
 router.post("/addDoctor", addDoctor);
 router.get("/getPatients/:id", getPatients);
 router.get("/getDr/:id", getDr);
-
-
+router.post("/addAppointmentSlot/:doctorId", addAppointmentTimeSlot);
 router.get("/searchPatientByName", searchPatientByName);
+router.post("/createFollowUpAppointment/:drID", createFollowUpAppointment);
 router.get("/patientsInUpcomingApointments/:doctorId", patientsInUpcomingApointments);
 router.put("/editDoctor/:id", editDoctor);
 router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
-
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
 
 module.exports = router;

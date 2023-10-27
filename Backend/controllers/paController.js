@@ -189,7 +189,7 @@ const addPatient = async (req, res) => {
 
 const addFamilyMember = async (req, res) => {
   const { fullName, NID, age, gender, relation } = req.body;
-  const  patientId  = req.params.patientId; // Get patientId from URL parameters
+  const patientId = req.params.patientId; // Get patientId from URL parameters
 
   try {
     // Validate input fie.familyMembers
@@ -205,7 +205,7 @@ const addFamilyMember = async (req, res) => {
     }
 
     // Check if the user already has a spouse
-   
+
     if (relation !== "spouse" && relation !== "child") {
       return res.status(400).json({
         error: "Invalid relation. Allowed values are 'spouse' or 'child'",
@@ -306,6 +306,53 @@ const viewDoctors = async (req, res) => {
 };
 
 
+const freeAppiontmentSlot = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+
+    // Validate the 'patientId' parameter
+    if (!doctorId) {
+      return res.status(400).json({ error: "doctorId ID is required" });
+    }
+
+    // Find the patient by patientId
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Fetch details about each free Appointment
+    const Appointments = await Appointment.find({ pID: doctorId });
+
+    return res.status(200).json({
+      message: "Free Appointments retrieved successfully",
+      Appointments,
+    });
+  } catch (error) {
+    console.error("Error retrieving Appointments:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const reserveAppointmentSlot = async (req, res) => {
+  try {
+    const { AppointmentId } = req.params;
+    const { username, Description } = req.body;
+    const patient = await Patient.findOne({ username: username });
+    const patientId = patient ? patient._id : null;
+    if (patientId) {
+      await Appointment.findByIdAndUpdate(AppointmentId, { Description: Description, pID: patientId });
+      res.status(200).json({ message: "Appointment updated successfully" });
+    } else {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+  } catch (error) {
+    console.error("Error updating appointment:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 
 const searchDoctorsByNameOrspeciality = async (req, res) => {
@@ -388,9 +435,9 @@ const searchDoctorsByspecialityOrAvailability = async (req, res) => {
     // Find appointments that overlap with the specified time if 'searchTime' is provided
     const overlappingAppointments = searchDateTime
       ? await Appointment.find({
-          startDate: { $lt: searchDateTime },
-          endDate: { $gt: searchDateTime },
-        })
+        startDate: { $lt: searchDateTime },
+        endDate: { $gt: searchDateTime },
+      })
       : [];
 
     // Get the list of doctor IDs from the overlapping appointments
@@ -576,7 +623,7 @@ const patientFilterAppointments = async (req, res) => {
 
 
 
-const  filterPrescriptions = async (req, res) => {
+const filterPrescriptions = async (req, res) => {
   try {
     const { date, doctorNameInput, doctorspecialityInput, status } = req.query;
     const patientId = req.params.patientId; // Retrieve patient ID from route parameter
@@ -679,7 +726,7 @@ const viewSpecificPrescription = async (req, res) => {
 }
 
 // Import your Doctor schema/model
-const  getAlldoctors = async (req, res) => {
+const getAlldoctors = async (req, res) => {
   try {
     // Use the Mongoose 'find' method to retrieve all doctors
     const doctors = await Doctor.find();
@@ -705,6 +752,8 @@ module.exports = {
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
-  viewSpecificPrescription
-  
+  viewSpecificPrescription,
+  freeAppiontmentSlot,
+  reserveAppointmentSlot
+
 };
