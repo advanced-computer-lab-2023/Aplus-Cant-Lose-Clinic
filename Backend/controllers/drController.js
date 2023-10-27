@@ -384,7 +384,84 @@ const addAppointmentTimeSlot = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 }// note that to initialize+ the PID it should have id which will be the doctors id
+const createFollowUpAppointment = async (req, res) => {
+  try {
+    const drID = req.params.drID; // Retrieve doctor ID
+    const { patientID } = req.query; // Retrieve patientID
+    const { startDate, endDate } = req.body;
 
+    // Validate inputs
+    if (!startDate || !endDate || !patientID) {
+      return res.status(400).json({ error: "Missing required input fields" });
+    }
+
+    const patient = await Patient.findById(patientID);
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Check if the doctor has any overlapping appointments
+    const doctorHasOverlappingAppointments = await Appointment.exists({
+      drID: drID,
+      $and: [
+        { startDate: { $lt: endDate } },
+        { endDate: { $gt: startDate } },
+      ],
+    });
+
+    if (doctorHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Doctor already has appointments during this time" });
+    }
+
+    // Check if the patient has any overlapping appointments
+    const patientHasOverlappingAppointments = await Appointment.exists({
+      pID: patientID,
+      $and: [
+        { startDate: { $lt: endDate } },
+        { endDate: { $gt: startDate } },
+      ],
+    });
+
+    if (patientHasOverlappingAppointments) {
+      return res
+        .status(400)
+        .json({ error: "Patient already has appointments during this time" });
+    }
+
+    // Create a new appointment instance with the provided data
+    const appointment = new Appointment({
+      startDate,
+      endDate,
+      drID,
+      pID: patientID, // Set the pID field with patientID
+      Description: "Follow Up Appointment",
+    });
+
+    // Save the appointment to the database
+    const savedAppointment = await appointment.save();
+
+    // Update the patient's doctors array with the new doctor only if not already present
+    const isDoctorInArray = patient.doctors.some((doc) =>
+      doc.doctorID.equals(drID)
+    );
+    if (!isDoctorInArray) {
+      await Patient.findByIdAndUpdate(patientID, {
+        $addToSet: { doctors: { doctorID: drID } },
+      });
+    }
+
+    res.status(201).json({
+      message: "Appointment created successfully",
+      appointment: savedAppointment,
+    });
+  } catch (error) {
+    console.error("Error creating appointment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+//pass appointment on check and doctor when opening doctor page and dates by date picker
 module.exports = {
   addDoctor,
   getPatients,
@@ -395,5 +472,6 @@ module.exports = {
   doctorFilterAppointments,
   appointmentPatients,
   getDr,
-  addAppointmentTimeSlot
+  addAppointmentTimeSlot,
+  createFollowUpAppointment
 };
