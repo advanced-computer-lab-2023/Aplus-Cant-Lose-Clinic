@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,16 +8,23 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useSelector,useDispatch} from "react-redux";
-import { viewPendDr } from '../../features/adminSlice';
-import { useEffect } from 'react';
+import { useSelector, useDispatch } from "react-redux";
+import { viewPendDr, acceptDr, rejectDr } from "../../features/adminSlice";
+import { useEffect } from "react";
+import { AutoFixNormal } from "@mui/icons-material";
 
 export default function ViewPendingDr() {
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(viewPendDr())
+    dispatch(viewPendDr());
   }, [dispatch]);
   const dummyData = useSelector((state) => state.admin.pdoctors);
+  const handleAccept = (id) => {
+    dispatch(acceptDr(id));
+  };
+  const handleReject = (id) => {
+    dispatch(rejectDr(id));
+  };
 
   const tableStyle = {
     width: "80%",
@@ -30,7 +37,7 @@ export default function ViewPendingDr() {
   const cellStyle = {
     fontSize: "14px",
   };
-  
+
   return (
     <TableContainer component={Paper} style={tableStyle}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -38,34 +45,35 @@ export default function ViewPendingDr() {
           <TableRow>
             <TableCell style={cellStyle}>name</TableCell>
             <TableCell align="left" style={cellStyle}>
-            email
+              email
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            username
+              username
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            Dbirth
+              Dbirth
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            gender
+              gender
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            rate
+              rate
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            affilation
+              affilation
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            background
+              background
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            docs
+              docs
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-            status
+              status
             </TableCell>
-            <TableCell align = "left"style={cellStyle}>Acceptance</TableCell>
-
+            <TableCell align="left" style={cellStyle}>
+              Acceptance
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -99,25 +107,36 @@ export default function ViewPendingDr() {
                 {row.background}
               </TableCell>
               <TableCell align="left" style={cellStyle}>
-                {row.docs.map((doc) => {
-                  return `${doc.url},${doc.desc}`;
-                }).join('\n')}
+                {row.docs
+                  .map((doc) => {
+                    return `${doc.url},${doc.desc}`;
+                  })
+                  .join("\n")}
               </TableCell>
               <TableCell align="left" style={cellStyle}>
                 {row.status}
               </TableCell>
-              <TableCell >
-
-              <Button  sx={{ backgroundColor:'#004E98',color:'white'  , marginLeft: '10px'}} onClick={{}}>
-                <Typography>
-                  Reject
-                </Typography>
-              </Button> 
-              <Button  sx={{ backgroundColor:'#004E98',color:'white'  ,marginRight:'10px'}} onClick={{}}>
-                <Typography>
-                  Accept
-                </Typography>
-              </Button> 
+              <TableCell>
+              <Button
+                  sx={{
+                    backgroundColor: "#004E98",
+                    color: "white",
+                    marginLeft: "10px",
+                  }}
+                  onClick={() => handleReject(row._id)} // Use handleReject for rejection
+                >
+                  <Typography>Reject</Typography>
+                </Button>
+                <Button
+                  sx={{
+                    backgroundColor: "#004E98",
+                    color: "white",
+                    marginRight: "10px",
+                  }}
+                  onClick={() => handleAccept(row._id)} // Use handleAccept for acceptance
+                >
+                  <Typography>Accept</Typography>
+                </Button>
               </TableCell>
             </TableRow>
           ))}
@@ -126,6 +145,3 @@ export default function ViewPendingDr() {
     </TableContainer>
   );
 }
-
-
-

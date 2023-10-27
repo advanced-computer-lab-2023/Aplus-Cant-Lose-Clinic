@@ -8,6 +8,8 @@ const validator = require('validator');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Medicine = require("../Models/medicine");
+const nodemailer = require('nodemailer');
+// Replace 'path-to-doctor-model' with the actual path to your Doctor model
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
@@ -273,6 +275,99 @@ const viewAdmin = async(req, res) => {
     res.status(500).json({error:"internal server error"});
   }
 }
+const sendAcceptEmail = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await Doctor.findById(id);
+
+    if (!user) {
+      return res.status(404).send({ Status: "User not found" });
+    }
+
+    // Update the user's status to "accepted"
+    user.status = "accepted";
+    await user.save();
+
+    // Create a transporter for sending email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "sohailahakeem17@gmail.com",
+        pass: "yvxbdrovrmhebgxv",
+      },
+    });
+
+    // Define email options
+    const mailOptions = {
+      from: "sohailahakeem17@gmail.com",
+      to: user.email, // Assuming the user has an 'email' field, adjust as needed
+      subject: "Acceptance Confirmation",
+      text: `Congratulations! You have been accepted to join El7a2ni Clinic as a Doctor.`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({ Status: "Error sending email" });
+      } else {
+        return res.status(200).send({ Status: "Success" });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ Status: "Server Error" });
+  }
+};
+const sendRejectEmail = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    // Find the user by ID
+    const user = await Doctor.findById(id);
+
+    if (!user) {
+      return res.status(404).send({ Status: "User not found" });
+    }
+
+    // Update the user's status to "accepted"
+    user.status = "rejected";
+    await user.save();
+
+    // Create a transporter for sending email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "sohailahakeem17@gmail.com",
+        pass: "yvxbdrovrmhebgxv",
+      },
+    });
+
+    // Define email options
+    const mailOptions = {
+      from:"sohailahakeem17@gmail.com",
+      to: user.email, // Assuming the user has an 'email' field, adjust as needed
+      subject: "Acceptance Confirmation",
+      text: `Unfortunately! You did not get accepted  to join El7a2ni Clinic as a Doctor.`,
+    };
+
+    // Send the email
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).send({ Status: "Error sending email" });
+      } else {
+        return res.status(200).send({ Status: "Success" });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ Status: "Server Error" });
+  }
+};
+
 
 module.exports = {
   createAdmin,
@@ -288,4 +383,6 @@ module.exports = {
   updatePack,
   viewHealthP,
   viewAdmin,
+  sendAcceptEmail,
+  sendRejectEmail
 };

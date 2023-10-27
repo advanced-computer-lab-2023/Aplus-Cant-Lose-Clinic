@@ -20,7 +20,7 @@ const userInitial = {
 export const loginGuest = createAsyncThunk(
   "user/loginGuest",
   async (data, { rejectWithValue }) => {
-    try {
+  
       const response = await axios.post(`${API_URL}/login`, {
         username: data.username,
         password: data.password,
@@ -29,14 +29,7 @@ export const loginGuest = createAsyncThunk(
       console.log(response.token);
 
       return response;
-    } catch (error) {
-      // return custom error message from API if any
-      if (error.response && error.response.data.message) {
-        return rejectWithValue(error.response.data.message);
-      } else {
-        return rejectWithValue(error.message);
-      }
-    }
+  
   }
 );
 export const sendResetEmail = createAsyncThunk(
@@ -134,7 +127,7 @@ const user = createSlice({
         state.username = "";
         state.id = 0;
         state.role = "none";
-        state.error = action.payload;
+        state.error = "login error";
         console.log(state.error);
       });
     builder.addCase(logout.fulfilled, (state, action) => {

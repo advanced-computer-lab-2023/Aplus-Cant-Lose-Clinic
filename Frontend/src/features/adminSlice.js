@@ -94,7 +94,18 @@ export const deleteJDoctor = createAsyncThunk("admin/deleteJDoctor", async (id) 
   return id;
 })
 
-
+export const acceptDr = createAsyncThunk("admin/acceptDr", async (id) => {
+  const response = await axios.post(
+    `${API_URL}/admin/sendAcceptEmail`,{id:id}
+  );
+  return id;
+})
+export const rejectDr = createAsyncThunk("admin/rejectDr", async (id) => {
+  const response = await axios.post(
+    `${API_URL}/admin/sendRejectEmail`,{id:id}
+  );
+  return id;
+})
 
 // export const searchMedicineByName = createAsyncThunk(
 //   "admin/searchMedicineByName",
@@ -307,7 +318,22 @@ state.hpackages[i]={...action.payload.newData};
         state.loading = false;
         state.error = action.error.message;
       });
-
+      builder
+      .addCase(acceptDr.fulfilled, (state, action) => {
+        state.loading = false;
+        state.pdoctors = state.pdoctors.filter(
+          (item) => item._id !== action.payload
+        );
+        state.response = "delete HealthPackages";
+      });
+      builder
+      .addCase(rejectDr.fulfilled, (state, action) => {
+        state.loading = false;
+        state.pdoctors = state.pdoctors.filter(
+          (item) => item._id !== action.payload
+        );
+        state.response = "delete HealthPackages";
+      })
 
   },
 

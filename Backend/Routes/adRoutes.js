@@ -19,6 +19,7 @@ const {
   viewHealthP,
   updatePack,
   viewAdmin,
+  sendAcceptEmail,sendRejectEmail
 } = require("../controllers/adController");
 
 // Define your routes and route handlers
@@ -36,4 +37,6 @@ router.post("/addPack", addPack);
 router.delete("/deletePack/:id", deletePack);
 router.put("/updatePack/:id", updatePack);
 router.get("/viewHealthP", viewHealthP);
+router.post("/sendAcceptEmail", sendAcceptEmail);
+router.post("/sendRejectEmail", sendRejectEmail);
 module.exports = router; // Export the router instance
