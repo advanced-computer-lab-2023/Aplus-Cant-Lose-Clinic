@@ -126,8 +126,9 @@ function BasicTable({ status, date }) {
 export default function SearchAppBar() {
   const [status, setStatus] = useState("Any");
   const [date, setDate] = useState("");
+  const role = useSelector((state) => state.user.role);
 
-  return (
+  return role==="doctor"&&(
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>

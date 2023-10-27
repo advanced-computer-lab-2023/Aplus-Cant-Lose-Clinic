@@ -52,15 +52,23 @@ import ProfileDirect from "./ProfileDirect";
 import DocPatients from "./components/doctor/DocPatients";
 import AddPack from "./components/Adminstrator/AddPack"
 import PatientView from "./components/doctor/PatientView";
+import ResetPassword from "./components/Authentication/ResetPassword";
+import ChangePass from "./components/Authentication/ChangePass";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route index element={<Start />} />
+      <Route  path="/"element={<Start />} />
       <Route path="/Login" element={<Login />} />
+      <Route path="/reset_password/:id/:token" element={<ChangePass />} />
+      <Route path="/ResetPassword" element={<ResetPassword />} />
+  
+
+      
       <Route path="/RegisterAs" element={<RegisterAs />} />
       <Route path="/RegisterAsPatient" element={<RegisterAsPatient />} />
       <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
+
       <Route path="/Home" element={<HomeDirect />} />
       <Route path="/Profile" element={<ProfileDirect />} />
       <Route path="/DocPatients" element={<DocPatients />} />

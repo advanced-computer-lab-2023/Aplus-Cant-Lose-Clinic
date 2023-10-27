@@ -1,22 +1,20 @@
-const cors = require('cors');
+const cors = require("cors");
 const express = require("express");
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
 require("dotenv").config();
-const connectDB = require('./config/db')
+const connectDB = require("./config/db");
+const cookieParser = require('cookie-parser');
 
 // App variables
 const app = express(); // Move this line to the top
 const port = process.env.PORT || "8000";
-app.use(
-  cors(
-  )
-);
+app.use(cors());
 
 app.use(express.json());
+app.use(cookieParser());
 
 const MongoURI = process.env.MONGO_URI;
-
 
 // configurations
 // Mongo DB
@@ -29,16 +27,22 @@ connectDB()
       console.log(`Listening to requests on http://localhost:${port}`);
     });
   })
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 // Importing the adRouter
-const adRouter = require('./Routes/adRoutes');
-app.use('/api/admin', adRouter);
-const paRouter = require('./Routes/paRoutes');
-app.use('/api/patient', paRouter);
-const drRouter = require('./Routes/drRoutes');
-app.use('/api/doctor', drRouter);
-const { login } = require('./controllers/userController');
+const adRouter = require("./Routes/adRoutes");
+app.use("/api/admin", adRouter);
+const paRouter = require("./Routes/paRoutes");
+app.use("/api/patient", paRouter);
+const drRouter = require("./Routes/drRoutes");
+app.use("/api/doctor", drRouter);
+const { login ,logout,sendResetEmail,changePassword} = require("./controllers/userController");
 app.post("/api/login", login);
+app.get("/api/logout", logout);
+app.post("/api/sendResetEmail", sendResetEmail);
+app.post("/api/changePassword/:id/:token", changePassword);
+
+
+
 // Rest of your code
 app.get("/home", (req, res) => {
   res.status(200).send("You have everything installed!");
