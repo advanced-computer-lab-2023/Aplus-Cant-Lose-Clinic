@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import {
-  TextField,
   Select,
   MenuItem,
   Checkbox,
@@ -16,14 +15,27 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
-
+import TextField from '@mui/material/TextField';
+import FreeAppointment from './FreeAppointment';
+import FollowUp from "./FollowUp";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
-  const [endDateFilter, setEndDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("Any");
   const [upcomingFilter, setUpcomingFilter] = useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [open1, setOpen1] = React.useState(false);
 
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+ 
+  const handleClose = () => {
+    setOpen(false);
+    if(open1==true){
+      setOpen1(false);
+    }
+  };
   const dispatch = useDispatch();
   const { id, role } = useSelector((state) => state.user);
 
@@ -132,6 +144,9 @@ export default function DocPatients() {
               }}
             />
           </div>
+          <FreeAppointment />
+          <FollowUp />
+
         </div>
         <div
           style={{
