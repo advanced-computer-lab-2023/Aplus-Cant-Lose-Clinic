@@ -621,7 +621,19 @@ const patientFilterAppointments = async (req, res) => {
   }
 };
 
+const
+  appointmentPatients = async (req, res) => {
+    try {
+      const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
 
+      // Use Mongoose to find all appointments for the specified doctor
+      const appointments = await Appointment.find({ drID: doctorId ,status:"Not_Reserved"})
+      res.json(appointments);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
 const filterPrescriptions = async (req, res) => {
   try {
@@ -754,6 +766,6 @@ module.exports = {
   createAppointment,
   viewSpecificPrescription,
   freeAppiontmentSlot,
-  reserveAppointmentSlot
-
+  reserveAppointmentSlot,
+  appointmentPatients
 };
