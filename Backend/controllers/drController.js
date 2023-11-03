@@ -371,7 +371,7 @@ const addAppointmentTimeSlot = async (req, res) => {
       endDate:req.body.endDate,
       drID:doctorId,
       pID:doctorId,
-      status:"uncompleted",
+      status:"Not_Reserved",
       Description: "",
     });
 

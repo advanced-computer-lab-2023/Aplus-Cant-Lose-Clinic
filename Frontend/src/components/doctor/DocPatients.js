@@ -29,10 +29,10 @@ export default function DocPatients() {
   const handleClickOpen = () => {
     setOpen(true);
   };
- 
+
   const handleClose = () => {
     setOpen(false);
-    if(open1==true){
+    if (open1 == true) {
       setOpen1(false);
     }
   };
@@ -48,7 +48,7 @@ export default function DocPatients() {
   console.log(appointments);
   const navigate = useNavigate(-1);
   return (
-    (role === "doctor" )&& (
+    (role === "doctor") && (
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
         <i>
           <IconButton
@@ -125,7 +125,9 @@ export default function DocPatients() {
             >
               <MenuItem value={"Any"}>Any</MenuItem>
               <MenuItem value={"completed"}>completed</MenuItem>
-              <MenuItem value={"uncompleted"}>uncompleted</MenuItem>
+              <MenuItem value="upcoming">upcoming</MenuItem>
+              <MenuItem value="cancelled">cancelled</MenuItem>
+              <MenuItem value="rescheduled">rescheduled</MenuItem>
             </Select>
           </div>
           <div

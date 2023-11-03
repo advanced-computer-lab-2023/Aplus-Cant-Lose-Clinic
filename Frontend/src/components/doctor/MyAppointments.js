@@ -7,7 +7,6 @@ import TableHead from '@mui/material/TableHead';
 import TableBody from '@mui/material/TableBody';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
-import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Select from '@mui/material/Select';
@@ -21,26 +20,25 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DatePicker from '@mui/lab/DatePicker';
 import { useDispatch, useSelector } from 'react-redux';
 import { appointmentPatients } from '../../features/doctorSlice';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate } from 'react-router-dom';
 
 function Appointments() {
   const id = useSelector((state) => state.user.id); // Access the counter value from the Redux store
-  const navigate=useNavigate();
-const dispatch= useDispatch();
-useEffect(() => {
-  dispatch(appointmentPatients(id));
-}, [dispatch]);
-const res = useSelector((state) => state.doctor.appointments);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(appointmentPatients(id));
+  }, [dispatch]);
+  const res = useSelector((state) => state.doctor.appointments);
 
   const [appointments, setAppointments] = useState(res);
 
   const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('uncompleted');
+  const [selectedStatus, setSelectedStatus] = useState('upcoming');
   const [customDate, setCustomDate] = useState('');
 
   const handleCheckboxChange = (appointmentId, isChecked) => {
-  
+
     const updatedAppointments = appointments.map((appointment) =>
       appointment._id === appointmentId ? { ...appointment, status: isChecked } : appointment
     );
@@ -54,6 +52,7 @@ const res = useSelector((state) => state.doctor.appointments);
   const handleStatusChange = (event) => {
     setSelectedStatus(event.target.value);
   };
+
 
   const handleCustomDateChange = (event) => {
     setCustomDate(event.target.value);
@@ -79,22 +78,19 @@ const res = useSelector((state) => state.doctor.appointments);
 
   return (
     <div>
-      
-  
-
       <Paper elevation={3} style={{ padding: '20px' }}>
-      <i>
-            <IconButton
-              color="primary"
-              aria-label="Back to Home"
-              style={{ position: 'absolute', bottom: '10px', right: '10px' }}
-              onClick={() => {
-                navigate(-1);
-              }}
-            >
-              <HomeIcon />
-            </IconButton>
-          </i>
+        <i>
+          <IconButton
+            color="primary"
+            aria-label="Back to Home"
+            style={{ position: 'absolute', bottom: '10px', right: '10px' }}
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <HomeIcon />
+          </IconButton>
+        </i>
         <h2>Appointments</h2>
 
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
@@ -115,14 +111,15 @@ const res = useSelector((state) => state.doctor.appointments);
             label="Status"
             value={selectedStatus}
             onChange={handleStatusChange}
-            variant="outlined"
             style={{ marginLeft: '20px' }}
+            
           >
-          
             <MenuItem value="completed">completed</MenuItem>
-            <MenuItem value="uncompleted">uncompleted</MenuItem>
-
+            <MenuItem value="upcoming">upcoming</MenuItem>
+            <MenuItem value="cancelled">cancelled</MenuItem>
+            <MenuItem value="rescheduled">rescheduled</MenuItem>
           </Select>
+
 
           <TextField
             label="Custom Date"
@@ -153,7 +150,7 @@ const res = useSelector((state) => state.doctor.appointments);
               {appointments.map((appointment) => (
                 <TableRow key={appointment._id}>
                   <TableCell>
-                
+
                   </TableCell>
                   <TableCell>{appointment.startDate}</TableCell>
                   <TableCell>{appointment.pID.name}</TableCell>

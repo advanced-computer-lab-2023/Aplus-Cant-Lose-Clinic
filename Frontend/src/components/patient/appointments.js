@@ -167,8 +167,10 @@ const handleClose = () => {
           >
             <MenuItem value={"Any"}>Any</MenuItem>
             <MenuItem value={"completed"}>completed</MenuItem>
-            <MenuItem value={"uncompleted"}>uncompleted</MenuItem>
-          </Select>
+            <MenuItem value="upcoming">upcoming</MenuItem>
+            <MenuItem value="cancelled">cancelled</MenuItem>
+            <MenuItem value="rescheduled">rescheduled</MenuItem>
+            </Select>
         </Toolbar>
       </AppBar>
       <BasicTable status={status} date={date} />
@@ -204,7 +206,6 @@ const handleClose = () => {
     </Box>
   );
 }
-const events = ["completed", "uncompleted", "Any"];
 
 // const Status = [
 //   {
