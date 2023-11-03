@@ -39,31 +39,29 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          />
-          <Link to="/Home" color="white">
-            <Button Speciality="large">
-              <IconButton Speciality="Large" style={iconStyle}>
-                <HomeIcon />
-              </IconButton>
-            </Button>
+        <Link to="/Home" style={{ color: "white" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+            >
+              <HomeIcon />
+            </IconButton>
           </Link>
           <Typography
             variant="h6"
+            noWrap
             component="div"
-            sx={{ flexGrow: 1, marginLeft: "-20px" }}
-          >
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}
+            >
             My Family Members
           </Typography>
-          <Link to="/viewfamilymembers/newfamilymembers">
+          <Link to="/viewfamilymembers/newfamilymembers" sx={{left:'100%'}}>
             <Fab color="primary" aria-label="add">
               <AddIcon />
-            </Fab>{" "}
+            </Fab>
           </Link>
         </Toolbar>
       </AppBar>
@@ -76,7 +74,7 @@ function BasicTable() {
   const rows = useSelector((state) => state.patient.fMembers);
   const tableStyle = {
     width: "80%",
-    marginLeft: "50px",
+    marginLeft: "10%",
     boxShadow: "5px 5px 5px 5px #8585854a",
     marginTop: "30px",
     marginBottom: "20px",
@@ -92,16 +90,16 @@ function BasicTable() {
         <TableHead>
           <TableRow>
             <TableCell style={cellStyle}>Name</TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               NationalID
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Age
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Gender
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Relation
             </TableCell>
           </TableRow>
@@ -115,16 +113,16 @@ function BasicTable() {
               <TableCell component="th" scope="row">
                 {row.fullName}
               </TableCell>
-              <TableCell align="right" style={cellStyle}>
+              <TableCell align="left" style={cellStyle}>
                 {row.NID}
               </TableCell>
-              <TableCell align="right" style={cellStyle}>
+              <TableCell align="left" style={cellStyle}>
                 {row.age}
               </TableCell>
-              <TableCell align="right" style={cellStyle}>
+              <TableCell align="left" style={cellStyle}>
                 {row.gender}
               </TableCell>
-              <TableCell align="right" style={cellStyle}>
+              <TableCell align="left" style={cellStyle}>
                 {row.relation}
               </TableCell>
             </TableRow>

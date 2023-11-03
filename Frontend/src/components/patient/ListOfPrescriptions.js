@@ -53,7 +53,7 @@ const App = () => {
     color: "white",
   };
   const filterStyle = {
-    marginLeft: "50px",
+    marginLeft: "40%",
   };
 
   const Search = styled("div")(({ theme }) => ({
@@ -63,32 +63,7 @@ const App = () => {
     border: "0",
   }));
 
-  const SearchIconWrapper = styled("div")(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: "100%",
-    position: "absolute",
-    pointerEvents: "none",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-  }));
 
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    justifySelf: "center",
-    color: "inherit",
-    "& .MuiInputBase-input": {
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("sm")]: {
-        width: "12ch",
-        "&:focus": {
-          width: "20ch",
-        },
-      },
-    },
-  }));
 
   const dateTimePickerContainer = {
     display: "flex",
@@ -235,12 +210,12 @@ const App = () => {
           />
           <Typography>filled</Typography>
             </Grid>
-            <Grid item>
+            <Grid item sx={{display:"inline-flex"}}> 
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer
                   components={["DateTimePicker", "DateTimePicker"]}
                 >
-                  <div style={dateTimePickerContainer}>
+                  <div>
                     <DateTimePicker
                       label="Prescription Issued In"
                       viewRenderers={{
@@ -264,21 +239,18 @@ const App = () => {
             </Grid>
             <Grid item>
               <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
                 <Grid item>
                   <TextField
                     value={nameFilter}
                     onChange={(e) => {
                       setNameFilter(e.target.value);
                     }}
-                    sx={{
-                      height: "80%",
-                      borderRadius: "15px",
-                      backgroundColor: "white",
-                      color: "white !important",
-                    }}
+                    // sx={{
+                    //   height: "80%",
+                    //   borderRadius: "15px",
+                    //   backgroundColor: "white",
+                    //   color: "white !important",
+                    // }}
                     label="Name..."
                     variant="filled"
                   />
@@ -291,12 +263,12 @@ const App = () => {
                 onChange={(e) => {
                   setSpecialityFilter(e.target.value);
                 }}
-                sx={{
-                  height: "80%",
-                  borderRadius: "15px",
-                  backgroundColor: "white",
-                  color: "white !important",
-                }}
+                // sx={{
+                //   height: "80%",
+                //   borderRadius: "15px",
+                //   backgroundColor: "white",
+                //   color: "white !important",
+                // }}
                 label="Speciality..."
                 variant="filled"
               />

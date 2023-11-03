@@ -10,7 +10,7 @@ import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
-import { MenuItem, Select } from "@mui/material";
+import { MenuItem, Select, TextField } from "@mui/material";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -18,57 +18,20 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
-import viewPrescriptions from "../../features/patientSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { styled, alpha } from "@mui/material/styles";
-import InputBase from "@mui/material/InputBase";
+import Fab from "@mui/material/Fab";
+import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import { viewAppoints } from "../../features/patientSlice";
 import { useEffect, useState } from "react";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 function BasicTable({ status, date }) {
   const tableContainerStyle = {
     maxWidth: "80%", // Adjust the maximum width as needed
@@ -126,9 +89,25 @@ function BasicTable({ status, date }) {
 export default function SearchAppBar() {
   const [status, setStatus] = useState("Any");
   const [date, setDate] = useState("");
-  const role = useSelector((state) => state.user.role);
+  const [open, setOpen] = React.useState(false);
+  const [pID, setPID] = React.useState("");
 
-  return role==="doctor"&&(
+const Dates = ['wednesday 10/10/2010 5:5:4', 'thursday'];
+
+  const handleClickOpen = () => {
+    setOpen(true);
+};
+
+const handleClose = () => {
+  if(pID!=""){
+
+    setOpen(false);
+  }else{
+    alert('enter Patient ID');
+  }
+
+};
+  return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -151,33 +130,35 @@ export default function SearchAppBar() {
           >
             Appointments
           </Typography>
-          <Box sx={dateTimePickerContainer}>
-          
+          <Box >
+
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DateTimePicker"]}>
+              <DemoContainer components={["DateTimePicker"]} >
                 <DateTimePicker
+                  sx={{ color: "white" }}
                   label="Appointment start date Schedule"
                   viewRenderers={{
                     hours: renderTimeViewClock,
                     minutes: renderTimeViewClock,
                     seconds: renderTimeViewClock,
                   }}
-                  value={date} // Add this line
+                  value={date} 
                   onChange={(date) => setDate(date)}
                 />
               </DemoContainer>
             </LocalizationProvider>
             <span
-                onClick={() => {
-                  setDate("");
-                }}
-              >
-                <Typography sx={{color:"black"}}>Cancel</Typography>
-              </span>
+              onClick={() => {
+                setDate("");
+              }}
+
+            >
+              <Typography>Cancel</Typography>
+            </span>
           </Box>
 
           <Select
-          sx={{color:"white",ml:'20px',bg:"white"}}
+            sx={{ color: "white", ml: '20px', bg: "white" }}
             value={status}
             label="Status Filter"
             onChange={(event) => {
@@ -191,6 +172,35 @@ export default function SearchAppBar() {
         </Toolbar>
       </AppBar>
       <BasicTable status={status} date={date} />
+      <Fab color="primary" aria-label="add" sx={{ left: "95%", margin: "28% 0 0 0" }}
+      onClick={handleClickOpen}
+      >
+        <AddIcon />
+      </Fab>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Add An Appointment</DialogTitle>
+                <DialogContent>
+                    <Typography>Date & TIme</Typography>
+                    {Dates.map((date) => (
+                        <ListItem disableGutters key={date}>
+                            <ListItemButton >
+                                <ListItemText primary={date} />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+
+                    <span style={{padding:"10px"}}>
+                      <Typography>PatientID</Typography>
+                        <TextField onChange={(pId) => setPID(pId)}
+> </TextField>
+                    </span>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Add</Button>
+                </DialogActions>
+            </Dialog>
+        
     </Box>
   );
 }
@@ -267,11 +277,11 @@ const events = ["completed", "uncompleted", "Any"];
 //   );
 // }
 
-const dateTimePickerContainer = {
-  display: "flex",
-  alignItems: "right",
-  borderRadius: "4px",
-  padding: "8px",
-  color:'white',
-  backgroundColor:'white'
-};
+// const dateTimePickerContainer = {
+//   display: "flex",
+//   alignItems: "right",
+//   borderRadius: "4px",
+//   padding: "8px",
+//   color:'white',
+// };
+
