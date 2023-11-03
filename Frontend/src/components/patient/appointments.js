@@ -131,7 +131,6 @@ const handleClose = () => {
             Appointments
           </Typography>
           <Box >
-
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={["DateTimePicker"]} >
                 <DateTimePicker

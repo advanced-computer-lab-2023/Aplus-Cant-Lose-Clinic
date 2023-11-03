@@ -73,7 +73,9 @@ const router = createBrowserRouter(
       <Route path="/Profile" element={<ProfileDirect />} />
       <Route path="/DocPatients" element={<DocPatients />} />
       <Route path="/Appointments" element={<Appointments />} />
+      <Route path="/appointmentPatients/:drID" element={<Appointments />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
+
       <Route
         path="viewfamilymembers/newfamilymembers"
         element={<NewFamilyMember />}

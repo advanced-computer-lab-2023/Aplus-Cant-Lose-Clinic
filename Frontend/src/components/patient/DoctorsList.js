@@ -15,7 +15,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { InputBase, styled, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
@@ -82,48 +82,56 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
-          <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} />
-          <Link to="/Home" color="white">
-            <Button size="large">
-              <IconButton size="large" style={iconStyle}>
-                <HomeIcon />
-              </IconButton>
-            </Button>
+          <Link to="/Home" style={{ color: "white" }}>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+            >
+              <HomeIcon />
+            </IconButton>
           </Link>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: "-20px" }}>
-            Current Doctors
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+          >
+            Doctors List
           </Typography>
           <TextField
-            value={specialityFilter}
-            onChange={(e) => {
-              setSpecialityFilter(e.target.value);
-            }}
-            sx={{
-              height: "80%",
-              borderRadius: "15px",
-              backgroundColor: "white",
-              color: "white !important",
-            }}
-            label="Specialty..."
-            variant="filled"
-          />
-          <TextField
+            sx={{margin:"10px"}}
             value={nameFilter}
             onChange={(e) => {
               setNameFilter(e.target.value);
             }}
-            sx={{
-              height: "80%",
-              borderRadius: "15px",
-              backgroundColor: "white",
-              color: "white !important",
-            }}
+            // sx={{
+            //   height: "80%",
+            //   borderRadius: "15px",
+            //   backgroundColor: "white",
+            //   color: "white !important",
+            // }}
             label="Name..."
             variant="filled"
-          />
-        </Toolbar>
-        <Box item>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            />
+          <TextField
+            sx={{margin:"10px"}}
+            value={specialityFilter}
+            onChange={(e) => {
+              setSpecialityFilter(e.target.value);
+            }}
+            // sx={{
+              //   height: "80%",
+              //   borderRadius: "15px",
+              //   backgroundColor: "white",
+              //   color: "white !important",
+              // }}
+              label="Specialty..."
+              variant="filled"
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs} sx={{margin:"10px"}}>
                 <DemoContainer
                   components={["DateTimePicker", "DateTimePicker"]}
                 >
@@ -146,9 +154,9 @@ export default function ButtonAppBar() {
                   setAvailFilter("");
                 }}
               >
-                <Typography>Cancel</Typography>
+                <Typography sx={{margin:"10px"}}>Cancel</Typography>
               </span>
-            </Box>
+        </Toolbar>
       </AppBar>
       <BasicTable nameFilter={nameFilter} specialityFilter={specialityFilter} />
     </Box>
@@ -157,10 +165,9 @@ export default function ButtonAppBar() {
 
 function BasicTable({ nameFilter, specialityFilter }) {
   const rows = useSelector((state) => state.patient.doctors);
-
   const tableStyle = {
     width: "80%",
-    marginLeft: "50px",
+    marginLeft: "12%",
     boxShadow: "5px 5px 5px 5px #8585854a",
     marginTop: "30px",
     marginBottom: "20px",
@@ -176,32 +183,32 @@ function BasicTable({ nameFilter, specialityFilter }) {
         <TableHead>
           <TableRow>
             <TableCell style={cellStyle}>Name</TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Email
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Specialty
             </TableCell>
-            {/* <TableCell align="right" style={cellStyle}>
-              Username
-            </TableCell> */}
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Gender
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Rate
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Affiliation
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Background
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Docs
             </TableCell>
-            <TableCell align="right" style={cellStyle}>
+            <TableCell align="left" style={cellStyle}>
               Session Price
+            </TableCell>
+            <TableCell align="left" style={cellStyle}>
+              View Appointments 
             </TableCell>
           </TableRow>
         </TableHead>
@@ -218,33 +225,37 @@ function BasicTable({ nameFilter, specialityFilter }) {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.email}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.speciality}
                 </TableCell>
-                {/* <TableCell align="right" style={cellStyle}>
-                  {row.username}
-                </TableCell> */}
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.gender}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.rate}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.affilation}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {row.background}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   {`${row.docs.url}, ${row.docs.desc}`}
                 </TableCell>
-                <TableCell align="right" style={cellStyle}>
+                <TableCell align="left" style={cellStyle}>
                   23
                 </TableCell>
+                <TableCell align="left" style={cellStyle}>
+                  <NavLink to={`/appointmentPatients/${row._id}`}>
+               <Button variant="contained" sx={{paddingLeft:"40px",paddingRight:"40px"}}>
+                view Appointments
+               </Button>
+                  </NavLink>
+              </TableCell>
               </TableRow>
             ))}
         </TableBody>
