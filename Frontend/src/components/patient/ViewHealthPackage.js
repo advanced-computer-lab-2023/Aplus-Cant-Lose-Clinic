@@ -145,11 +145,7 @@ export default function Hpackages() {
           </TableBody>
         </Table>
       </TableContainer>
-      <NavLink to="/AddHealthPackages">
-        <Fab color="primary" aria-label="add">
-          <AddIcon />
-        </Fab>
-      </NavLink>
+    
     </>
   );
 }
