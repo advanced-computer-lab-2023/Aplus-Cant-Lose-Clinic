@@ -16,7 +16,8 @@ const {
   getAlldoctors, 
   freeAppiontmentSlot,
   reserveAppointmentSlot,
-  appointmentPatients
+  appointmentPatients,
+  subscribeToHealthPackage
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -44,5 +45,10 @@ router.get("/getUser", getUser);
 router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
+
+
+
+
+router.patch("/subscribeToHealthPackage", subscribeToHealthPackage);
 
 module.exports = router;
