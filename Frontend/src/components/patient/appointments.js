@@ -1,5 +1,7 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -42,7 +44,7 @@ function BasicTable({ status, date }) {
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
   const rows = useSelector((state) => state.patient.appoints);
-
+  
   useEffect(() => {
     dispatch(viewAppoints(pId));
   }, [dispatch]);
@@ -91,22 +93,55 @@ export default function SearchAppBar() {
   const [date, setDate] = useState("");
   const [open, setOpen] = React.useState(false);
   const [pID, setPID] = React.useState("");
-
-const Dates = ['wednesday 10/10/2010 5:5:4', 'thursday'];
-
+  const [Appointments, setAppointments] = useState([]);
+  var noappoints=false;
+  
+  const { doctorId } = useParams();
+  console.log(doctorId)
+  
+  const getAppointments = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/api/patient/freeAppiontmentSlot/${doctorId}`);
+      const appointmentsData = response.data.Appointmentss;
+      setAppointments(appointmentsData);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  }
+  
   const handleClickOpen = () => {
     setOpen(true);
-};
+    getAppointments();
+  };
 
-const handleClose = () => {
-  if(pID!=""){
+  const handleClose = () => {
+    if(!noappoints){
 
-    setOpen(false);
-  }else{
-    alert('enter Patient ID');
+      if (pID != "") {
+        
+        setOpen(false);
+      } else {
+        alert('enter Patient ID');
+      }
+    }else{
+      setOpen(false);
+    }
+
+  };
+  function formatDateTimeToEnglish(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    };
+    const dateFormatter = new Intl.DateTimeFormat('en-US', options);
+    return dateFormatter.format(date);
   }
-
-};
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
@@ -141,7 +176,7 @@ const handleClose = () => {
                     minutes: renderTimeViewClock,
                     seconds: renderTimeViewClock,
                   }}
-                  value={date} 
+                  value={date}
                   onChange={(date) => setDate(date)}
                 />
               </DemoContainer>
@@ -169,39 +204,46 @@ const handleClose = () => {
             <MenuItem value="upcoming">upcoming</MenuItem>
             <MenuItem value="cancelled">cancelled</MenuItem>
             <MenuItem value="rescheduled">rescheduled</MenuItem>
-            </Select>
+          </Select>
         </Toolbar>
       </AppBar>
       <BasicTable status={status} date={date} />
       <Fab color="primary" aria-label="add" sx={{ left: "95%", margin: "28% 0 0 0" }}
-      onClick={handleClickOpen}
+        onClick={handleClickOpen}
       >
         <AddIcon />
       </Fab>
 
-            <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add An Appointment</DialogTitle>
-                <DialogContent>
-                    <Typography>Date & TIme</Typography>
-                    {Dates.map((date) => (
-                        <ListItem disableGutters key={date}>
-                            <ListItemButton >
-                                <ListItemText primary={date} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+      <Dialog open={open} onClose={handleClose}>{Appointments.length == 0 ? noappoints=true&&(
+        <h1>There is no Availiable appointments</h1>
+      ) : (
+        <>
+          <DialogTitle>Add An Appointment</DialogTitle>
+          <DialogContent>
+            <Typography>Date & TIme</Typography>
+            {Appointments.map((appointment) => (
+              <ListItem disableGutters key={appointment._id}>
+                <ListItemButton>
+                  <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} />
+                </ListItemButton>
+              </ListItem>
+            ))}
 
-                    <span style={{padding:"10px"}}>
-                      <Typography>PatientID</Typography>
-                        <TextField onChange={(pId) => setPID(pId)}
-> </TextField>
-                    </span>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose}>Add</Button>
-                </DialogActions>
-            </Dialog>
-        
+
+            <span style={{ padding: "10px" }}>
+              <Typography>PatientID</Typography>
+              <TextField onChange={(pId) => setPID(pId)}
+              > </TextField>
+            </span>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>Add</Button>
+            <Button onClick={noappoints=true && handleClose}>cancel</Button>
+          </DialogActions>
+        </>
+      )}
+      </Dialog>
+
     </Box>
   );
 }

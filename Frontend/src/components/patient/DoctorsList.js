@@ -250,7 +250,7 @@ function BasicTable({ nameFilter, specialityFilter }) {
                   23
                 </TableCell>
                 <TableCell align="left" style={cellStyle}>
-                  <NavLink to={`/appointmentPatients/${row._id}`}>
+                  <NavLink to={`/appointmentPatientss/${row._id}`}>
                <Button variant="contained" sx={{paddingLeft:"40px",paddingRight:"40px"}}>
                 view Appointments
                </Button>

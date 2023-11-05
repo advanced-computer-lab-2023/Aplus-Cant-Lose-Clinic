@@ -156,7 +156,7 @@ const App = () => {
                 display: "flex",
               }}
             >
-              {true ? (
+              {prescriptionid.status=="filled" ? (
                 <img
                   src="/Pharmacy Stamp.png"
                   alt="hospital stamp"

@@ -9,6 +9,8 @@ const HPackages = require("../Models/hpackages");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Prescription = require("../Models/prescription");
+const mongoose = require('mongoose');
+
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 }
@@ -323,11 +325,11 @@ const freeAppiontmentSlot = async (req, res) => {
     }
 
     // Fetch details about each free Appointment
-    const Appointments = await Appointment.find({ pID: doctorId });
+    const Appointmentss = await Appointment.find({ pID: doctorId });
 
     return res.status(200).json({
       message: "Free Appointments retrieved successfully",
-      Appointments,
+      Appointmentss,
     });
   } catch (error) {
     console.error("Error retrieving Appointments:", error);
@@ -625,7 +627,9 @@ const
   appointmentPatients = async (req, res) => {
     try {
       const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
-
+      if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+        return res.status(400).json({ error: 'Invalid doctorId' });
+      }
       // Use Mongoose to find all appointments for the specified doctor
       const appointments = await Appointment.find({ drID: doctorId ,status:"Not_Reserved"})
       res.json(appointments);
