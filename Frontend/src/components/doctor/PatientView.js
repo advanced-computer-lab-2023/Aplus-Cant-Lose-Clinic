@@ -3,6 +3,7 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import {Box } from '@mui/material';
+import { addHealthRecord } from "../../features/doctorSlice";
 import {
 
   Dialog,
@@ -79,6 +80,7 @@ const handleCancel = () => {
 
 
 const handleSubmitHealthRecord = ()=>{
+  const response = dispatch(addHealthRecord(patientId));
 
 }
 

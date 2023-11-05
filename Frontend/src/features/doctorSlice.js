@@ -86,6 +86,16 @@ export const appointmentPatients = createAsyncThunk(
   }
 );
 
+export const addHealthRecord = createAsyncThunk(
+  'doctor/createHealthRecord',
+  async ({ id, healthRecordData }) => {
+    // const response = await axios.post(`${API_URL}/doctor/addHealthRecord/${id}`, healthRecordData);
+    // console.log(response);
+    // return response.data; // Assuming the server returns data about the created health record
+  },
+  console.log("entered addHealthRecordFunction in doctor Slice")
+);
+
 
 
 
