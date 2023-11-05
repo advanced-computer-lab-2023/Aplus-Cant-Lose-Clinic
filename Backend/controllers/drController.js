@@ -461,6 +461,62 @@ const createFollowUpAppointment = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+
+
+
+const addHealthRecord = async (req, res) => {
+  try {
+    console.log("entered post function addHealthRecord")
+    const patientID  = req.params.patientID;
+    const {data1,data2,data3,data4,data5}= req.query;
+
+
+    // Validate inputs
+    if (!patientID) {
+      return res.status(400).json({ error: "Missing required  input fields" });
+    }
+
+    //retrieve patient from the database
+    const patient = await Patient.findById(patientID);
+
+    // Create a new prescription instance with the provided data
+    const healthRecord = {
+      data1,
+      data2,
+      data3,
+      data4,
+      data5
+    };
+
+    // Save the healthRecord in patient to the database
+    patient.healthRecords.push({
+      dummy1:healthRecord.data1,
+      dummy2:healthRecord.data2,
+      dummy3:healthRecord.data3,
+      dummy4:healthRecord.data4,
+      dummy5:healthRecord.data5,
+    })
+    patient.save();
+    
+
+    res.status(201).json({
+      message: "Health Record added successfully",
+      healthRecord: healthRecord,
+    });
+  } catch (error) {
+    console.error("Error adding Health Record:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+
+
+
+
 //pass appointment on check and doctor when opening doctor page and dates by date picker
 module.exports = {
   addDoctor,
@@ -473,5 +529,6 @@ module.exports = {
   appointmentPatients,
   getDr,
   addAppointmentTimeSlot,
-  createFollowUpAppointment
+  createFollowUpAppointment,
+  addHealthRecord
 };

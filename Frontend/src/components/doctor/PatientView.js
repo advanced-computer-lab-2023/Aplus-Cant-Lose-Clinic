@@ -82,6 +82,7 @@ const handleCancel = () => {
 const handleSubmitHealthRecord = ()=>{
   console.log("entered handleSubmitHealthRecord");
   const response = dispatch(addHealthRecord(patientId));
+  console.log(response);
 
 };
 

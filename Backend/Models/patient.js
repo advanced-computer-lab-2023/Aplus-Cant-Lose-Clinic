@@ -69,6 +69,16 @@ const paSchema = new mongoose.Schema(
         desc: String, // Optional description for the image
       },
     ],
+    healthRecords: [
+      {
+        dummy1:String,
+        dummy2:String,
+        dummy3:Number,
+        dummy4:Number,
+        dummy5:String,
+
+      },
+    ],
   }
 );
 

@@ -14,6 +14,7 @@ const {
   getDr,
   addAppointmentTimeSlot,
   createFollowUpAppointment,
+  addHealthRecord
 
 } = require("../controllers/drController");
 
@@ -32,6 +33,11 @@ router.get(
 router.put("/editDoctor/:id", editDoctor);
 router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
+
+
+
+
+router.post("/addHealthRecord/:patientID", addHealthRecord);
 
 
 module.exports = router;
