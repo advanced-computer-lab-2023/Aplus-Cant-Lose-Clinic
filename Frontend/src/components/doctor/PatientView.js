@@ -80,9 +80,10 @@ const handleCancel = () => {
 
 
 const handleSubmitHealthRecord = ()=>{
+  console.log("entered handleSubmitHealthRecord");
   const response = dispatch(addHealthRecord(patientId));
 
-}
+};
 
 
   const navigate = useNavigate();
@@ -229,7 +230,7 @@ const handleSubmitHealthRecord = ()=>{
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom:"1%"}}>
               <div className="button-group" style={{ flex: 1, marginRight: '10px' }}>
-                <button type="submit" style={{ width: '100%' }}>Save</button>
+                <button type="submit" style={{ width: '100%' }} onClick={handleSubmitHealthRecord}>Save</button>
               </div>
               <div className="button-group" style={{ flex: 1, marginLeft: '10px' }}>
                 <button type="submit" style={{ width: '100%' }} onClick={handleCancel}>
