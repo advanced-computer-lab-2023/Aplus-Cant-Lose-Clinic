@@ -222,22 +222,7 @@ export default function DocPatients() {
                       </Typography>
                       <Typography>{res.startDate} </Typography>
                     </div>
-                    <i>
-                      <IconButton
-                        color="primary"
-                        aria-label="Back to Home"
-                        style={{
-                          position: "absolute",
-                          bottom: "10px",
-                          right: "10px",
-                        }}
-                        onClick={() => {
-                          navigate(-1);
-                        }}
-                      >
-                        <HomeIcon />
-                      </IconButton>
-                    </i>
+
                   </AccordionDetails>
                 </Accordion>
               );
