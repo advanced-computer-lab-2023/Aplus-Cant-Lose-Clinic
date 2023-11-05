@@ -70,6 +70,13 @@ const handleAddHealthRecord = (id)=>{
   patientId=id;
   console.log(patientId);
 }
+const handleCancel = () => {
+  // Add your cancellation logic here
+  // For example, closing the dialog or resetting form data
+  setIsOpen(false);
+
+};
+
 
 const handleSubmitHealthRecord = ()=>{
 
@@ -152,7 +159,7 @@ const handleSubmitHealthRecord = ()=>{
 
 
 
-        // dialogue
+         {/* dialogue */}
   <Dialog open={isOpen} fullWidth maxWidth="md" >
   <form onSubmit={()=>{}} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
           <div className="form-group">
@@ -223,7 +230,9 @@ const handleSubmitHealthRecord = ()=>{
                 <button type="submit" style={{ width: '100%' }}>Save</button>
               </div>
               <div className="button-group" style={{ flex: 1, marginLeft: '10px' }}>
-                <button type="submit" style={{ width: '100%' }}>Cancel</button>
+                <button type="submit" style={{ width: '100%' }} onClick={handleCancel}>
+                  Cancel
+                </button>
               </div>
           </div>
 
