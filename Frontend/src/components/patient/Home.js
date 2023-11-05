@@ -107,6 +107,16 @@ function Home() {
                                 </Button>
                             </NavLink>
                         </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <NavLink to='/ViewHealthPackage'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <VaccinesIcon style={styles} ></VaccinesIcon>
+                                    </IconButton>
+                                    <Typography >view health packages</Typography>
+                                </Button>
+                            </NavLink>
+                        </Box>
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton sx={{ p: 0 }}>

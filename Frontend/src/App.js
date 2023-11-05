@@ -30,6 +30,7 @@ import DoctorsList from "./components/patient/DoctorsList";
 import Doctordetails from "./components/patient/Doctordetails";
 import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
+import ViewHealthPackage from "./components/patient/ViewHealthPackage";
 
 import {
   createBrowserRouter,
@@ -75,6 +76,9 @@ const router = createBrowserRouter(
       <Route path="/Appointments" element={<Appointments />} />
       <Route path="/appointmentPatientss/:doctorId" element={<Appointments />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
+      <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
+
+    
 
       <Route
         path="viewfamilymembers/newfamilymembers"
