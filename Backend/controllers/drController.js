@@ -370,7 +370,7 @@ const addAppointmentTimeSlot = async (req, res) => {
       startDate:req.body.startDate,
       endDate:req.body.endDate,
       drID:doctorId,
-      pID:doctorId,
+      pID:"65480dbbdde936238045fdd3",
       status:"Not_Reserved",
       Description: "",
     });
@@ -383,7 +383,7 @@ const addAppointmentTimeSlot = async (req, res) => {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
-}// note that to initialize+ the PID it should have id which will be the doctors id
+}// note that to initialize+ the PID it should have id which will be the fake patient id till it get reserved
 const createFollowUpAppointment = async (req, res) => {
   try {
     const drID = req.params.drID; // Retrieve doctor ID

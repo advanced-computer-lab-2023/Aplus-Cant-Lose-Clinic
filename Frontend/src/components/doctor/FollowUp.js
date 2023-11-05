@@ -4,6 +4,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useDispatch, useSelector } from "react-redux";
+import axios from 'axios';
 import {
     Typography
 } from "@mui/material";
@@ -22,15 +24,52 @@ function FollowUp() {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
-    const names = ['username', 'user02'];
+    const { id, role } = useSelector((state) => state.user);
+    const [patients, setPatients] = useState([]);
+    const [currentpatient, setCurrentPatient] = useState("");
+    var closes = false;
+       //to get list of doctors patients so he can choose the name of the patient he want to schadule follow up with
+    const getPatientList = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8000/api/doctor/patientsInUpcomingApointments/${id}`);
+            const patientsdata = response.data.patients;
+            setPatients(patientsdata);
+        } catch (error) {
+            console.error("Error fetching patientlist", error);
+        }
+    }
+    //that is the function that addes the follow up slot for selected patient
+    async function addFollowUp() {
+        try {
+            console.log(currentpatient);
 
-    const handleClickOpen = () => {
+            const response = await axios.post(`http://localhost:8000/api/doctor/createFollowUpAppointment/${id}?patientID=${currentpatient}`, {
+                startDate,
+                endDate
+            });
+            console.log(response);
+        } catch (error) {
+            console.error("Error posting free slots", error);
+        }
+    }
+    const handleClickOpen = async () => {
         setOpen(true);
+        await getPatientList();
     };
 
     const handleClose = () => {
-        setOpen(false);
-
+        if (closes) {
+            closes = false;
+            setOpen(false);
+            addFollowUp();
+        } else {
+            if (endDate === "" || startDate === "") {
+                alert("Choose dates");
+            } else {
+                setOpen(false);
+                addFollowUp();
+            }
+        }
     };
     return (
         <>
@@ -84,10 +123,11 @@ function FollowUp() {
                             setEndDate("");
                         }}
                     ></span>
-                    {names.map((email) => (
-                        <ListItem disableGutters key={email}>
-                            <ListItemButton onClick={() => handleClose(email)}>
-                                <ListItemText primary={email} />
+                    {patients.map((patient) => (
+                        <ListItem disableGutters key={patient}>
+                            <ListItemButton onClick={() => setCurrentPatient(patient._id)}>
+                                {console.log(patients)}
+                                <ListItemText primary={patient.name} />
                             </ListItemButton>
                         </ListItem>
                     ))}
