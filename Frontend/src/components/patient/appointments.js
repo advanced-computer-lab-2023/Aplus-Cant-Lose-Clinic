@@ -44,7 +44,7 @@ function BasicTable({ status, date }) {
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
   const rows = useSelector((state) => state.patient.appoints);
-  
+
   useEffect(() => {
     dispatch(viewAppoints(pId));
   }, [dispatch]);
@@ -94,11 +94,11 @@ export default function SearchAppBar() {
   const [open, setOpen] = React.useState(false);
   const [pID, setPID] = React.useState("");
   const [Appointments, setAppointments] = useState([]);
-  var noappoints=false;
-  
+  var noappoints = false;
+
   const { doctorId } = useParams();
   console.log(doctorId)
-  
+
   const getAppointments = async () => {
     try {
       const response = await axios.get(`http://localhost:8000/api/patient/freeAppiontmentSlot/${doctorId}`);
@@ -108,22 +108,22 @@ export default function SearchAppBar() {
       console.error("Error fetching appointments:", error);
     }
   }
-  
+
   const handleClickOpen = () => {
     setOpen(true);
     getAppointments();
   };
 
   const handleClose = () => {
-    if(!noappoints){
+    if (!noappoints) {
 
       if (pID != "") {
-        
+
         setOpen(false);
       } else {
         alert('enter Patient ID');
       }
-    }else{
+    } else {
       setOpen(false);
     }
 
@@ -213,36 +213,36 @@ export default function SearchAppBar() {
       >
         <AddIcon />
       </Fab>
-
-      <Dialog open={open} onClose={handleClose}>{Appointments.length == 0 ? noappoints=true&&(
-        <h1>There is no Availiable appointments</h1>
-      ) : (
-        <>
-          <DialogTitle>Add An Appointment</DialogTitle>
-          <DialogContent>
-            <Typography>Date & TIme</Typography>
-            {Appointments.map((appointment) => (
-              <ListItem disableGutters key={appointment._id}>
-                <ListItemButton>
-                  <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-
-
-            <span style={{ padding: "10px" }}>
-              <Typography>PatientID</Typography>
-              <TextField onChange={(pId) => setPID(pId)}
-              > </TextField>
-            </span>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Add</Button>
-            <Button onClick={noappoints=true && handleClose}>cancel</Button>
-          </DialogActions>
-        </>
-      )}
+      <Dialog open={open} onClose={handleClose} PaperProps={{ style: noappoints ? { backgroundColor: '#004e98' } : { backgroundColor: 'white' } }}>
+        {Appointments.length === 0 ? noappoints = true && (
+          <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
+            <h1>There is no Available Appointments</h1>
+          </div>
+        ) : (
+          <>
+            <DialogTitle>Add An Appointment</DialogTitle>
+            <DialogContent>
+              <Typography>Date & Time</Typography>
+              {Appointments.map((appointment) => (
+                <ListItem disableGutters key={appointment._id}>
+                  <ListItemButton>
+                    <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <div style={{ padding: "10px" }}>
+                <Typography>PatientID</Typography>
+                <TextField onChange={(pId) => setPID(pId)} />
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleClose}>Add</Button>
+              <Button onClick={noappoints = true &&handleClose}>Cancel</Button>
+            </DialogActions>
+          </>
+        )}
       </Dialog>
+
 
     </Box>
   );
