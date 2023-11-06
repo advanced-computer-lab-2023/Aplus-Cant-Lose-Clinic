@@ -56,6 +56,7 @@ function PatientDetails() {
   const drId = useSelector((state) => state.user.id);
   const dispatch= useDispatch();
   useEffect(() => {
+    console.log(drId);
     dispatch(getPatients(drId));
   }, [dispatch]);
 
@@ -79,10 +80,28 @@ const handleCancel = () => {
 };
 
 
-const handleSubmitHealthRecord = ()=>{
+const handleSubmitHealthRecord = async(event)=>{
+  event.preventDefault();
+
+
+  const sampleData = {
+    dummy1: event.target.elements.labResults.value,
+    dummy2: event.target.elements.medicatons.value,
+    dummy3: event.target.elements.bloodPressure.value,
+    dummy4: event.target.elements.heartRate.value,
+    dummy5: event.target.elements.primaryDiagnosis.value,
+   
+  };
+
   console.log("entered handleSubmitHealthRecord");
-  const response = dispatch(addHealthRecord(patientId));
+  console.log("patient id: "+patientId);
+
+  const response =  dispatch(addHealthRecord({id: patientId ,  healthRecordData:sampleData }));
+  // const lastResponse =  dispatch(getPatients(drId));
+
+  setIsOpen(false)
   console.log(response);
+  // console.log(lastResponse);
 
 };
 
@@ -165,7 +184,7 @@ const handleSubmitHealthRecord = ()=>{
 
          {/* dialogue */}
   <Dialog open={isOpen} fullWidth maxWidth="md" >
-  <form onSubmit={()=>{}} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
+  <form onSubmit={()=>{handleSubmitHealthRecord()}} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
           <div className="form-group">
             <label htmlFor="labResults" style={{marginTop:"5%"}}>LAB RESULTS</label>
             <input
@@ -231,10 +250,13 @@ const handleSubmitHealthRecord = ()=>{
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom:"1%"}}>
               <div className="button-group" style={{ flex: 1, marginRight: '10px' }}>
-                <button type="submit" style={{ width: '100%' }} onClick={handleSubmitHealthRecord}>Save</button>
+                <button type="submit" style={{ width: '100%' }} >
+                  Save
+                </button>
+
               </div>
               <div className="button-group" style={{ flex: 1, marginLeft: '10px' }}>
-                <button type="submit" style={{ width: '100%' }} onClick={handleCancel}>
+                <button  style={{ width: '100%' }} onClick={handleCancel}>
                   Cancel
                 </button>
               </div>

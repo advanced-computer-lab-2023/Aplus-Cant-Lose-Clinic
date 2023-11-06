@@ -468,9 +468,11 @@ const createFollowUpAppointment = async (req, res) => {
 
 const addHealthRecord = async (req, res) => {
   try {
-    console.log("entered post function addHealthRecord")
     const patientID  = req.params.patientID;
+
     const {data1,data2,data3,data4,data5}= req.query;
+    console.log("entered post function addHealthRecord id of patient is :"+patientID)
+
 
 
     // Validate inputs

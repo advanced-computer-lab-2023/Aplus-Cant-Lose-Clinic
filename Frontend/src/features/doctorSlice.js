@@ -87,11 +87,12 @@ export const appointmentPatients = createAsyncThunk(
 );
 
 export const addHealthRecord = createAsyncThunk(
-  'doctor/createHealthRecord',
-  async ({ id, healthRecordData }) => {
-    // const response = await axios.post(`${API_URL}/doctor/addHealthRecord/${id}`, healthRecordData);
-    // console.log(response);
-    // return response.data; // Assuming the server returns data about the created health record
+  'doctor/addHealthRecord',
+  async ({ id , healthRecordData }) => {
+    console.log("id og patient: "+id);
+    const response = await axios.post(`${API_URL}/doctor/addHealthRecord/${id}`, healthRecordData);
+    console.log(response);
+    return response; // Assuming the server returns data about the created health record
   },
   console.log("entered addHealthRecordFunction in doctor Slice")
 );
@@ -132,7 +133,7 @@ export const doctor = createSlice({
       })
       .addCase(getPatients.fulfilled, (state, action) => {
         state.patientsList = action.payload.data;
-console.log(state.patientsList);
+        console.log(state.patientsList);
         state.loading = false;
       })
       .addCase(getPatients.rejected, (state, action) => {
@@ -156,6 +157,16 @@ console.log(state.patientsList);
       
       .addCase(getDr.fulfilled, (state, action) => {
         state.info = action.payload.data.dr;
+        console.log(state.info);
+        state.loading = false;
+      })
+
+      builder
+      .addCase(addHealthRecord.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addHealthRecord.fulfilled, (state, action) => {
+        // state.patientsList.records = action.payload.data.records;
         console.log(state.info);
         state.loading = false;
       })
