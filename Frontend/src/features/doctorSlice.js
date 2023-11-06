@@ -88,10 +88,15 @@ export const appointmentPatients = createAsyncThunk(
 
 export const addHealthRecord = createAsyncThunk(
   'doctor/addHealthRecord',
-  async ({ id , healthRecordData }) => {
-    console.log("id og patient: "+id);
-    const response = await axios.post(`${API_URL}/doctor/addHealthRecord/${id}`, healthRecordData);
-    console.log(response);
+  async ({ patientID , healthRecordData }) => {
+    console.log("id og patient: "+patientID);
+   
+ 
+    const response = await axios.post(`${API_URL}/doctor/addHealthRecord/${patientID}`, healthRecordData);
+    
+     console.log(response);
+   
+   
     return response; // Assuming the server returns data about the created health record
   },
   console.log("entered addHealthRecordFunction in doctor Slice")
@@ -166,7 +171,7 @@ export const doctor = createSlice({
         state.loading = true;
       })
       .addCase(addHealthRecord.fulfilled, (state, action) => {
-        // state.patientsList.records = action.payload.data.records;
+        state.patientsList = action.payload.data.patients;
         console.log(state.info);
         state.loading = false;
       })

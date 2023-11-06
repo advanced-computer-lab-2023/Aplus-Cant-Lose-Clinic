@@ -45,7 +45,6 @@ const styles = {
   },
 };
 
-let patientId=-1;
 
 
 
@@ -69,8 +68,7 @@ const [isOpen, setIsOpen] = useState(false);
 const handleAddHealthRecord = (id)=>{
   setPatientId(id);
   setIsOpen(true);
-  patientId=id;
-  console.log(patientId);
+  console.log(id);
 }
 const handleCancel = () => {
   // Add your cancellation logic here
@@ -85,23 +83,24 @@ const handleSubmitHealthRecord = async(event)=>{
 
 
   const sampleData = {
-    dummy1: event.target.elements.labResults.value,
-    dummy2: event.target.elements.medicatons.value,
-    dummy3: event.target.elements.bloodPressure.value,
-    dummy4: event.target.elements.heartRate.value,
-    dummy5: event.target.elements.primaryDiagnosis.value,
+    data1: event.target.elements.labResults.value,
+    data2: event.target.elements.medicatons.value,
+    data3: event.target.elements.bloodPressure.value,
+    data4: event.target.elements.heartRate.value,
+    data5: event.target.elements.primaryDiagnosis.value,
+    doctorID : drId
    
   };
 
   console.log("entered handleSubmitHealthRecord");
-  console.log("patient id: "+patientId);
+  console.log("patient id: "+id);
 
-  const response =  dispatch(addHealthRecord({id: patientId ,  healthRecordData:sampleData }));
-  // const lastResponse =  dispatch(getPatients(drId));
+  const response =  dispatch(addHealthRecord({patientID: id ,  healthRecordData:sampleData}));
+ 
 
   setIsOpen(false)
   console.log(response);
-  // console.log(lastResponse);
+
 
 };
 
@@ -164,13 +163,22 @@ const handleSubmitHealthRecord = async(event)=>{
             Health Records
           </Typography>
           <ul>
-            {row.records.map((record, index) => (
+            {row.healthRecords.map((healthRecord, index) => (
               <ul key={index} >
               <li style={styles.text}>
-                {record.url}
+                {healthRecord.dummy1}
               </li>
               <li style={styles.text}>
-                {record.desc}
+                {healthRecord.dummy2}
+              </li>
+              <li style={styles.text}>
+                {healthRecord.dummy3}
+              </li>
+              <li style={styles.text}>
+                {healthRecord.dummy4}
+              </li>
+              <li style={styles.text}>
+                {healthRecord.dummy5}
               </li>
               
         </ul>
@@ -184,7 +192,7 @@ const handleSubmitHealthRecord = async(event)=>{
 
          {/* dialogue */}
   <Dialog open={isOpen} fullWidth maxWidth="md" >
-  <form onSubmit={()=>{handleSubmitHealthRecord()}} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
+  <form onSubmit={handleSubmitHealthRecord} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
           <div className="form-group">
             <label htmlFor="labResults" style={{marginTop:"5%"}}>LAB RESULTS</label>
             <input
