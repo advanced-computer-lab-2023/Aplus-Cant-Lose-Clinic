@@ -325,7 +325,7 @@ const freeAppiontmentSlot = async (req, res) => {
     }
 
     // Fetch details about each free Appointment
-    const Appointmentss = await Appointment.find({ pID: doctorId });
+    const Appointmentss = await Appointment.find({ pID: "65480dbbdde936238045fdd3" });
 
     return res.status(200).json({
       message: "Free Appointments retrieved successfully",
@@ -341,20 +341,32 @@ const reserveAppointmentSlot = async (req, res) => {
   try {
     const { AppointmentId } = req.params;
     const { username, Description } = req.body;
-    const patient = await Patient.findOne({ username: username });
-    const patientId = patient ? patient._id : null;
-    if (patientId) {
-      await Appointment.findByIdAndUpdate(AppointmentId, { Description: Description, pID: patientId });
-      res.status(200).json({ message: "Appointment updated successfully" });
-    } else {
+
+    // Validate AppointmentId, username, and Description
+    if (!AppointmentId || !username || !Description) {
+      return res.status(400).json({ error: "AppointmentId, username, and Description are required" });
+    }
+
+    // Find the patient by username
+    const patient = await Patient.findOne({ username });
+
+    if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
     }
+
+    // Update the appointment with the patient information
+    await Appointment.findByIdAndUpdate(AppointmentId, {
+      Description,
+      pID: patient._id,
+      status: "upcoming",
+    });
+
+    res.status(200).json({ message: "Appointment updated successfully" });
   } catch (error) {
     console.error("Error updating appointment:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-};
-
+}
 
 
 const searchDoctorsByNameOrspeciality = async (req, res) => {

@@ -92,8 +92,10 @@ export default function SearchAppBar() {
   const [status, setStatus] = useState("Any");
   const [date, setDate] = useState("");
   const [open, setOpen] = React.useState(false);
-  const [pID, setPID] = React.useState("");
+  const [pname, setPname] = useState("");
   const [Appointments, setAppointments] = useState([]);
+  const [description, setDescription] = useState("");
+  const [currentAppointment,setCurrentAppointment]=useState(null);
   var noappoints = false;
 
   const { doctorId } = useParams();
@@ -108,25 +110,30 @@ export default function SearchAppBar() {
       console.error("Error fetching appointments:", error);
     }
   }
+  async function reserveAnAppointment() {
+    try {
+        console.log('appointmentId:',currentAppointment);
+        console.log('username:',pname);
+        console.log('Description:',description);
 
+        const response = await axios.patch(`http://localhost:8000/api/patient/reserveAppointmentSlot/${currentAppointment}`, {
+          username:pname,
+          Description:description
+        });
+        console.log(response);
+    } catch (error) {
+        console.error("Error adding the slot", error);
+    }
+}
   const handleClickOpen = () => {
     setOpen(true);
     getAppointments();
   };
 
   const handleClose = () => {
-    if (!noappoints) {
-
-      if (pID != "") {
-
-        setOpen(false);
-      } else {
-        alert('enter Patient ID');
-      }
-    } else {
+      reserveAnAppointment();
       setOpen(false);
-    }
-
+    
   };
   function formatDateTimeToEnglish(dateTimeString) {
     const date = new Date(dateTimeString);
@@ -226,13 +233,17 @@ export default function SearchAppBar() {
               {Appointments.map((appointment) => (
                 <ListItem disableGutters key={appointment._id}>
                   <ListItemButton>
-                    <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} />
-                  </ListItemButton>
+                    <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} onClick={() => setCurrentAppointment(appointment._id)}/>
+                 </ListItemButton>
                 </ListItem>
               ))}
               <div style={{ padding: "10px" }}>
-                <Typography>PatientID</Typography>
-                <TextField onChange={(pId) => setPID(pId)} />
+                <Typography>Patient User Name</Typography>
+                <TextField onChange={(event) => setPname(event.target.value)} />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <Typography>Description</Typography>
+                <TextField onChange={(event) => setDescription(event.target.value)} />
               </div>
             </DialogContent>
             <DialogActions>
