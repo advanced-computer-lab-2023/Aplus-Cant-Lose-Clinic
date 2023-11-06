@@ -79,6 +79,10 @@ const paSchema = new mongoose.Schema(
 
       },
     ],
+    wallet: {
+      type: Number,
+      required: true, // wallet is required
+    },
   }
 );
 

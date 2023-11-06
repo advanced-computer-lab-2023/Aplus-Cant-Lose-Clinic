@@ -50,6 +50,11 @@ const drSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "rejected"], // Define allowed values for the 'role' field
       default: "pending",
     },
+
+    wallet: {
+      type: Number,
+      required: true, // wallet is required
+    },
   }
 );
 
