@@ -49,7 +49,8 @@ const styles = {
   card: {
     maxWidth: 400, // Adjust the maximum width as needed
     margin: '10px', // Add margin around each card
-    backgroundColor:"#01579b"
+    backgroundColor:"#01579b",
+    cursor: 'pointer'
   },
 };
 
@@ -73,6 +74,22 @@ function PatientDetails() {
 const [id, setPatientId] = useState(-1);
 const [isOpen, setIsOpen] = useState(false);
 
+const [dialogHealthRecord, setOpenDialogHealthRecord] = useState(false);
+const [selectedHealthRecord, setSelectedHealthRecord] = useState(null);
+
+// Function to open the dialog and set the selected health record
+const handleOpenDialog = (healthRecord) => {
+  setSelectedHealthRecord(healthRecord);
+  setOpenDialogHealthRecord(true);
+};
+
+// Function to close the dialog
+const handleCloseDialog = () => {
+  setSelectedHealthRecord(null);
+  setOpenDialogHealthRecord(false);
+};
+
+
 const handleAddHealthRecord = (id)=>{
   setPatientId(id);
   setIsOpen(true);
@@ -84,6 +101,7 @@ const handleCancel = () => {
   setIsOpen(false);
 
 };
+
 
 
 const handleSubmitHealthRecord = async(event)=>{
@@ -175,7 +193,7 @@ const handleSubmitHealthRecord = async(event)=>{
           <Typography variant="h5" style={styles.subHeader}>
             Health Records
           </Typography>
-          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+          {/* <div style={{ display: 'flex', flexWrap: 'wrap' }}>
 
             {
                 row.healthRecords.map((healthRecord, index) => (
@@ -195,7 +213,68 @@ const handleSubmitHealthRecord = async(event)=>{
                     </Card>
                   ))
             }
-          </div>
+          </div>  */}
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            
+            {/* this is the card before it is clicked */}
+
+                {
+                    row.healthRecords.map((healthRecord, index) => (
+                        <Card key={index} style={styles.card} onClick={() => handleOpenDialog(healthRecord)} // Open the dialog on card click
+                         >
+                            <CardContent>
+                              <Typography variant="h5">Health Record</Typography>
+                              {Object.keys(healthRecord).map((key) => (
+                                key==="date" && (
+                                <div key={key}>
+                                  <Typography variant="body1">
+                                    {key}: {healthRecord[key]}
+                                  </Typography>
+                                </div>
+                                )
+                              ))}
+                            </CardContent>
+                        </Card>
+                      ))
+                }
+
+
+            <Dialog open={dialogHealthRecord} onClose={handleCloseDialog} fullWidth
+                    maxWidth="md"
+                    PaperProps={{ style: { minHeight: '70vh', maxHeight: '90vh' } }}
+            >
+                
+                  <CardContent >
+                          <Typography variant="h5">Health Record</Typography>
+                          {selectedHealthRecord && (
+                            // Display detailed health record information here
+                            <>
+                              {Object.keys(selectedHealthRecord).map((key) => (
+                                key !== '_id' && (
+                                  <div key={key}>
+                                    <Typography variant="body1" style={{ wordWrap: 'break-word' }}>
+                                      {key}: {selectedHealthRecord[key]}
+                                    </Typography>
+                                  </div>
+                                )
+                              ))}
+
+                              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto' }}>
+                                  <Button variant="contained" onClick={handleCloseDialog}>
+                                    Cancel
+                                  </Button>
+                            </div>
+                            </>
+                          )}
+                 </CardContent>
+            </Dialog>
+                
+            </div>
+
+          
+
+          
+          
 
       
         </Paper>))}
