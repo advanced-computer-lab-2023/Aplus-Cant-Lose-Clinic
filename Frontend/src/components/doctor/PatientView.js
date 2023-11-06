@@ -12,6 +12,8 @@ import {
   DialogActions,
   Input,
   TextareaAutosize,
+   Card ,
+ CardContent
 } from '@mui/material';
 
 import IconButton from '@mui/material/IconButton';
@@ -24,7 +26,8 @@ import { useNavigate } from 'react-router-dom';
 const styles = {
   paper: {
     padding: '20px',
-    backgroundColor: 'pink',
+    // backgroundColor: 'pink',
+    backgroundColor:"#cfd8dc",
     marginBottom: '10px'
   },
   mainHeader: {
@@ -42,6 +45,11 @@ const styles = {
   button: {
     backgroundColor: '#004E98',
     color: 'white',
+  },
+  card: {
+    maxWidth: 400, // Adjust the maximum width as needed
+    margin: '10px', // Add margin around each card
+    backgroundColor:"#01579b"
   },
 };
 
@@ -108,20 +116,25 @@ const handleSubmitHealthRecord = async(event)=>{
   const navigate = useNavigate();
   return (
     <div>
-      {rows.map((row, index) => (
-        <Paper elevation={3} style={styles.paper}  key={index}>
-          <i>
-            <IconButton
-              color="primary"
+     < div style={{ paddingBottom: '1.5%',backgroundColor: "#1769aa" }}>
+     <IconButton
+              color="#FFFFFF"
+              backgroundColor="#1266AA"
               aria-label="Back to Home"
-              style={{ position: 'absolute', bottom: '10px', right: '10px' }}
+              style={{ position: 'absolute' }}
               onClick={() => {
                 navigate(-1);
               }}
             >
-              <HomeIcon />
+              <HomeIcon style={{ position: 'absolute', top: '1%', left: '1%' }} />
             </IconButton>
-          </i>
+     </div>
+      
+      
+      {rows.map((row, index) => (
+        <Paper elevation={3} style={styles.paper}  key={index}>
+          
+            
 
         <Box display="flex" justifyContent="space-between">
 
@@ -162,28 +175,28 @@ const handleSubmitHealthRecord = async(event)=>{
           <Typography variant="h5" style={styles.subHeader}>
             Health Records
           </Typography>
-          <ul>
-            {row.healthRecords.map((healthRecord, index) => (
-              <ul key={index} >
-              <li style={styles.text}>
-                {healthRecord.dummy1}
-              </li>
-              <li style={styles.text}>
-                {healthRecord.dummy2}
-              </li>
-              <li style={styles.text}>
-                {healthRecord.dummy3}
-              </li>
-              <li style={styles.text}>
-                {healthRecord.dummy4}
-              </li>
-              <li style={styles.text}>
-                {healthRecord.dummy5}
-              </li>
-              
-        </ul>
-            ))}
-          </ul>
+          <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+
+            {
+                row.healthRecords.map((healthRecord, index) => (
+                    <Card key={index} style={styles.card}>
+                        <CardContent>
+                          <Typography variant="h5">Health Record</Typography>
+                          {Object.keys(healthRecord).map((key) => (
+                            key!="_id" && (
+                            <div key={key}>
+                              <Typography variant="body1">
+                                {key}: {healthRecord[key]}
+                              </Typography>
+                            </div>
+                            )
+                          ))}
+                        </CardContent>
+                    </Card>
+                  ))
+            }
+          </div>
+
       
         </Paper>))}
 
