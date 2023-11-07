@@ -31,6 +31,7 @@ import Doctordetails from "./components/patient/Doctordetails";
 import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
 import ViewHealthPackage from "./components/patient/ViewHealthPackage";
+import SubsciptionPayment from "./components/patient/SubscriptionPayment.js"
 
 import {
   createBrowserRouter,
@@ -93,6 +94,8 @@ const router = createBrowserRouter(
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
       <Route path="/PatientsList" element={<PatientView />} />
+      <Route path="/SubsciptionPayment" element={<SubsciptionPayment />} />
+      
     </Route>
   )
 );
