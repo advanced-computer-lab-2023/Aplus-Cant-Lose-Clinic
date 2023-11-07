@@ -10,29 +10,31 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from 'react';
-import { viewHealthP, deleteHpackages, editPackFront, updatePack } from '../../features/adminSlice';
+import { viewHealthP ,unsubscribeHealthPackage} from '../../features/patientSlice';
 import { Button, Typography } from "@mui/material";
 import { SnackbarContext } from "../../App";
 import { NavLink } from 'react-router-dom';
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
-  const [editRow, setEditRow] = useState({});
-  const [id, setId] = useState(-1);
-  const [idx, setIdx] = useState(-1);
-  const [subscribed, setSubscribed] = useState({}); // Track subscription status
+  const id = useSelector((state) => state.user.id);
+ 
 
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(viewHealthP());
+    dispatch(viewHealthP(id));
   }, [dispatch]);
 
-  const dummyData = useSelector((state) => state.admin.hpackages);
+  const dummyData = useSelector((state) => state.patient.hpackages);
 
-  const handleUnSubscribe = (id) => {
+  const handleUnSubscribe = (healthPackageIdd) => {
     // Dispatch your unsubscribe logic here
     // Update the subscribed state accordingly
-    dispatch()
+  
+    // dispatch(unsubscribeHealthPackage({
+    //   Pid:id , 
+    //   healthPackageId:healthPackageIdd
+    // }))
   };
 
   const handleSubscribe = (row, index) => {
@@ -92,6 +94,7 @@ export default function Hpackages() {
           </TableHead>
           <TableBody>
             {dummyData.map((row, index) => (
+          
               <TableRow
                 key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -113,28 +116,28 @@ export default function Hpackages() {
                 </TableCell>
 
                 <TableCell align="left" style={cellStyle}>
-                  {row.hPackage ? (
+                  {row.isSubscribed==true ? (
                       <NavLink to="/SubscriptionPayment" >
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {
-                        console.log(row);
+                        
                         handleSubscribe(row, index);
                       }}
                     >
                     
                       <Typography>
-                        Subscribe
+                        Subscribeddd
                       </Typography>
                     </Button>
                     </NavLink>
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}
-                      onClick={() => handleUnSubscribe(row._id)}
+                      onClick={() => {console.log(row.isSubscribed);handleUnSubscribe(row)}}
                     >
                       <Typography>
-                        UnSubscribe
+                        UnSubscribedddd
                       </Typography>
                     </Button>
                   )}

@@ -814,7 +814,11 @@ const subscribeToHealthPackage = async (req, res) => {
 
 
 const unSubscribeToHealthPackage = async (req, res) => {
+  
   const { patientId, healthPackageId } = req.query;
+  console.log("entered unsubscribe to health package");
+  console.log(patientId);
+  console.log(healthPackageId);
 
   try {
     // Validate input fields
@@ -844,17 +848,21 @@ const unSubscribeToHealthPackage = async (req, res) => {
       { new: true }
     );
 
+    // const healthPackagesResponse = await viewHealthPackagesPatient(req.params.patientId=patientId, res);
+
     
 
     return res
       .status(201)
-      .json({ message: "Subscribed to Health Package added successfully", updatedPatient });
+      .json({ message: "UNSubscribed to Health Package added successfully", 
+      updatedPatient,
+      // healthPackages:healthPackagesResponse
+     });
   } catch (error) {
     console.error("Error Subscribing to Health Package:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 const payWithWallet= async(req,res)=>
 {
   const {amount}=req.body;
@@ -881,10 +889,29 @@ const payWithWallet= async(req,res)=>
   Patient.hPackage=healthPackageId;
     await Patient.save();
 
+
+    const healthPackages = await HPackages.find();
+
+    // Check if the patient has a health package ID
+    const patientSubscribedPackage = patient.hPackage;
+
+    // Map the health packages and add the subscription status
+    const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
+      const isSubscribed = patientSubscribedPackage ? patientSubscribedPackage.equals(healthPackage._id) : false;
+      return {
+        ...healthPackage.toObject(),
+        isSubscribed,
+      };
+    });
+    
+
     res.status(200).json({
+      message: "Health packages fetched successfully",
+      healthPackages: healthPackagesWithSubscriptions,
       message: "Successfully Subscribed to Health package",
       Patient,
     });
+    
   
 }catch(error)
 {
@@ -893,9 +920,6 @@ const payWithWallet= async(req,res)=>
 }
 
 }
-
-
-
 
 
 

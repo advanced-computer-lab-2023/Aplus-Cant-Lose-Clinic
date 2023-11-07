@@ -105,11 +105,12 @@ export const addFamilyMember = createAsyncThunk(
 export const unsubscribeHealthPackage = createAsyncThunk(
   "patient/unsubscribeHealthPackage",
   async (data) => {
-    console.log(data.id);
+    console.log("entered unsubscribe in patient slice")
+    console.log(data.Pid);
     console.log(data);
     const queryParams = {
-      key1: data.Pid,
-      key2: data.healthPackageId,
+      patientId: data.Pid,
+      healthPackageId: data.healthPackageId,
     };
 
     
@@ -117,8 +118,9 @@ export const unsubscribeHealthPackage = createAsyncThunk(
     const queryString = new URLSearchParams(queryParams).toString();
 
     // Define the URL with query parameters
-    const apiUrl = `/api/endpoint?${queryString}`;
-    const response = await axios.post(
+ 
+   
+    const response = await axios.patch(
       `${API_URL}/patient/unSubscribeToHealthPackage?${queryString}`,
       {
       }
@@ -128,6 +130,20 @@ export const unsubscribeHealthPackage = createAsyncThunk(
     return response;
   }
 );
+
+
+
+
+export const viewHealthP = createAsyncThunk(
+  "patient/viewHealthP", 
+  async (id) => {
+    console.log("blabizo  "+id)
+  const response = await axios.get(
+    `${API_URL}/patient/viewHealthPackagesPatient/${id}`
+  );
+  return response;
+
+})
 
 
 
@@ -144,6 +160,7 @@ const patientInitial = {
   presc: [],
   appoints:[],
   doctors:[],
+  hpackages: []
 };
 
 
@@ -220,6 +237,17 @@ const patient = createSlice({
         state.loading = false;
         state.error = action.error.message;
       });
+      builder
+      .addCase(viewHealthP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.hpackages = action.payload.data.healthPackages;
+      })
+
+      builder
+      .addCase(unsubscribeHealthPackage.fulfilled, (state, action) => {
+        state.loading = false;
+        state.hpackages = action.payload.data.healthPackages;
+      })
   },
 });
 
