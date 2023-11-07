@@ -113,7 +113,7 @@ export default function Hpackages() {
                 </TableCell>
                 <TableCell align="left" style={cellStyle}>
                   {!subscribed[row._id] ? (
-                      <NavLink to="/Payment" >
+                      <NavLink to="/SubscriptionPayment" >
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {

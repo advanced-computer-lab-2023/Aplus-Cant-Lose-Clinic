@@ -31,7 +31,8 @@ import Doctordetails from "./components/patient/Doctordetails";
 import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
 import ViewHealthPackage from "./components/patient/ViewHealthPackage";
-import SubsciptionPayment from "./components/patient/SubscriptionPayment.js"
+import SubsciptionPayment from "./components/patient/SubscriptionPayment"
+
 
 import {
   createBrowserRouter,
@@ -94,12 +95,7 @@ const router = createBrowserRouter(
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
       <Route path="/PatientsList" element={<PatientView />} />
-<<<<<<< Updated upstream
-      <Route path="/SubsciptionPayment" element={<SubsciptionPayment />} />
-      
-=======
-      <Route path="/SubscriptionPayment" element={<SubscriptionPayment />} />
->>>>>>> Stashed changes
+      <Route path="/SubscriptionPayment" element={<SubsciptionPayment/>} />
     </Route>
   )
 );
