@@ -857,6 +857,44 @@ const unSubscribeToHealthPackage = async (req, res) => {
 
 
 
+const viewHealthPackagesPatient = async (req, res) => {
+  try {
+    // Simulate patient data retrieval (replace with your actual method)
+    const patient = await Patient.findById(req.params.patientId);
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    const healthPackages = await HPackages.find();
+
+    // Check if the patient has a health package ID
+    const patientSubscribedPackages = patient.hPackage._id || null;
+    
+
+    // Map the health packages and add the subscription status
+    const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
+
+      // console.log(patientSubscribedPackages)
+      // console.log(healthPackage._id)
+
+      const isSubscribed = patientSubscribedPackages.equals(healthPackage._id);
+      return {
+        ...healthPackage.toObject(),
+        isSubscribed,
+      };
+    });
+
+    res.status(200).json({
+      message: "Health packages fetched successfully",
+      healthPackages: healthPackagesWithSubscriptions,
+      patientId: patient._id,
+    });
+  } catch (error) {
+    console.error("Error fetching health packages:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
@@ -881,5 +919,6 @@ module.exports = {
   reserveAppointmentSlot,
   appointmentPatients,
   subscribeToHealthPackage,
-  unSubscribeToHealthPackage
+  unSubscribeToHealthPackage,
+  viewHealthPackagesPatient
 };

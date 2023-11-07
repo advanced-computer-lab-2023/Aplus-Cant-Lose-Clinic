@@ -101,6 +101,36 @@ export const addFamilyMember = createAsyncThunk(
 );
 
 
+//----------------------------------------------------
+export const unsubscribeHealthPackage = createAsyncThunk(
+  "patient/unsubscribeHealthPackage",
+  async (data) => {
+    console.log(data.id);
+    console.log(data);
+    const queryParams = {
+      key1: data.Pid,
+      key2: data.healthPackageId,
+    };
+
+    
+    // Convert the query parameters object to a URL-encoded string
+    const queryString = new URLSearchParams(queryParams).toString();
+
+    // Define the URL with query parameters
+    const apiUrl = `/api/endpoint?${queryString}`;
+    const response = await axios.post(
+      `${API_URL}/patient/unSubscribeToHealthPackage?${queryString}`,
+      {
+      }
+    );
+
+    // Return the response data
+    return response;
+  }
+);
+
+
+
 
 const patientInitial = {
   // status: "unfilled",

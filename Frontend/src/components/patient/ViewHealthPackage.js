@@ -32,13 +32,13 @@ export default function Hpackages() {
   const handleUnSubscribe = (id) => {
     // Dispatch your unsubscribe logic here
     // Update the subscribed state accordingly
-    setSubscribed({ ...subscribed, [id]: false });
+    dispatch()
   };
 
   const handleSubscribe = (row, index) => {
     // Implement your subscribe logic here
     // After subscribing, update the subscribed state
-    setSubscribed({ ...subscribed, [row._id]: true });
+    // setSubscribed({ ...subscribed, [row._id]: true });
   };
 
   const tableStyle = {
@@ -111,8 +111,9 @@ export default function Hpackages() {
                 <TableCell align="left" style={cellStyle}>
                   {row.familyDisc}
                 </TableCell>
+
                 <TableCell align="left" style={cellStyle}>
-                  {!subscribed[row._id] ? (
+                  {row.hPackage ? (
                       <NavLink to="/SubscriptionPayment" >
                     <Button
                       sx={subscribeButtonStyle}
