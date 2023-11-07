@@ -855,46 +855,41 @@ const unSubscribeToHealthPackage = async (req, res) => {
   }
 };
 
+const payWithWallet= async(req,res)=>
+{
+  console.log("entered")
+  const {amount,healthPackageId}=req.body;
+  const {patientId}=req.params;
+  try{
+  const user=await Patient.findOne({_id:patientId})
+  if(!user)
+  {
+    return res.status(404).json({error:"User not found!"})
+  }
+  if(user.wallet<amount){
+   return  res.status(400).json({error:"Balance not Sufficient"})
+  }
+  
 
-
-const viewHealthPackagesPatient = async (req, res) => {
-  try {
-    // Simulate patient data retrieval (replace with your actual method)
-    const patient = await Patient.findById(req.params.patientId);
-
-    if (!patient) {
-      return res.status(404).json({ error: "Patient not found" });
-    }
-
-    const healthPackages = await HPackages.find();
-
-    // Check if the patient has a health package ID
-    const patientSubscribedPackages = patient.hPackage._id || null;
-    
-
-    // Map the health packages and add the subscription status
-    const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
-
-      // console.log(patientSubscribedPackages)
-      // console.log(healthPackage._id)
-
-      const isSubscribed = patientSubscribedPackages.equals(healthPackage._id);
-      return {
-        ...healthPackage.toObject(),
-        isSubscribed,
-      };
-    });
+    user.wallet-=amount
+    //user.hPackage=healthPackageId
+    await user.save();
 
     res.status(200).json({
-      message: "Health packages fetched successfully",
-      healthPackages: healthPackagesWithSubscriptions,
-      patientId: patient._id,
+      message: "Successfully Subscribed to Health package",
+      user,
     });
-  } catch (error) {
-    console.error("Error fetching health packages:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+  
+}catch(error)
+{
+  console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+}
+
+}
+
+
+
 
 
 
@@ -920,5 +915,5 @@ module.exports = {
   appointmentPatients,
   subscribeToHealthPackage,
   unSubscribeToHealthPackage,
-  viewHealthPackagesPatient
+  payWithWallet
 };
