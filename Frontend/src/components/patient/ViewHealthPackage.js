@@ -1,4 +1,5 @@
 
+
 import React, { useState, useContext } from 'react';
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,6 +13,7 @@ import { useEffect } from 'react';
 import { viewHealthP, deleteHpackages, editPackFront, updatePack } from '../../features/adminSlice';
 import { Button, Typography } from "@mui/material";
 import { SnackbarContext } from "../../App";
+import { NavLink } from 'react-router-dom';
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -111,6 +113,7 @@ export default function Hpackages() {
                 </TableCell>
                 <TableCell align="left" style={cellStyle}>
                   {!subscribed[row._id] ? (
+                      <NavLink to="/Payment" >
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {
@@ -118,10 +121,12 @@ export default function Hpackages() {
                         handleSubscribe(row, index);
                       }}
                     >
+                    
                       <Typography>
                         Subscribe
                       </Typography>
                     </Button>
+                    </NavLink>
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}

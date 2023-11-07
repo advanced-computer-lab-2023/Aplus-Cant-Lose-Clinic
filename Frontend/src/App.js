@@ -94,8 +94,12 @@ const router = createBrowserRouter(
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
       <Route path="/PatientsList" element={<PatientView />} />
+<<<<<<< Updated upstream
       <Route path="/SubsciptionPayment" element={<SubsciptionPayment />} />
       
+=======
+      <Route path="/SubscriptionPayment" element={<SubscriptionPayment />} />
+>>>>>>> Stashed changes
     </Route>
   )
 );
