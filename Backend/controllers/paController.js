@@ -857,27 +857,33 @@ const unSubscribeToHealthPackage = async (req, res) => {
 
 const payWithWallet= async(req,res)=>
 {
-  console.log("entered")
-  const {amount,healthPackageId}=req.body;
-  const {patientId}=req.params;
+  const {amount}=req.body;
+  const {patientId,healthPackageId}=req.query;
   try{
-  const user=await Patient.findOne({_id:patientId})
-  if(!user)
+    if (!patientId || !healthPackageId) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+  const Patient=await Patient.findOne({_id:patientId})
+
+  
+  if(!Patient)
   {
-    return res.status(404).json({error:"User not found!"})
+    return res.status(404).json({error:"Patient not found!"})
   }
-  if(user.wallet<amount){
+ 
+
+  if(Patient.wallet<amount){
    return  res.status(400).json({error:"Balance not Sufficient"})
   }
   
 
-    user.wallet-=amount
-    //user.hPackage=healthPackageId
-    await user.save();
+  Patient.wallet-=amount;
+  Patient.hPackage=healthPackageId;
+    await Patient.save();
 
     res.status(200).json({
       message: "Successfully Subscribed to Health package",
-      user,
+      Patient,
     });
   
 }catch(error)
