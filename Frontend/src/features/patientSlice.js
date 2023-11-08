@@ -160,7 +160,8 @@ const patientInitial = {
   presc: [],
   appoints:[],
   doctors:[],
-  hpackages: []
+  hpackages: [],
+  wallet:0
 };
 
 

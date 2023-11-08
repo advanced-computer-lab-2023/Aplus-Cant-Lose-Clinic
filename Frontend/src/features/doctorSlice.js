@@ -14,6 +14,7 @@ const doctorState = {
   response: "",
   appointments:[],
   info:{},
+  wallet:0
 
 };
 
