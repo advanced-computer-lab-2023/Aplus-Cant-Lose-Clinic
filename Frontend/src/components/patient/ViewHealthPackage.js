@@ -13,7 +13,7 @@ import { useEffect } from 'react';
 import { viewHealthP ,unsubscribeHealthPackage} from '../../features/patientSlice';
 import { Button, Typography } from "@mui/material";
 import { SnackbarContext } from "../../App";
-import { NavLink } from 'react-router-dom';
+import { NavLink,Link } from 'react-router-dom';
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -117,15 +117,24 @@ export default function Hpackages() {
                 <TableCell align="left" style={cellStyle}>
                   {row.familyDisc}
                 </TableCell>
-
+                
                 <TableCell align="left" style={cellStyle}>
                   {
+                    
                   !row.isSubscribed ? (
-                      <NavLink to="/SubscriptionPayment" >
+                      <Link to={{
+                        pathname: '/SubscriptionPayment',
+                        state: {
+                          data:{
+                            healthPackageId:row._id,
+                            fees:row.rate,
+                          }
+                        },
+                      }} >
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {
-                        console.log(row.isSubscribed);
+                        console.log(row.rate);
                         // handleSubscribe(row, index);
                       }}
                     >
@@ -134,7 +143,7 @@ export default function Hpackages() {
                         Subscribe
                       </Typography>
                     </Button>
-                    </NavLink>
+                    </Link>
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}

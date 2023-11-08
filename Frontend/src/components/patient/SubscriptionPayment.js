@@ -22,7 +22,8 @@ const SubsciptionPayment = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const id = useSelector((state) => state.user.id);
   const location=useLocation();
-  const h_id=location.state.myProp;
+  console.log(location.state);
+  const h_id=location.state.healthPackageId;
   const [formData, setFormData] = useState({
     cardNumber: "",
     expiration: "",
