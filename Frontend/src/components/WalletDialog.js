@@ -5,23 +5,33 @@ import { useEffect } from 'react';
 import {viewWallet as viewWalletPatient}  from '../features/patientSlice'
 import {viewWallet as viewWalletDoctor}  from '../features/doctorSlice'
 
-import { Dialog, IconButton, Typography, Button } from '@mui/material';
+import { Dialog, IconButton, Typography, Button, DialogContent } from '@mui/material';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
 
-
 const styles = {
-    dialogContent: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '16px',
-    },
-    walletAmount: {
-      fontSize: '24px',
-      fontWeight: 'bold',
-      margin: '16px 0',
-    },
-  };
+  dialogContent: {
+    // display: 'flex',
+    // flexDirection: 'column',
+    // alignItems: 'center',
+    // padding: '16px',
+    // width: '150px',
+  },
+  walletAmount: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    margin: '12px 0',
+  },
+  walletIcon: {
+    fontSize: '48px',
+  },
+  cancelButtonContainer: {
+    display: 'flex',
+    justifyContent: 'center', // Center the child elements horizontally
+    marginTop: '16px',
+  },
+};
+
+
 
 export const WalletDialog = ({ open, onClose, type}) => {
     const id = useSelector((state) => state.user.id);
@@ -41,14 +51,27 @@ export const WalletDialog = ({ open, onClose, type}) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <IconButton>
-        <WalletIcon style={styles} />
-      </IconButton>
-      <Typography>Wallet Amount:</Typography>
-      {/* Display the wallet amount here */
-      amount
-      }
-      <Button onClick={onClose}>Cancel</Button>
+
+          <DialogContent styles={styles.dialogContent}>
+                <IconButton>
+                  <WalletIcon style={styles.walletIcon} />
+                </IconButton>
+
+                <Typography variant="h5" style={styles.walletAmount}>
+                  Wallet Amount: {amount}
+                </Typography>
+
+                <div style={styles.cancelButtonContainer}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={onClose}
+                      >
+                        Cancel
+                      </Button>
+                </div>
+          
+          </DialogContent>
     </Dialog>
   );
 };
