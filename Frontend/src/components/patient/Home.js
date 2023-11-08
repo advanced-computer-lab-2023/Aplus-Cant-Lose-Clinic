@@ -4,7 +4,10 @@ import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
+import WalletIcon from '@mui/icons-material/Wallet';
 import { NavLink } from 'react-router-dom';
+import { WalletDialog } from '../WalletDialog.js';
+import {useState} from 'react'
 
 function Home() {
     const styles = {
@@ -33,6 +36,18 @@ function Home() {
         display: 'flex',
 
     }
+
+    const [dialogOpen, setDialogOpen] = useState(false);
+
+    const handleOpenDialog = () => {
+      setDialogOpen(true);
+    };
+  
+    const handleCloseDialog = () => {
+      setDialogOpen(false);
+    };
+
+
     return (
         <>
             <AppBar position="static" sx={{ backgroundColor: '#004E98' }}>
@@ -116,6 +131,19 @@ function Home() {
                                     <Typography >view health packages</Typography>
                                 </Button>
                             </NavLink>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <div>
+                                <>
+                                    <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
+                                        <IconButton>
+                                            <WalletIcon style={styles} ></WalletIcon>
+                                        </IconButton>
+                                        <Typography >view wallet</Typography>
+                                    </Button>
+                                    <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='patient'/>
+                                </>
+                            </div>
                         </Box>
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
