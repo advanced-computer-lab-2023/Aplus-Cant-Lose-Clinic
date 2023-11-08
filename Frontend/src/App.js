@@ -95,7 +95,7 @@ const router = createBrowserRouter(
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
       <Route path="/PatientsList" element={<PatientView />} />
-      <Route path="/SubscriptionPayment" element={<SubsciptionPayment/>} />
+      <Route path="/SubscriptionPayment/:h_id/:amount" element={<SubsciptionPayment/>} />
     </Route>
   )
 );

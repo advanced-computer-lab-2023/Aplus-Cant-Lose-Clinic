@@ -2,7 +2,7 @@ import React from 'react'
 import Button from "@mui/material/Button";
 import { useState } from 'react';
 import {  useSelector } from "react-redux";
-import { useLocation } from 'react-router-dom';
+import { useLocation ,useParams,useNavigate} from 'react-router-dom';
 import axios from "axios";
 import {
 
@@ -21,9 +21,13 @@ import {
 const SubsciptionPayment = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const id = useSelector((state) => state.user.id);
-  const location=useLocation();
-  console.log(location.state);
-  const h_id=location.state.healthPackageId;
+  const navigate = useNavigate();
+  //const location=useLocation();
+ 
+  //const h_id = location.state ? location.state.healthPackageId : null;
+ // const amount = location.state ? location.state.rate : null;
+ const { h_id, amount } = useParams();
+ console.log("id===",h_id);
   const [formData, setFormData] = useState({
     cardNumber: "",
     expiration: "",
@@ -45,11 +49,16 @@ const SubsciptionPayment = () => {
 
     const handleWalletButtonClick = async() => {
       try{
-        const response=await axios.patch(`http://localhost:8080/api/patient/SubscriptionPayment/${id}/${h_id}`)
+        const body={amount:amount};
+        const response=await axios.patch(`http://localhost:8080/api/patient/SubscriptionPayment/${id}/${h_id}`,body)
+     
+
       }catch(error)
       {
         console.error('Error:', error);
       }
+      navigate('/Home');
+     
     
       };
     
@@ -77,13 +86,15 @@ const SubsciptionPayment = () => {
           // You can perform further actions here, e.g., submit the form data to a server.
           console.log("Form data is valid:", formData);
           try{
-            const response=await axios.patch(`http://localhost:8080/api/patient/CCSubscriptionPayment/${id}/${h_id}`)
+            const body={amount:amount};
+            const response=await axios.patch(`http://localhost:8080/api/patient/CCSubscriptionPayment/${id}/${h_id}`,body)
           }catch(error)
           {
             console.error('Error:', error);
           }
 
           handleCloseDialog(); // Close the dialog
+          navigate('/Home');
         }
       };
   return (

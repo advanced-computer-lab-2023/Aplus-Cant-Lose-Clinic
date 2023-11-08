@@ -121,29 +121,21 @@ export default function Hpackages() {
                 <TableCell align="left" style={cellStyle}>
                   {
                     
+                    
                   !row.isSubscribed ? (
-                      <Link to={{
-                        pathname: '/SubscriptionPayment',
-                        state: {
-                          data:{
-                            healthPackageId:row._id,
-                            fees:row.rate,
-                          }
-                        },
-                      }} >
+                    <Link to={`/SubscriptionPayment/${row._id}/${row.rate}`}>
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {
-                        console.log(row.rate);
                         // handleSubscribe(row, index);
                       }}
                     >
-                    
                       <Typography>
                         Subscribe
                       </Typography>
                     </Button>
-                    </Link>
+                  </Link>
+                  
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}
@@ -156,6 +148,7 @@ export default function Hpackages() {
                       </Typography>
                     </Button>
                   )
+                 
                   }
                 </TableCell>
               </TableRow>

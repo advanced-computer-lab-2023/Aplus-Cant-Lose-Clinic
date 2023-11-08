@@ -930,9 +930,13 @@ const payWithWallet= async(req,res)=>
    return  res.status(400).json({error:"Balance not Sufficient"})
   }
   
-
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
   patient.wallet-=amount;
   patient.hPackage=healthPackageId;
+  patient.hPStatus="Subscribed";
+  patient.SubDate=today;
     await patient.save();
 
     res.status(200).json({message:"Successfully subscribed to health package"})
@@ -1055,9 +1059,13 @@ const ccSubscriptionPayment=async(req,res)=>
     return res.status(404).json({error:"Patient not found!"})
   }
  
-
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
   
   patient.hPackage=healthPackageId;
+  pateint.hPStatus="Subscribed";
+  pateint.SubDate=today;
     await patient.save();
 
     res.status(200).json({message:"Successfully subscribed to health package"})
