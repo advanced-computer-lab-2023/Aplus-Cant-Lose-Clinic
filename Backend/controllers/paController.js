@@ -1004,6 +1004,38 @@ const viewHealthPackagesPatient = async (req, res) => {
 };
 
 
+const viewWallet = async(req , res)=>{
+  const {patientId} = req.params;
+  try{
+    const patient = await Patient.findById(patientId);
+
+    if(!patient){
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    if (!patient.wallet) {
+      // If the patient doesn't have a wallet attribute, add it with a value of zero
+      patient.wallet = 0;
+      await patient.save();
+    }
+
+    
+    const walletAmount  = patient.wallet ;
+
+    res.status(200).json({
+      message:" wallet amount is fetched successfully",
+      patient: patient,
+      wallet:walletAmount
+    })
+  }
+  catch(error){
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+
+
+
+}
+
 
 
 module.exports = {
@@ -1025,5 +1057,6 @@ module.exports = {
   subscribeToHealthPackage,
   unSubscribeToHealthPackage,
   payWithWallet,
-  viewHealthPackagesPatient
+  viewHealthPackagesPatient,
+  viewWallet
 };
