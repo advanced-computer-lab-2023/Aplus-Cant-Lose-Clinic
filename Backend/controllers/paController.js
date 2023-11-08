@@ -766,8 +766,6 @@ const getAlldoctors = async (req, res) => {
   }
 }
 
-
-
 const subscribeToHealthPackage = async (req, res) => {
   const { patientId, healthPackageId } = req.query;
 
@@ -791,8 +789,13 @@ const subscribeToHealthPackage = async (req, res) => {
       return res.status(404).json({ error: "Health Package not found" });
     }
 
+    // Check if the patient is already subscribed to this health package
+    if (patient.hPackage && patient.hPackage.equals(healthPackage._id)) {
+      return res.status(400).json({ error: "Patient is already subscribed to this Health Package" });
+    }
+
     // Add the health package to the patient's array of health packages
-    patient.hPackage=healthPackage;
+    patient.hPackage = healthPackage;
 
     // Save the updated patient document
     await patient.save();
@@ -804,8 +807,8 @@ const subscribeToHealthPackage = async (req, res) => {
     console.error("Error Subscribing to Health Package:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-
 };
+
 
 
 
