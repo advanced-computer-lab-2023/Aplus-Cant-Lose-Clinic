@@ -816,8 +816,60 @@ const subscribeToHealthPackage = async (req, res) => {
 
 
 
-const unSubscribeToHealthPackage = async (req, res) => {
+// const unSubscribeToHealthPackage = async (req, res) => {
   
+//   const { patientId, healthPackageId } = req.query;
+//   console.log("entered unsubscribe to health package");
+//   console.log(patientId);
+//   console.log(healthPackageId);
+
+//   try {
+//     // Validate input fields
+//     if (!patientId || !healthPackageId) {
+//       return res.status(400).json({ error: "All fields are required" });
+//     }
+
+//     // Check if the patient exists by ID
+//     const patient = await Patient.findById(patientId);
+
+//     if (!patient) {
+//       return res.status(404).json({ error: "Patient not found" });
+//     }
+
+//     // Check if the health package exists by ID
+//     const healthPackage =patient.hPackage;
+
+//     if (!healthPackage) {
+//       return res.status(404).json({ error: "Health Package is not subscribd to" });
+//     }
+
+//     // Add the health package to the patient's array of health packages
+
+//     const updatedPatient = await Patient.findByIdAndUpdate(
+//       patientId,
+//       { hPackage: null },
+//       { new: true }
+//     );
+
+//     // const healthPackagesResponse = await viewHealthPackagesPatient(req.params.patientId=patientId, res);
+
+    
+
+//     return res
+//       .status(201)
+//       .json({ message: "UNSubscribed to Health Package added successfully", 
+//       updatedPatient,
+//       // healthPackages:healthPackagesResponse
+//      });
+//   } catch (error) {
+//     console.error("Error Subscribing to Health Package:", error);
+//     return res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+
+
+const unSubscribeToHealthPackage = async (req, res) => {
   const { patientId, healthPackageId } = req.query;
   console.log("entered unsubscribe to health package");
   console.log(patientId);
@@ -837,35 +889,26 @@ const unSubscribeToHealthPackage = async (req, res) => {
     }
 
     // Check if the health package exists by ID
-    const healthPackage =patient.hPackage;
+    const healthPackage = patient.hPackage;
 
     if (!healthPackage) {
-      return res.status(404).json({ error: "Health Package is not subscribd to" });
+      return res.status(404).json({ error: "Health Package is not subscribed to" });
     }
 
-    // Add the health package to the patient's array of health packages
+    // Unsubscribe by setting the health package to null
+    patient.hPackage = null;
+    await patient.save();
 
-    const updatedPatient = await Patient.findByIdAndUpdate(
-      patientId,
-      { hPackage: null },
-      { new: true }
-    );
+    // Now, call the viewHealthPackagesPatient function to retrieve the updated list
+     return await viewHealthPackagesPatient({ params: { patientId } }, res);
 
-    // const healthPackagesResponse = await viewHealthPackagesPatient(req.params.patientId=patientId, res);
-
-    
-
-    return res
-      .status(201)
-      .json({ message: "UNSubscribed to Health Package added successfully", 
-      updatedPatient,
-      // healthPackages:healthPackagesResponse
-     });
   } catch (error) {
-    console.error("Error Subscribing to Health Package:", error);
+    console.error("Error Unsubscribing from Health Package:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 const payWithWallet= async(req,res)=>
 {
   const {amount}=req.body;

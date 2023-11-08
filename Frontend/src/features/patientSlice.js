@@ -120,14 +120,14 @@ export const unsubscribeHealthPackage = createAsyncThunk(
     // Define the URL with query parameters
  
    
-    const response = await axios.patch(
-      `${API_URL}/patient/unSubscribeToHealthPackage?${queryString}`,
-      {
-      }
-    );
+    const response1 = await axios.patch(
+      `${API_URL}/patient/unSubscribeToHealthPackage?${queryString}`);
+
+    // const response2 = await axios.get(
+    //   `${API_URL}/patient/viewHealthPackagesPatient?${data.Pid}`);
 
     // Return the response data
-    return response;
+    return response1;
   }
 );
 

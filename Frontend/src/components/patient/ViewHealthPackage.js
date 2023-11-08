@@ -18,6 +18,7 @@ import { NavLink } from 'react-router-dom';
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
   const id = useSelector((state) => state.user.id);
+  console.log("patient id is "+id);
  
 
   const dispatch = useDispatch();
@@ -29,18 +30,20 @@ export default function Hpackages() {
 
   const handleUnSubscribe = (healthPackageIdd) => {
     // Dispatch your unsubscribe logic here
-    // Update the subscribed state accordingly
+    
   
-    // dispatch(unsubscribeHealthPackage({
-    //   Pid:id , 
-    //   healthPackageId:healthPackageIdd
-    // }))
+    dispatch(unsubscribeHealthPackage({
+      Pid:id , 
+      healthPackageId:healthPackageIdd
+    }));
+    
+
+
   };
 
   const handleSubscribe = (row, index) => {
     // Implement your subscribe logic here
-    // After subscribing, update the subscribed state
-    // setSubscribed({ ...subscribed, [row._id]: true });
+  
   };
 
   const tableStyle = {
@@ -116,31 +119,35 @@ export default function Hpackages() {
                 </TableCell>
 
                 <TableCell align="left" style={cellStyle}>
-                  {row.isSubscribed==true ? (
+                  {
+                  !row.isSubscribed ? (
                       <NavLink to="/SubscriptionPayment" >
                     <Button
                       sx={subscribeButtonStyle}
                       onClick={() => {
-                        
-                        handleSubscribe(row, index);
+                        console.log(row.isSubscribed);
+                        // handleSubscribe(row, index);
                       }}
                     >
                     
                       <Typography>
-                        Subscribeddd
+                        Subscribe
                       </Typography>
                     </Button>
                     </NavLink>
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}
-                      onClick={() => {console.log(row.isSubscribed);handleUnSubscribe(row)}}
+                      onClick={() => {console.log(row.isSubscribed);
+                        handleUnSubscribe(row._id)
+                      }}
                     >
                       <Typography>
-                        UnSubscribedddd
+                        Unsubscribe
                       </Typography>
                     </Button>
-                  )}
+                  )
+                  }
                 </TableCell>
               </TableRow>
             ))}
