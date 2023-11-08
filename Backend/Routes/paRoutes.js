@@ -59,6 +59,6 @@ router.patch("/subscribeToHealthPackage", subscribeToHealthPackage);
 router.patch("/unSubscribeToHealthPackage", unSubscribeToHealthPackage);
 
 
-// router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
+router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 
 module.exports = router;
