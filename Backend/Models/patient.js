@@ -63,6 +63,15 @@ const paSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "HPackages", // Reference to the HPackages model
     },
+    hPStatus:{
+      type:String,
+      enum:["Subscribed","Unsubscribed","Cancelled"],
+      default:"Unsubscribed"
+    },SubDate:
+    {
+      type:Date
+    }
+    ,
     records: [
       {
         url: String, // Store the URL to the uploaded image
