@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import { useState } from 'react';
 import {  useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
+import axios from "axios";
 import {
 
   Dialog,
@@ -21,7 +22,7 @@ const SubsciptionPayment = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const id = useSelector((state) => state.user.id);
   const location=useLocation();
- // const h_id=location.state.myProp;
+  const h_id=location.state.myProp;
   const [formData, setFormData] = useState({
     cardNumber: "",
     expiration: "",
@@ -41,8 +42,13 @@ const SubsciptionPayment = () => {
   
   
 
-    const handleWalletButtonClick = () => {
-        alert("You clicked the Wallet button.");
+    const handleWalletButtonClick = async() => {
+      try{
+        const response=await axios.patch(`http://localhost:8080/api/patient/SubscriptionPayment/${id}/${h_id}`)
+      }catch(error)
+      {
+        console.error('Error:', error);
+      }
     
       };
     

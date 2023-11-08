@@ -49,7 +49,7 @@ router.get("/getUser", getUser);
 router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
-router.patch("/SubscriptionPayment/:patientId",payWithWallet);
+router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 
 
 

@@ -912,51 +912,53 @@ const unSubscribeToHealthPackage = async (req, res) => {
 const payWithWallet= async(req,res)=>
 {
   const {amount}=req.body;
-  const {patientId,healthPackageId}=req.query;
+  const {patientId,healthPackageId}=req.params;
   try{
     if (!patientId || !healthPackageId) {
       return res.status(400).json({ error: "All fields are required" });
     }
-  const Patient=await Patient.findOne({_id:patientId})
+  const patient=await Patient.findOne({_id:patientId})
 
   
-  if(!Patient)
+  if(!patient)
   {
     return res.status(404).json({error:"Patient not found!"})
   }
  
 
-  if(Patient.wallet<amount){
+  if(patient.wallet<amount){
    return  res.status(400).json({error:"Balance not Sufficient"})
   }
   
 
-  Patient.wallet-=amount;
-  Patient.hPackage=healthPackageId;
-    await Patient.save();
+  patient.wallet-=amount;
+  patient.hPackage=healthPackageId;
+    await patient.save();
+
+    res.status(200).json({message:"Successfully subscribed to health package"})
 
 
-    const healthPackages = await HPackages.find();
+    // const healthPackages = await HPackages.find();
 
     // Check if the patient has a health package ID
-    const patientSubscribedPackage = patient.hPackage;
+   // const patientSubscribedPackage = patient.hPackage;
 
     // Map the health packages and add the subscription status
-    const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
-      const isSubscribed = patientSubscribedPackage ? patientSubscribedPackage.equals(healthPackage._id) : false;
-      return {
-        ...healthPackage.toObject(),
-        isSubscribed,
-      };
-    });
+    // const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
+    //   const isSubscribed = patientSubscribedPackage ? patientSubscribedPackage.equals(healthPackage._id) : false;
+    //   return {
+    //     ...healthPackage.toObject(),
+    //     isSubscribed,
+    //   };
+    // });
     
 
-    res.status(200).json({
-      message: "Health packages fetched successfully",
-      healthPackages: healthPackagesWithSubscriptions,
-      message: "Successfully Subscribed to Health package",
-      Patient,
-    });
+    // res.status(200).json({
+    //   message: "Health packages fetched successfully",
+    //   healthPackages: healthPackagesWithSubscriptions,
+    //   message: "Successfully Subscribed to Health package",
+    //   Patient,
+    // });
     
   
 }catch(error)
@@ -1034,6 +1036,41 @@ const viewWallet = async(req , res)=>{
 
 
 
+}
+
+
+const ccSubscriptionPayment=async(req,res)=>
+{
+  const {amount}=req.body;
+  const {patientId,healthPackageId}=req.params;
+  try{
+    if (!patientId || !healthPackageId) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+  const patient=await Patient.findOne({_id:patientId})
+
+  
+  if(!patient)
+  {
+    return res.status(404).json({error:"Patient not found!"})
+  }
+ 
+
+  if(patient.wallet<amount){
+   return  res.status(400).json({error:"Balance not Sufficient"})
+  }
+  
+
+  patient.wallet-=amount;
+  patient.hPackage=healthPackageId;
+    await patient.save();
+
+    res.status(200).json({message:"Successfully subscribed to health package"})
+}catch(error)
+{
+  console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+}
 }
 
 
