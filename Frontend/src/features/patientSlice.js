@@ -146,6 +146,16 @@ export const viewHealthP = createAsyncThunk(
 })
 
 
+export const viewWallet = createAsyncThunk(
+  "patient/viewWallet", 
+  async (id) => {
+  const response = await axios.get(
+    `${API_URL}/patient/viewWallet/${id}`
+  );
+  return response;
+
+})
+
 
 
 const patientInitial = {
@@ -248,6 +258,12 @@ const patient = createSlice({
       .addCase(unsubscribeHealthPackage.fulfilled, (state, action) => {
         state.loading = false;
         state.hpackages = action.payload.data.healthPackages;
+      })
+
+      builder
+      .addCase(viewWallet.fulfilled, (state, action) => {
+        state.loading = false;
+        state.wallet = action.payload.data.wallet;
       })
   },
 });
