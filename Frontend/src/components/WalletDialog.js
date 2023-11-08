@@ -3,6 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from 'react';
 import {viewWallet as viewWalletPatient}  from '../features/patientSlice'
+import {viewWallet as viewWalletDoctor}  from '../features/doctorSlice'
 
 import { Dialog, IconButton, Typography, Button } from '@mui/material';
 import WalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -29,13 +30,13 @@ export const WalletDialog = ({ open, onClose, type}) => {
     const dispatch = useDispatch();
     
     useEffect(() => {
-        // type==='patient'?
-        dispatch(viewWalletPatient(id))//:
-        // dispatch(viewWallet(id))
-        // ;
+        type==='patient'?
+        dispatch(viewWalletPatient(id)):
+        dispatch(viewWalletDoctor(id))
+        ;
       }, [dispatch]);
 
-    const amount = useSelector((state) => /*type ==='patient'?*/state.patient.wallet/*?: state.doctor.wallet*/);
+    const amount = useSelector((state) => type ==='patient'? state.patient.wallet : state.doctor.wallet );
     // const amount = 0;
 
   return (

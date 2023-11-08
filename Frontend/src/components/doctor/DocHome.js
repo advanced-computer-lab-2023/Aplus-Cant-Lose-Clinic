@@ -111,7 +111,7 @@ const handleCloseDialog = () => {
                                 </IconButton>
                                 <Typography >view wallet</Typography>
                             </Button>
-                            <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='patient'/>
+                            <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='doctor'/>
                         </>
                     </div>
                 </Box>

@@ -105,6 +105,17 @@ export const addHealthRecord = createAsyncThunk(
 
 
 
+export const viewWallet = createAsyncThunk(
+  "doctor/viewWallet", 
+  async (id) => {
+  const response = await axios.get(
+    `${API_URL}/patient/viewWallet/${id}`
+  );
+  return response;
+
+})
+
+
 
 export const doctor = createSlice({
   name: "doctor",
@@ -175,6 +186,12 @@ export const doctor = createSlice({
         state.patientsList = action.payload.data.patients;
         console.log(state.info);
         state.loading = false;
+      })
+
+      builder
+      .addCase(viewWallet.fulfilled, (state, action) => {
+        state.loading = false;
+        state.wallet = action.payload.data.wallet;
       })
     
       
