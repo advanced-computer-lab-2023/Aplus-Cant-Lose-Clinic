@@ -522,6 +522,41 @@ const addHealthRecord = async (req, res) => {
 
 
 
+const viewWallet = async(req , res)=>{
+  const {doctorId} = req.params;
+  try{
+    const doctor = await Doctor.findById(doctorId);
+
+    if(!doctor){
+      return res.status(404).json({ error: "Doctor not found" });
+    }
+
+    if (!doctor.wallet) {
+      // If the patient doesn't have a wallet attribute, add it with a value of zero
+      doctor.wallet = 0;
+      await doctor.save();
+    }
+
+    
+    const walletAmount  = doctor.wallet ;
+
+    res.status(200).json({
+      message:" wallet amount is fetched successfully",
+      doctor: doctor,
+      wallet:walletAmount
+    })
+  }
+  catch(error){
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+
+
+
+}
+
+
+
+
 
 
 
@@ -538,5 +573,6 @@ module.exports = {
   getDr,
   addAppointmentTimeSlot,
   createFollowUpAppointment,
-  addHealthRecord
+  addHealthRecord,
+  viewWallet
 };
