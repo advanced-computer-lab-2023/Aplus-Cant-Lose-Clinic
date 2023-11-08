@@ -1056,12 +1056,7 @@ const ccSubscriptionPayment=async(req,res)=>
   }
  
 
-  if(patient.wallet<amount){
-   return  res.status(400).json({error:"Balance not Sufficient"})
-  }
   
-
-  patient.wallet-=amount;
   patient.hPackage=healthPackageId;
     await patient.save();
 
@@ -1095,5 +1090,6 @@ module.exports = {
   unSubscribeToHealthPackage,
   payWithWallet,
   viewHealthPackagesPatient,
-  viewWallet
+  viewWallet,
+  ccSubscriptionPayment
 };
