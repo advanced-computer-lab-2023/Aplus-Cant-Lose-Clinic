@@ -21,7 +21,8 @@ const {
   unSubscribeToHealthPackage,
   viewHealthPackagesPatient,
   payWithWallet,
-  viewWallet
+  viewWallet,
+  ccSubscriptionPayment
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -50,6 +51,7 @@ router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
+router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
 
 
 

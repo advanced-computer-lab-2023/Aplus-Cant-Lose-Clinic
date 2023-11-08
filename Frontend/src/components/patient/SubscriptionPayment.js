@@ -70,11 +70,18 @@ const SubsciptionPayment = () => {
         setIsValid(/^\d{16}$/.test(cardNumber));
       };
     
-      const handleSubmit = () => {
+      const handleSubmit =async() => {
         handleValidation();
         if (isValid) {
           // You can perform further actions here, e.g., submit the form data to a server.
           console.log("Form data is valid:", formData);
+          try{
+            const response=await axios.patch(`http://localhost:8080/api/patient/SubscriptionPayment/${id}/${h_id}`)
+          }catch(error)
+          {
+            console.error('Error:', error);
+          }
+
           handleCloseDialog(); // Close the dialog
         }
       };
