@@ -13,7 +13,8 @@ import { useEffect } from 'react';
 import { viewHealthP ,unsubscribeHealthPackage} from '../../features/patientSlice';
 import { Button, Typography } from "@mui/material";
 import { SnackbarContext } from "../../App";
-import { NavLink,Link } from 'react-router-dom';
+import {Link } from 'react-router-dom';
+import { Dialog,DialogTitle, DialogContent, DialogActions } from '@mui/material';
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -31,7 +32,6 @@ export default function Hpackages() {
   const handleUnSubscribe = (healthPackageIdd) => {
     // Dispatch your unsubscribe logic here
     
-  
     dispatch(unsubscribeHealthPackage({
       Pid:id , 
       healthPackageId:healthPackageIdd
@@ -41,10 +41,18 @@ export default function Hpackages() {
 
   };
 
-  const handleSubscribe = (row, index) => {
-    // Implement your subscribe logic here
-  
+  //dialogiue component state
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
   };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+
 
   const tableStyle = {
     width: "80%",
@@ -84,17 +92,19 @@ export default function Hpackages() {
           <TableHead>
             <TableRow>
               <TableCell align="left" style={cellStyle}>
-                type
+                Type
               </TableCell>
               <TableCell align="left" style={cellStyle}>
-                rate
+                Rate
               </TableCell>
-              <TableCell style={cellStyle}>doctorDisc</TableCell>
-              <TableCell align="left" style={cellStyle}>
-                medicineDisc
+              <TableCell style={cellStyle}>
+                Doctor Discount
               </TableCell>
               <TableCell align="left" style={cellStyle}>
-                familyDisc
+                Medicine Discount
+              </TableCell>
+              <TableCell align="left" style={cellStyle}>
+                Family Discount
               </TableCell>
               <TableCell align="left" style={cellStyle}></TableCell>
               <TableCell align="left" style={cellStyle}></TableCell>
@@ -160,7 +170,7 @@ export default function Hpackages() {
                 <TableCell>
                   <Button
                       sx={infoButtonStyle}
-                      onClick={() => {}}
+                      onClick={handleOpenDialog}
                     >
                       <Typography>
                         Info
@@ -170,9 +180,33 @@ export default function Hpackages() {
 
               </TableRow>
             ))}
+           < HealthPackageInfo data={{test:'test',test:'test'}} openDialog={dialogOpen} closeDialog={handleCloseDialog}></HealthPackageInfo>
           </TableBody>
         </Table>
       </TableContainer>
     </>
   );
 }
+
+
+const HealthPackageInfo = ({ data, openDialog, closeDialog }) => {
+ 
+
+  return (
+    <Dialog open={openDialog} onClose={closeDialog}>
+      <DialogTitle>HealthPackage Info</DialogTitle>
+      <DialogContent>
+        {Object.entries(data).map(([key, value]) => (
+          <Typography key={key}>
+            <strong>{key}:</strong> {value}
+          </Typography>
+        ))}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeDialog} color="primary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
