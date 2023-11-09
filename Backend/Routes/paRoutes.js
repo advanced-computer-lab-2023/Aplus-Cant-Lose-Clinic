@@ -64,4 +64,6 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 
 router.get("/viewWallet/:patientId", viewWallet);
 
+router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
+
 module.exports = router;

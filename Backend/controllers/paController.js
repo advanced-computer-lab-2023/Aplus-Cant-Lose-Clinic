@@ -1084,13 +1084,42 @@ const healthPackageInfo = async (req, res) => {
       .populate('hPackage');
 
     if (patient && patient.hPackage) {
-      const { hPStatus, SubDate } = patient;
+      const { hPStatus, SubDate, hPackage } = patient;
+      const { RenewDate } = hPackage;
 
-      return res.status(200).json({
-        subscribed: true,
-        status: hPStatus,
-        subscribedDate: SubDate,
-      });
+      let endDate;
+
+      if (hPStatus === 'Subscribed') {
+        // If subscribed, calculate end date as one month more than subscribed date
+        const endDateFormat = new Date(SubDate);
+        endDateFormat.setMonth(endDateFormat.getMonth() + 1);
+        endDate = endDateFormat.toISOString();
+      } else {
+        // If cancelled, use the EndDate directly
+        endDate = hPackage.EndDate;
+      }
+
+      if (hPStatus === 'Subscribed') {
+        return res.status(200).json({
+          subscribed: true,
+          status: hPStatus,
+          subscribedDate: SubDate,
+          renewedDate: RenewDate,
+          endDate: endDate,
+        });
+      } else if (hPStatus === 'Cancelled') {
+        return res.status(200).json({
+          subscribed: false,
+          status: hPStatus,
+          endDate: endDate,
+        });
+      } else {
+        return res.status(200).json({
+          subscribed: false,
+          status: hPStatus,
+          message: 'Health package not subscribed by the patient.',
+        });
+      }
     } else {
       return res.status(200).json({
         subscribed: false,
@@ -1130,5 +1159,6 @@ module.exports = {
   payWithWallet,
   viewHealthPackagesPatient,
   viewWallet,
-  ccSubscriptionPayment
+  ccSubscriptionPayment,
+  healthPackageInfo
 };
