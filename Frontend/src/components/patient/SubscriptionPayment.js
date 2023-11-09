@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import { useState } from 'react';
 import {  useSelector } from "react-redux";
 import { useLocation ,useParams,useNavigate} from 'react-router-dom';
+import { API_URL } from "../../Consts.js";
 import axios from "axios";
 import {
 
@@ -27,30 +28,17 @@ const SubsciptionPayment = () => {
   //const h_id = location.state ? location.state.healthPackageId : null;
  // const amount = location.state ? location.state.rate : null;
  const { h_id, amount } = useParams();
- console.log("id===",h_id);
-  const [formData, setFormData] = useState({
-    cardNumber: "",
-    expiration: "",
-    cardHolder: "",
-    cvv: "",
-  });
-  const [isValid, setIsValid] = useState(false);
+ 
 
 
-  const handleOpenDialog = () => {
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-  };
+  
   
   
 
     const handleWalletButtonClick = async() => {
       try{
         const body={amount:amount};
-        const response=await axios.patch(`http://localhost:8080/api/patient/SubscriptionPayment/${id}/${h_id}`,body)
+        const response=await axios.patch(`${API_URL}/patient/SubscriptionPayment/${id}/${h_id}`,body)
      
 
       }catch(error)
@@ -62,41 +50,33 @@ const SubsciptionPayment = () => {
     
       };
     
-      const handleCreditCardButtonClick = () => {
-        handleOpenDialog();
-      };
-      const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-          ...formData,
-          [name]: value,
-        });
-        handleValidation();
-      };
-    
-      const handleValidation = () => {
-        const { cardNumber } = formData;
-        // Simple validation for a 16-digit credit card number
-        setIsValid(/^\d{16}$/.test(cardNumber));
-      };
-    
-      const handleSubmit =async() => {
-        handleValidation();
-        if (isValid) {
-          // You can perform further actions here, e.g., submit the form data to a server.
-          console.log("Form data is valid:", formData);
-          try{
-            const body={amount:amount};
-            const response=await axios.patch(`http://localhost:8080/api/patient/CCSubscriptionPayment/${id}/${h_id}`,body)
-          }catch(error)
-          {
-            console.error('Error:', error);
-          }
-
-          handleCloseDialog(); // Close the dialog
-          navigate('/Home');
+      const handleCreditCardButtonClick = async() => {
+        try{
+        const response = await axios.post(`${API_URL}/patient/createCheckoutSession/${h_id}/${id}`)
+       
+        const { url } = response.data;
+        console.log("the url",url);
+        
+        window.location = url;
+      }
+        catch (error) {
+          console.error(error.response.data.error);
         }
+        try{
+         
+          const response=await axios.patch(`${API_URL}/patient/CCSubscriptionPayment/${id}/${h_id}`)
+       
+  
+        }catch(error)
+        {
+          console.error('Error:', error);
+        }       
       };
+      
+    
+     
+    
+     
   return (
     <div>
         <h1>Payment Options</h1>
@@ -105,57 +85,7 @@ const SubsciptionPayment = () => {
     </Button>
     <Button variant="contained" color="primary" onClick={handleCreditCardButtonClick}>
       Credit Card
-    </Button>
-
-    <Dialog open={isDialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>Credit Card Information</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Credit Card Number"
-            name="cardNumber"
-            value={formData.cardNumber}
-            onChange={handleChange}
-            placeholder="16-digit card number"
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Expiration Date"
-            name="expiration"
-            value={formData.expiration}
-            onChange={handleChange}
-            placeholder="MM/YY"
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Cardholder's Name"
-            name="cardHolder"
-            value={formData.cardHolder}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="CVV"
-            name="cvv"
-            value={formData.cvv}
-            onChange={handleChange}
-            placeholder="3 or 4 digits"
-            fullWidth
-            margin="normal"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleSubmit} color="primary" disabled={!isValid}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    
+    </Button> 
     </div>
   )
 }

@@ -23,7 +23,8 @@ const {
   payWithWallet,
   viewWallet,
   ccSubscriptionPayment,
-  healthPackageInfo
+  healthPackageInfo,
+  createCheckoutSession
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -64,7 +65,9 @@ router.patch("/unSubscribeToHealthPackage", unSubscribeToHealthPackage);
 router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 
 router.get("/viewWallet/:patientId", viewWallet);
-
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
+
+router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
+
 
 module.exports = router;

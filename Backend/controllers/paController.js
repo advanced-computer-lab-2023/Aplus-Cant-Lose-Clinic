@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Prescription = require("../Models/prescription");
 const mongoose = require('mongoose');
+const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
@@ -1045,7 +1046,7 @@ const viewWallet = async(req , res)=>{
 
 const ccSubscriptionPayment=async(req,res)=>
 {
-  const {amount}=req.body;
+  
   const {patientId,healthPackageId}=req.params;
   try{
     if (!patientId || !healthPackageId) {
@@ -1134,6 +1135,38 @@ const healthPackageInfo = async (req, res) => {
   }
 };
 
+const createCheckoutSession= async(req,res)=>
+{
+  try {
+    const {id,pid} =req.params;
+    const {type,rate}=await HPackages.findOne({_id:id});
+   
+    const new_rate=rate*100;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: type,
+            },
+            unit_amount: new_rate ,
+          },
+          quantity: 1, // Since the quantity will always be 1
+        }
+      ],
+      success_url: `http://localhost:3000/Home`,
+      cancel_url: `http://localhost:3000/Home`,
+    })
+    res.json({ url: session.url });
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
+}
+
+
 
 
 
@@ -1162,5 +1195,6 @@ module.exports = {
   viewHealthPackagesPatient,
   viewWallet,
   ccSubscriptionPayment,
+  createCheckoutSession,
   healthPackageInfo
 };

@@ -80,12 +80,11 @@ const paSchema = new mongoose.Schema(
     ],
     healthRecords: [
       {
-        date:Date,
-        description:String,
-        labResults:String,
-        medicalInformation:String,
-        primaryDiagnosis:String,
-        treatment:String,
+        dummy1:String,
+        dummy2:String,
+        dummy3:Number,
+        dummy4:Number,
+        dummy5:String,
 
       },
     ],
