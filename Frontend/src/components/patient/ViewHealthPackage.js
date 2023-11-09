@@ -72,6 +72,11 @@ export default function Hpackages() {
     width: '70%', // Set the width to the desired value for both buttons
   };
 
+  const infoButtonStyle = {
+    backgroundColor: '#7b1fa2', // Red background color for Unsubscribe
+    color: 'white',
+  }
+
   return (
     <>
       <TableContainer component={Paper} style={tableStyle}>
@@ -151,6 +156,18 @@ export default function Hpackages() {
                  
                   }
                 </TableCell>
+               
+                <TableCell>
+                  <Button
+                      sx={infoButtonStyle}
+                      onClick={() => {}}
+                    >
+                      <Typography>
+                        Info
+                      </Typography>
+                    </Button>
+                  </TableCell>
+
               </TableRow>
             ))}
           </TableBody>
