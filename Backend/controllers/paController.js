@@ -1064,8 +1064,8 @@ const ccSubscriptionPayment=async(req,res)=>
   
   
   patient.hPackage=healthPackageId;
-  pateint.hPStatus="Subscribed";
-  pateint.SubDate=today;
+  patient.hPStatus="Subscribed";
+  patient.SubDate=today;
     await patient.save();
 
     res.status(200).json({message:"Successfully subscribed to health package"})
