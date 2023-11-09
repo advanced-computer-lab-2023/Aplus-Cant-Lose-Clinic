@@ -1103,7 +1103,7 @@ const healthPackageInfo = async (req, res) => {
 
       if (hPStatus === 'Subscribed') {
         return res.status(200).json({
-          subscribed: true,
+          // subscribed: true,
           status: hPStatus,
           subscribedDate: SubDate,
           renewedDate: RenewDate,
@@ -1111,20 +1111,20 @@ const healthPackageInfo = async (req, res) => {
         });
       } else if (hPStatus === 'Cancelled') {
         return res.status(200).json({
-          subscribed: false,
+          // subscribed: false,
           status: hPStatus,
           endDate: endDate,
         });
       } else {
         return res.status(200).json({
-          subscribed: false,
+          // subscribed: false,
           status: hPStatus,
           message: 'Health package not subscribed by the patient.',
         });
       }
     } else {
       return res.status(200).json({
-        subscribed: false,
+        // subscribed: false,
         message: 'Health package not subscribed by the patient.',
       });
     }

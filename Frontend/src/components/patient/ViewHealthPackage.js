@@ -14,7 +14,9 @@ import { viewHealthP ,unsubscribeHealthPackage} from '../../features/patientSlic
 import { Button, Typography } from "@mui/material";
 import { SnackbarContext } from "../../App";
 import {Link } from 'react-router-dom';
-import { Dialog,DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Dialog,DialogTitle, DialogContent, DialogActions,DialogD } from '@mui/material';
+import axios from 'axios';
+import { API_URL } from "../../Consts";
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -43,9 +45,19 @@ export default function Hpackages() {
 
   //dialogiue component state
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogData, setDialogData] = useState("");
 
-  const handleOpenDialog = () => {
-    setDialogOpen(true);
+
+  const handleOpenDialog = async (healthPackageId) => {
+    try {
+      const response = await axios.get(`${API_URL}/patient/healthPackageInfo/${id}/${healthPackageId}`);
+      const responseData = response.data;
+  
+      setDialogData(responseData); // Assuming you have a state variable to store the data
+      setDialogOpen(true);
+    } catch (error) {
+      console.error('Error fetching health package info:', error);
+    }
   };
 
   const handleCloseDialog = () => {
@@ -170,7 +182,7 @@ export default function Hpackages() {
                 <TableCell>
                   <Button
                       sx={infoButtonStyle}
-                      onClick={handleOpenDialog}
+                      onClick={()=>{handleOpenDialog(row._id)}}
                     >
                       <Typography>
                         Info
@@ -180,7 +192,7 @@ export default function Hpackages() {
 
               </TableRow>
             ))}
-           < HealthPackageInfo data={{test:'test',test:'test'}} openDialog={dialogOpen} closeDialog={handleCloseDialog}></HealthPackageInfo>
+           < HealthPackageInfo data={dialogData} openDialog={dialogOpen} closeDialog={handleCloseDialog}></HealthPackageInfo>
           </TableBody>
         </Table>
       </TableContainer>
@@ -189,9 +201,11 @@ export default function Hpackages() {
 }
 
 
-const HealthPackageInfo = ({ data, openDialog, closeDialog }) => {
- 
 
+
+
+const HealthPackageInfo = ({ data, openDialog, closeDialog }) => {
+  // Use dialogData instead of the static data passed as a prop
   return (
     <Dialog open={openDialog} onClose={closeDialog}>
       <DialogTitle>HealthPackage Info</DialogTitle>
