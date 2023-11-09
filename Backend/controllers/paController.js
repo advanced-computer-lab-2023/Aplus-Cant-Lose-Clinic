@@ -1076,6 +1076,37 @@ const ccSubscriptionPayment=async(req,res)=>
 }
 }
 
+const healthPackageInfo = async (req, res) => {
+  const { patientid, healthPackageId } = req.params;
+
+  try {
+    const patient = await Patient.findOne({ _id: patientid, hPackage: healthPackageId })
+      .populate('hPackage');
+
+    if (patient && patient.hPackage) {
+      const { hPStatus, SubDate } = patient;
+
+      return res.status(200).json({
+        subscribed: true,
+        status: hPStatus,
+        subscribedDate: SubDate,
+      });
+    } else {
+      return res.status(200).json({
+        subscribed: false,
+        message: 'Health package not subscribed by the patient.',
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+
+
 
 
 module.exports = {
