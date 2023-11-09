@@ -22,7 +22,8 @@ const {
   viewHealthPackagesPatient,
   payWithWallet,
   viewWallet,
-  ccSubscriptionPayment
+  ccSubscriptionPayment,
+  healthPackageInfo
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");

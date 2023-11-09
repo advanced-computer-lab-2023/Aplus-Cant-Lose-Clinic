@@ -5,7 +5,7 @@ mongoose.set("strictQuery", false);
 require("dotenv").config();
 const connectDB = require("./config/db");
 const cookieParser = require('cookie-parser');
-const stripe=require('stripe');
+// const stripe=require('stripe');
 
 // App variables
 const app = express(); // Move this line to the top
