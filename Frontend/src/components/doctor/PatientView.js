@@ -109,11 +109,12 @@ const handleSubmitHealthRecord = async(event)=>{
 
 
   const sampleData = {
-    data1: event.target.elements.labResults.value,
-    data2: event.target.elements.medicatons.value,
-    data3: event.target.elements.bloodPressure.value,
-    data4: event.target.elements.heartRate.value,
+    data1: event.target.elements.date.value,
+    data2: event.target.elements.description.value,
+    data3: event.target.elements.labResults.value,
+    data4: event.target.elements.medicalInformation.value,
     data5: event.target.elements.primaryDiagnosis.value,
+    data6: event.target.elements.treatment.value,
     doctorID : drId
    
   };
@@ -225,10 +226,10 @@ const handleSubmitHealthRecord = async(event)=>{
                             <CardContent>
                               <Typography variant="h5">Health Record</Typography>
                               {Object.keys(healthRecord).map((key) => (
-                                key==="date" && (
+                                (key==="date" || key==='description') && (
                                 <div key={key}>
                                   <Typography variant="body1">
-                                    {key}: {healthRecord[key]}
+                                  {key === "date" ? `${key}: ${new Date(healthRecord[key]).toLocaleDateString()}` : `${key}: ${healthRecord[key]}`}
                                   </Typography>
                                 </div>
                                 )
@@ -253,7 +254,7 @@ const handleSubmitHealthRecord = async(event)=>{
                                 key !== '_id' && (
                                   <div key={key}>
                                     <Typography variant="body1" style={{ wordWrap: 'break-word' }}>
-                                      {key}: {selectedHealthRecord[key]}
+                                    <span style={{ fontWeight: 'bold' }}>{key}:</span> {selectedHealthRecord[key]}
                                     </Typography>
                                   </div>
                                 )
@@ -285,65 +286,84 @@ const handleSubmitHealthRecord = async(event)=>{
          {/* dialogue */}
   <Dialog open={isOpen} fullWidth maxWidth="md" >
   <form onSubmit={handleSubmitHealthRecord} style={{ display: 'flex', flexDirection: 'column', alignItems: 'start', marginLeft:"1%"}}>
-          <div className="form-group">
-            <label htmlFor="labResults" style={{marginTop:"5%"}}>LAB RESULTS</label>
-            <input
-              type="text"
-              id="labResults"
-              name="labResults"
-              defaultValue=""
-              style={{ width: '150%', height:"50px"}} // Adjust the width as needed
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="medicatons"
-            >Medicatons</label>
-            <input
-              type="text"
-              id="medicatons"
-              name="medicatons"
-              defaultValue=""
-              style={{ width: '150%' , height:"20px"}} // Adjust the width as needed
 
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="bloodPressure">Blood Pressure</label>
-            <input
-              type="number"
-              id="bloodPressure"
-              name="bloodPressure"
-              defaultValue=""
-              style={{ width: '180%' }} // Adjust the width as needed
 
-              required
-            />
-          </div>
           <div className="form-group">
-            <label htmlFor="heartRate">Heart Rate</label>
-            <input
-              type="number"
-              id="heartRate"
-              name="heartRate"
-              defaultValue=""
-              style={{ width: '180%' }} // Adjust the width as needed
+              <label htmlFor="date">Date</label>
+              <input
+                type="date"
+                id="date"
+                name="date"
+                defaultValue=""
+                style={{ width: '180%' }} // Adjust the width as needed
 
-              required
-            />
+                required
+              />
           </div>
-          <div className="form-group">
-            <label htmlFor="primaryDiagnosis">Primary Diagnosis</label>
-            <input
-              type="text"
-              id="primaryDiagnosis"
-              name="primaryDiagnosis"
-              defaultValue=""
-              style={{ width: '150%' }} // Adjust the width as needed
 
-              required
-            />
+          <div className="form-group">
+              <label htmlFor="description">Description</label>
+              <input
+                type="text"
+                id="description"
+                name="description"
+                defaultValue=""
+                style={{ width: '180%' }} // Adjust the width as needed
+
+                required
+              />
+          </div>
+         
+          <div className="form-group">
+              <label htmlFor="labResults" style={{marginTop:"5%"}}>LAB RESULTS</label>
+              <input
+                type="text"
+                id="labResults"
+                name="labResults"
+                defaultValue=""
+                style={{ width: '150%', height:"50px"}} // Adjust the width as needed
+                required
+              />
+          </div>
+
+          <div className="form-group">
+              <label htmlFor="medicalInformation"
+              >Medical Information</label>
+              <input
+                type="text"
+                id="medicalInformation"
+                name="medicalInformation"
+                defaultValue=""
+                style={{ width: '150%' , height:"20px"}} // Adjust the width as needed
+
+                required
+              />
+          </div>
+         
+          <div className="form-group">
+              <label htmlFor="primaryDiagnosis">Primary Diagnosis</label>
+              <input
+                type="text"
+                id="primaryDiagnosis"
+                name="primaryDiagnosis"
+                defaultValue=""
+                style={{ width: '150%' }} // Adjust the width as needed
+
+                required
+              />
+          </div>
+
+          <div className="form-group">
+              <label htmlFor="treatment">Treatment</label>
+              <input
+                type="text"
+                id="treatment"
+                name="treatment"
+                defaultValue=""
+                style={{ width: '180%' }} // Adjust the width as needed
+
+                required
+              />
           </div>
 
 
