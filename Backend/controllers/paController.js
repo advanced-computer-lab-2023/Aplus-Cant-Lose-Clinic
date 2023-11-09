@@ -1077,11 +1077,13 @@ const ccSubscriptionPayment=async(req,res)=>
 }
 
 const healthPackageInfo = async (req, res) => {
-  const { patientid, healthPackageId } = req.params;
+  const { patientId, healthPackageId } = req.params;
 
   try {
-    const patient = await Patient.findOne({ _id: patientid, hPackage: healthPackageId })
+    const patient = await Patient.findOne({ _id: patientId, hPackage: healthPackageId })
       .populate('hPackage');
+
+      
 
     if (patient && patient.hPackage) {
       const { hPStatus, SubDate, hPackage } = patient;
