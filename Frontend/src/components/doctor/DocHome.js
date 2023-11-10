@@ -87,7 +87,7 @@ const handleCloseDialog = () => {
                             <IconButton>
                                 <FormatListBulletedIcon style={styles} ></FormatListBulletedIcon>
                             </IconButton>
-                            <Typography > Patients List</Typography>
+                            <Typography >My Patients</Typography>
                         </Button>
                     </NavLink>
                 </Box>

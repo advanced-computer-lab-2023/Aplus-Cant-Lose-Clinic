@@ -135,19 +135,25 @@ const handleSubmitHealthRecord = async(event)=>{
   const navigate = useNavigate();
   return (
     <div>
-     < div style={{ paddingBottom: '1.5%',backgroundColor: "#1769aa" }}>
-     <IconButton
-              color="#FFFFFF"
-              backgroundColor="#1266AA"
-              aria-label="Back to Home"
-              style={{ position: 'absolute' }}
-              onClick={() => {
-                navigate(-1);
-              }}
-            >
-              <HomeIcon style={{ position: 'absolute', top: '1%', left: '1%' }} />
-            </IconButton>
-     </div>
+
+     <div style={{ paddingBottom: '4%', backgroundColor: "#004E98" ,marginBottom:"0.5%"}}>
+          <IconButton
+            color="#FFFFFF"
+            backgroundColor="#1266AA"
+            aria-label="Back to Home"
+            style={{ position: 'absolute' }}
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+              <HomeIcon style={{ position: 'absolute', top: '1%', left: '1%',fontSize: '2.5rem' }} />
+          </IconButton>
+
+          <span style={{ color: '#FFFFFF', position: 'absolute', top: '1%', left: '50%', transform: 'translateX(-50%)', fontSize: '1.5rem' }}>
+            My Patients
+          </span>
+
+    </div>
       
       
       {rows.map((row, index) => (
