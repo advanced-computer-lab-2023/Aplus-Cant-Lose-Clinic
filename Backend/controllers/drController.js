@@ -548,6 +548,59 @@ const viewWallet = async(req , res)=>{
 }
 
 
+const acceptContract = async (req, res) => {
+  try {
+    const { doctorId } = req.params; // Assuming doctorId and contractId are part of the URL parameters
+
+    // Find the doctor by ID in the database
+    const doctor = await Doctor.findById(doctorId);
+
+    // Check if the doctor exists
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Find the specific contract for the doctor
+
+    // Check if the contract exists
+
+
+    // Perform the action to accept the contract, e.g., update the status field
+    doctor.contract = 'accepted';
+
+    await doctor.save();
+
+    res.status(200).json({ message: 'Contract accepted successfully', doctor });
+  } catch (error) {
+    console.error('Error accepting contract', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+const getDoctor = async (req, res) => {
+  try {
+    const { doctorId } = req.params; // Assuming doctorId and contractId are part of the URL parameters
+
+    // Find the doctor by ID in the database
+    const doctor = await Doctor.findById(doctorId);
+
+    // Check if the doctor exists
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Find the specific contract for the doctor
+
+    // Check if the contract exists
+
+
+    // Perform the action to accept the contract, e.g., update the status field
+
+    res.status(200).json({ message: 'Doctor retrieved successfully', doctor });
+  } catch (error) {
+    console.error('Error Doctor ', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
 
 
 
@@ -567,5 +620,7 @@ module.exports = {
   addAppointmentTimeSlot,
   createFollowUpAppointment,
   addHealthRecord,
-  viewWallet
+  viewWallet,
+  acceptContract,
+  getDoctor
 };

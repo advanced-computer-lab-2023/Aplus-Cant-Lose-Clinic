@@ -57,7 +57,7 @@ import AddPack from "./components/Adminstrator/AddPack"
 import PatientView from "./components/doctor/PatientView";
 import ResetPassword from "./components/Authentication/ResetPassword";
 import ChangePass from "./components/Authentication/ChangePass";
-
+import Contract from "./components/doctor/Contract.js";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -65,7 +65,6 @@ const router = createBrowserRouter(
       <Route path="/Login" element={<Login />} />
       <Route path="/reset_password/:id/:token" element={<ChangePass />} />
       <Route path="/ResetPassword" element={<ResetPassword />} />
-  
 
       
       <Route path="/RegisterAs" element={<RegisterAs />} />
@@ -79,6 +78,7 @@ const router = createBrowserRouter(
       <Route path="/appointmentPatientss/:doctorId" element={<Appointments />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
+      <Route path="/Contract/:doctorId" element={<Contract />} />
 
     
 
@@ -98,9 +98,9 @@ const router = createBrowserRouter(
       <Route path="/SubscriptionPayment/:h_id/:amount" element={<SubsciptionPayment/>} />  
     </Route>
   )
-);
-
-// Severitys:
+  );
+  
+  // Severitys:
 // success
 // error
 // info

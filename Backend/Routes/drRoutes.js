@@ -15,8 +15,9 @@ const {
   addAppointmentTimeSlot,
   createFollowUpAppointment,
   addHealthRecord,
-  viewWallet
-
+  viewWallet,
+  acceptContract,
+  getDoctor
 } = require("../controllers/drController");
 
 router.post("/addPrescription", addPrescription);
@@ -36,7 +37,9 @@ router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
 
 
+router.get("/getDoctor/:doctorId", getDoctor);
 
+router.put("/acceptContract/:doctorId", acceptContract);
 
 router.post("/addHealthRecord/:patientID", addHealthRecord);
 
