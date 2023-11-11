@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
+const multer = require('multer');
+const Patient = require("../Models/patient");
 
 const {
   addPatient,
@@ -67,7 +69,7 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
-router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
+router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
 
 
 module.exports = router;

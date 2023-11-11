@@ -133,6 +133,16 @@ function Home() {
                             </NavLink>
                         </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <NavLink to='/MedHist'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <VaccinesIcon style={styles} ></VaccinesIcon>
+                                    </IconButton>
+                                    <Typography >Medical History </Typography>
+                                </Button>
+                            </NavLink>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <div>
                                 <>
                                     <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
