@@ -39,39 +39,33 @@ const SubsciptionPayment = () => {
       try{
         const body={amount:amount};
         const response=await axios.patch(`${API_URL}/patient/SubscriptionPayment/${id}/${h_id}`,body)
-     
+        navigate('/Home');
 
       }catch(error)
       {
         console.error('Error:', error);
+        alert("No Sufficient Balance!")
       }
-      navigate('/Home');
+     
      
     
       };
     
       const handleCreditCardButtonClick = async() => {
         try{
-        const response = await axios.post(`${API_URL}/patient/createCheckoutSession/${h_id}/${id}`)
-       
+        const response = await axios.post(`${API_URL}/patient/createCheckoutSession/${id}/${h_id}`)
+       //should add await here?
         const { url } = response.data;
-        console.log("the url",url);
+     
+           window.location = url;
         
-        window.location = url;
       }
         catch (error) {
           console.error(error.response.data.error);
         }
-        try{
-         
-          const response=await axios.patch(`${API_URL}/patient/CCSubscriptionPayment/${id}/${h_id}`)
-       
-  
-        }catch(error)
-        {
-          console.error('Error:', error);
-        }       
+              
       };
+      
       
     
      
