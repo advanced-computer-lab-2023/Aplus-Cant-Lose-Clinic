@@ -1088,7 +1088,7 @@ const healthPackageInfo = async (req, res) => {
 
     if (patient && patient.hPackage) {
       const { hPStatus, SubDate, hPackage } = patient;
-      const { RenewDate } = hPackage;
+      // const { RenewDate } = hPackage;
 
       let endDate;
 
@@ -1102,13 +1102,14 @@ const healthPackageInfo = async (req, res) => {
         endDate = hPackage.EndDate;
       }
 
+      //subscribed and cancelled both have same dates but they are called differently one is renewal date and one is endate
       if (hPStatus === 'Subscribed') {
         return res.status(200).json({
           // subscribed: true,
           status: hPStatus,
           subscribedDate: SubDate,
-          renewedDate: RenewDate,
-          endDate: endDate,
+          // renewedDate: RenewDate,
+          renewedDate: endDate,
         });
       } else if (hPStatus === 'Cancelled') {
         return res.status(200).json({
