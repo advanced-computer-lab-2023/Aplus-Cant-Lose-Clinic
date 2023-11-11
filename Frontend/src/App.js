@@ -55,6 +55,8 @@ import ProfileDirect from "./ProfileDirect";
 import DocPatients from "./components/doctor/DocPatients";
 import AddPack from "./components/Adminstrator/AddPack"
 import PatientView from "./components/doctor/PatientView";
+import Upload from "./components/doctor/Upload";
+
 import ResetPassword from "./components/Authentication/ResetPassword";
 import ChangePass from "./components/Authentication/ChangePass";
 import Contract from "./components/doctor/Contract.js";
@@ -72,6 +74,8 @@ const router = createBrowserRouter(
       <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
 
       <Route path="/Home" element={<HomeDirect />} />
+      <Route path="/upload" element={<Upload />} />
+
       <Route path="/Profile" element={<ProfileDirect />} />
       <Route path="/DocPatients" element={<DocPatients />} />
       <Route path="/Appointments" element={<Appointments />} />

@@ -35,12 +35,12 @@ function RegisterAsDoctor() {
     const response = dispatch(registerDoctor(sampleData));
     response.then((responseData) => {
       console.log(responseData);
-      if (responseData.payload.status === undefined) {
+      if (responseData.payload=== undefined) {
         snackbarMessage(`error: ${responseData} has occurred`, "error");
 
       } else {
-        snackbarMessage("You have successfully registered", "success");
-        navigate("/login");
+        snackbarMessage("You have successfully registered but needed to upload more documents", "success");
+        navigate("/upload");
       }
     });
   };

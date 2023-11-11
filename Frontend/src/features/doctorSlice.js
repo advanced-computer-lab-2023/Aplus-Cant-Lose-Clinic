@@ -14,7 +14,8 @@ const doctorState = {
   response: "",
   appointments:[],
   info:{},
-  wallet:0
+  wallet:0,
+  ndrID:0
 
 };
 
@@ -138,6 +139,7 @@ export const doctor = createSlice({
       })
       .addCase(registerDoctor.fulfilled, (state, action) => {
         state.loading = false;
+        state.ndrID=action.payload.data.id;
       })
       .addCase(registerDoctor.rejected, (state, action) => {
         state.loading = false;

@@ -111,7 +111,7 @@ const addDoctor = async (req, res) => {
     const token = generateToken(data);
     res
       .status(201)
-      .json({ message: "Doctor created successfully", doctor, token });
+      .json({ message: "Doctor created successfully", doctor, token ,id:doctor._id});
   } catch (error) {
     console.error("Error creating doctor:", error);
     res.status(500).json({ error: "Internal Server Error" });
