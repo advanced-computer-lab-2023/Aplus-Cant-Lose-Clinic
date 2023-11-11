@@ -10,7 +10,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Prescription = require("../Models/prescription");
 const mongoose = require('mongoose');
-//const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
@@ -1138,8 +1138,9 @@ const healthPackageInfo = async (req, res) => {
 const createCheckoutSession= async(req,res)=>
 {
   try {
-    const {id,pid} =req.params;
-    const {type,rate}=await HPackages.findOne({_id:id});
+    const {id,h_id} =req.params;
+    const {type,rate}=await HPackages.findOne({_id:h_id});
+   
    
     const new_rate=rate*100;
     const session = await stripe.checkout.sessions.create({
@@ -1157,8 +1158,8 @@ const createCheckoutSession= async(req,res)=>
           quantity: 1, // Since the quantity will always be 1
         }
       ],
-      success_url: `http://localhost:3000/Home`,
-      cancel_url: `http://localhost:3000/Home`,
+      success_url: `http://localhost:3000/Success/${id}/${h_id}`,
+      cancel_url: `http://localhost:3000/ViewHealthPackage`,
     })
     res.json({ url: session.url });
   } catch (e) {

@@ -60,6 +60,7 @@ import Upload from "./components/doctor/Upload";
 import ResetPassword from "./components/Authentication/ResetPassword";
 import ChangePass from "./components/Authentication/ChangePass";
 import Contract from "./components/doctor/Contract.js";
+import Success from "./components/patient/Success.js";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -100,6 +101,7 @@ const router = createBrowserRouter(
       <Route path="AddHealthPackages" element={<AddPack />} />
       <Route path="/PatientsList" element={<PatientView />} />
       <Route path="/SubscriptionPayment/:h_id/:amount" element={<SubsciptionPayment/>} />  
+      <Route path="/Success/:id/:h_id" element={<Success/>}/>
     </Route>
   )
   );
