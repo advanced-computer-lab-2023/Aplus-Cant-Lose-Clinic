@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_URL } from "../Consts";
+
 const userToken = localStorage.getItem("userToken")
   ? localStorage.getItem("userToken")
   : null;
@@ -118,7 +119,6 @@ const user = createSlice({
         state.id = action.payload.data.userData.fUser._id;
         console.log(action.payload.data.userData.fUser._id);
         state.token = action.payload.data.token;
-        localStorage.setItem("userToken", state.token);
 
         console.log(state.token);
       })
