@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import axios from "axios";
@@ -25,19 +25,30 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import { viewAppoints } from "../../features/patientSlice";
-import { useEffect, useState } from "react";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-function BasicTable({ status, date }) {
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import { useHistory, useNavigate } from "react-router-dom"; // Add this import
+import CreditCardForm from './CreditCardForm';
+
+
+
+
+
+
+
+
+
+
+function BasicTable({ status, date, onPayButtonClick }) {
   const tableContainerStyle = {
-    maxWidth: "80%", // Adjust the maximum width as needed
-    margin: "0 auto", // Center-align the table horizontally
+    maxWidth: "80%",
+    margin: "0 auto",
     marginTop: "20px",
     boxShadow: "5px 5px 5px 5px #8585854a",
   };
@@ -48,46 +59,51 @@ function BasicTable({ status, date }) {
   useEffect(() => {
     dispatch(viewAppoints(pId));
   }, [dispatch]);
+
   return (
-    <TableContainer component={Paper} style={tableContainerStyle}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Doctor Name </TableCell>
-            <TableCell align="left">Doctor Speciality</TableCell>
-            <TableCell align="left">Date</TableCell>
-            <TableCell align="left">Status </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {console.log(rows)}
-          {rows
-            .filter((row) => {
-              return status === "Any" || status === row.status;
-            })
-            .filter((row) => {
-              return (
-                date === "" || new Date(row.startDate) >= new Date(date)
-              );
-            })
-            .map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row.drID.name}
-                </TableCell>
-                <TableCell align="left">{row.drID.speciality}</TableCell>
-                <TableCell align="left">
-                  {row.startDate &&
-                    new Date(row.startDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="left">{row.status}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer component={Paper} style={tableContainerStyle}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Doctor Name </TableCell>
+              <TableCell align="left">Doctor Speciality</TableCell>
+              <TableCell align="left">Date</TableCell>
+              <TableCell align="left">Status </TableCell>
+              <TableCell align="left">Payment </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows
+              .filter((row) => status === "Any" || status === row.status)
+              .filter(
+                (row) =>
+                  date === "" || new Date(row.startDate) >= new Date(date)
+              )
+              .map((row, index) => (
+                <TableRow key={index}>
+                  <TableCell component="th" scope="row">
+                    {row.drID.name}
+                  </TableCell>
+                  <TableCell align="left">{row.drID.speciality}</TableCell>
+                  <TableCell align="left">
+                    {row.startDate &&
+                      new Date(row.startDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell align="left">{row.status}</TableCell>
+                  <TableCell align="left">
+                    {row.payment}
+                    <Button onClick={() => onPayButtonClick(row)}>Pay</Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   );
 }
+
 export default function SearchAppBar() {
   const [status, setStatus] = useState("Any");
   const [date, setDate] = useState("");
@@ -95,60 +111,119 @@ export default function SearchAppBar() {
   const [pname, setPname] = useState("");
   const [Appointments, setAppointments] = useState([]);
   const [description, setDescription] = useState("");
-  const [currentAppointment,setCurrentAppointment]=useState(null);
-  var noappoints = false;
+  const [currentAppointment, setCurrentAppointment] = useState(null);
+  const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [openCreditCardDialog, setOpenCreditCardDialog] = useState(false);
+  const [openWalletDialog, setOpenWalletDialog] = useState(false);
+  const [walletBalance, setWalletBalance] = useState(1000); // Set an initial wallet balance
+
 
   const { doctorId } = useParams();
-  console.log(doctorId)
+
+  const dispatch = useDispatch();
+  const pId = useSelector((state) => state.user.id);
+  const rows = useSelector((state) => state.patient.appoints);
+  var noappoints = false;
 
   const getAppointments = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/patient/freeAppiontmentSlot/${doctorId}`);
+      const response = await axios.get(
+        `http://localhost:8000/api/patient/freeAppiontmentSlot/${doctorId}`
+      );
       const appointmentsData = response.data.Appointmentss;
       setAppointments(appointmentsData);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
-  }
+  };
+
   async function reserveAnAppointment() {
     try {
-        console.log('appointmentId:',currentAppointment);
-        console.log('username:',pname);
-        console.log('Description:',description);
+      console.log("appointmentId:", currentAppointment);
+      console.log("username:", pname);
+      console.log("Description:", description);
 
-        const response = await axios.patch(`http://localhost:8000/api/patient/reserveAppointmentSlot/${currentAppointment}`, {
-          username:pname,
-          Description:description
-        });
-        console.log(response);
+      const response = await axios.patch(
+        `http://localhost:8000/api/patient/reserveAppointmentSlot/${currentAppointment}`,
+        {
+          username: pname,
+          Description: description,
+        }
+      );
+      console.log(response);
     } catch (error) {
-        console.error("Error adding the slot", error);
+      console.error("Error adding the slot", error);
     }
-}
+  }
+
   const handleClickOpen = () => {
     setOpen(true);
     getAppointments();
   };
 
   const handleClose = () => {
-      reserveAnAppointment();
-      setOpen(false);
-    
+    reserveAnAppointment();
+    setOpen(false);
   };
+
+  const handleOpenPaymentDialog = (appointment) => {
+    setSelectedAppointment(appointment);
+    setOpenPaymentDialog(true);
+  };
+
+  const handleClosePaymentDialog = () => {
+    setSelectedAppointment(null);
+    setOpenPaymentDialog(false);
+  };
+
+  const handlePaymentCreditCard = () => {
+    // Handle credit card payment logic here
+    console.log("Credit Card Payment processed for appointment:", selectedAppointment);
+    // You can add more logic here for credit card processing
+    setOpenCreditCardDialog(false);
+    handleOpenCreditCardDialog(); // Close the credit card dialog after processing
+  };
+
+  const handleOpenCreditCardDialog = () => {
+    setOpenCreditCardDialog(true);
+  };
+
+  const handleCloseCreditCardDialog = () => {
+    setOpenCreditCardDialog(false);
+  };
+
+  const handleOpenWalletDialog = () => {
+    setOpenWalletDialog(true);
+  };
+  
+  const handleCloseWalletDialog = () => {
+    setOpenWalletDialog(false);
+  };
+
+  const handlePaymentWallet = () => {
+    console.log("Wallet Payment processed for appointment:", selectedAppointment);
+    // You can add more logic here for credit card processing
+    setOpenWalletDialog(false);
+    handleOpenWalletDialog(); // Close the credit card dialog after processing
+
+  };
+
   function formatDateTimeToEnglish(dateTimeString) {
     const date = new Date(dateTimeString);
     const options = {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
     };
-    const dateFormatter = new Intl.DateTimeFormat('en-US', options);
+    const dateFormatter = new Intl.DateTimeFormat("en-US", options);
     return dateFormatter.format(date);
   }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
@@ -172,9 +247,9 @@ export default function SearchAppBar() {
           >
             Appointments
           </Typography>
-          <Box >
+          <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={["DateTimePicker"]} >
+              <DemoContainer components={["DateTimePicker"]}>
                 <DateTimePicker
                   sx={{ color: "white" }}
                   label="Appointment start date Schedule"
@@ -192,14 +267,13 @@ export default function SearchAppBar() {
               onClick={() => {
                 setDate("");
               }}
-
             >
               <Typography>Cancel</Typography>
             </span>
           </Box>
 
           <Select
-            sx={{ color: "white", ml: '20px', bg: "white" }}
+            sx={{ color: "white", ml: "20px", bg: "white" }}
             value={status}
             label="Status Filter"
             onChange={(event) => {
@@ -214,17 +288,34 @@ export default function SearchAppBar() {
           </Select>
         </Toolbar>
       </AppBar>
-      <BasicTable status={status} date={date} />
-      <Fab color="primary" aria-label="add" sx={{ left: "95%", margin: "28% 0 0 0" }}
+      <BasicTable
+        status={status}
+        date={date}
+        onPayButtonClick={handleOpenPaymentDialog}
+      />
+      <Fab
+        color="primary"
+        aria-label="add"
+        sx={{ left: "95%", margin: "28% 0 0 0" }}
         onClick={handleClickOpen}
       >
         <AddIcon />
       </Fab>
-      <Dialog open={open} onClose={handleClose} PaperProps={{ style: noappoints ? { backgroundColor: '#004e98' } : { backgroundColor: 'white' } }}>
-        {Appointments.length === 0 ? noappoints = true && (
-          <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
-            <h1>There is no Available Appointments</h1>
-          </div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: noappoints
+            ? { backgroundColor: "#004e98" }
+            : { backgroundColor: "white" },
+        }}
+      >
+        {Appointments.length === 0 ? (
+          (noappoints = true && (
+            <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
+              <h1>There is no Available Appointments</h1>
+            </div>
+          ))
         ) : (
           <>
             <DialogTitle>Add An Appointment</DialogTitle>
@@ -233,8 +324,11 @@ export default function SearchAppBar() {
               {Appointments.map((appointment) => (
                 <ListItem disableGutters key={appointment._id}>
                   <ListItemButton>
-                    <ListItemText primary={formatDateTimeToEnglish(appointment.startDate)} onClick={() => setCurrentAppointment(appointment._id)}/>
-                 </ListItemButton>
+                    <ListItemText
+                      primary={formatDateTimeToEnglish(appointment.startDate)}
+                      onClick={() => setCurrentAppointment(appointment._id)}
+                    />
+                  </ListItemButton>
                 </ListItem>
               ))}
               <div style={{ padding: "10px" }}>
@@ -248,93 +342,78 @@ export default function SearchAppBar() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Add</Button>
-              <Button onClick={noappoints = true &&handleClose}>Cancel</Button>
+              <Button onClick={(noappoints = true && handleClose)}>Cancel</Button>
             </DialogActions>
           </>
         )}
       </Dialog>
 
+      {/* Payment Dialog */}
+      <Dialog
+        open={openPaymentDialog}
+        onClose={handleClosePaymentDialog}
+        PaperProps={{
+          style: { backgroundColor: "white" },
+        }}
+      >
+        <DialogTitle>Payment</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Payment for appointment:{" "}
+            {selectedAppointment && selectedAppointment.drID.name}
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlePaymentCreditCard}>Credit Card</Button>
+          <Button onClick={handlePaymentWallet}>Wallet</Button>
+          <Button onClick={handleClosePaymentDialog}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Credit Card Dialog */}
+      <Dialog
+        open={openCreditCardDialog}
+        onClose={handleCloseCreditCardDialog}
+        PaperProps={{
+          style: { backgroundColor: "white" },
+        }}
+      >
+        <DialogTitle>Credit Card Information</DialogTitle>
+        <DialogContent>
+          {
+            <CreditCardForm>
+              
+            </CreditCardForm>
+          }
+          
+        </DialogContent>
+        <DialogActions>
+          {/* Add any actions or buttons for credit card processing */}
+          <Button onClick={handleCloseCreditCardDialog}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+  open={openWalletDialog}
+  onClose={handleCloseWalletDialog}
+  PaperProps={{
+    style: { backgroundColor: "white" },
+  }}
+>
+  <DialogTitle>Wallet Payment</DialogTitle>
+  <DialogContent>
+    {/* Add wallet payment content here */}
+    <Typography>
+      Payment for appointment: {selectedAppointment && selectedAppointment.drID.name}
+    </Typography>
+  </DialogContent>
+  <DialogActions>
+    {/* Add wallet payment actions here */}
+    <Button>Pay with Wallet</Button>
+    <Button onClick={handleCloseWalletDialog}>Cancel</Button>
+  </DialogActions>
+</Dialog>
 
     </Box>
   );
 }
-
-// const Status = [
-//   {
-//     value: "Completed",
-//     label: "Completed"
-//   },
-//   {
-//     value:"Cancelled",
-//     label:"Cancelled"
-//   },
-//   {
-//   value:"Rescheduled",
-//   label:"Rescheduled"
-//   },
-//   {
-//     value:"Upcoming",
-//     label:"Upcoming"
-//   }
-// ];
-
-// function SelectTextFields() {
-//   return (
-//     <Box
-//       component="form"
-//       sx={{
-//         '& .MuiTextField-root': { m: 1, width: '25ch' },
-//       }}
-//       noValidate
-//       autoComplete="off"
-//     >
-//       <div>
-//         <TextField
-//           id="outlined-select-status"
-//           select
-//           label="Select"
-//           helperText="Status"
-//         >
-//           {Status.map((option) => (
-//             <MenuItem key={option.value} value={option.value}>
-//               {option.label}
-//             </MenuItem>
-//           ))}
-//         </TextField>
-//       </div>
-//     </Box>
-//   );
-// }
-
-// function NativeSelectDemo() {
-//   return (
-//     <Box sx={{ minWidth: 120 }}>
-//       <FormControl fullWidth>
-//         <InputLabel variant="standard" htmlFor="uncontrolled-native">
-//           Status
-//         </InputLabel>
-//         <NativeSelect
-//           inputProps={{
-//             name: 'Status',
-//             id: 'uncontrolled-native',
-//           }}
-//         >
-//           <option value={"Completed"}>Completed</option>
-//           <option value={"Cancelled"}>Cancelled</option>
-//           <option value={"Rescheduled"}>Rescheduled</option>
-//           <option value={"Upcoming"}>Upcoming</option>
-
-//         </NativeSelect>
-//       </FormControl>
-//     </Box>
-//   );
-// }
-
-// const dateTimePickerContainer = {
-//   display: "flex",
-//   alignItems: "right",
-//   borderRadius: "4px",
-//   padding: "8px",
-//   color:'white',
-// };
-

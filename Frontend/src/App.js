@@ -61,6 +61,7 @@ import ResetPassword from "./components/Authentication/ResetPassword";
 import ChangePass from "./components/Authentication/ChangePass";
 import Contract from "./components/doctor/Contract.js";
 import Success from "./components/patient/Success.js";
+import HealthRecords from "./components/patient/HealthRecords.js";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -86,6 +87,7 @@ const router = createBrowserRouter(
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
       <Route path="/Contract/:doctorId" element={<Contract />} />
+      <Route path="HealthRecords" element={<HealthRecords />} />
 
     
 
