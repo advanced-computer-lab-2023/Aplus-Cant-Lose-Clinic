@@ -26,7 +26,8 @@ const {
   viewWallet,
   ccSubscriptionPayment,
   healthPackageInfo,
-  createCheckoutSession
+  createCheckoutSession,
+  viewPatientHealthRecords
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -54,6 +55,8 @@ router.get("/getUser", getUser);
 router.get("/getAlldoctors", getAlldoctors);
 router.get("/viewSpecificPrescription/:id", viewSpecificPrescription);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
+router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
+
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
 

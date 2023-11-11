@@ -1168,6 +1168,49 @@ const createCheckoutSession= async(req,res)=>
   }
 }
 
+const viewPatientHealthRecords = async (req, res) => {
+  try {
+    const pId = req.params.patientid;
+    
+    // Check if the prescription ID is provided in the query
+    if (!pId) {
+      return res.status(400).json({ error: "Patient ID is required in the query" });
+    }
+
+    // Find the patient by its ID and populate related data
+    const HealthRecords = await Patient.findById(pId, {
+      name: 0,
+      email: 0,
+      username: 0,
+      dBirth: 0,
+      gender: 0,
+      mobile: 0,
+      emergencyContact: 0,
+      family: 0,
+      doctors: 0,
+      __v: 0,
+      cart: 0,
+      addresses: 0,
+      wallet: 0,
+      records: 0,
+    }).populate('healthRecords');
+    
+    if (!HealthRecords) {
+
+      return res.status(404).json({ error: "HealthRecords not found" });
+      
+    }
+    console.log('Reached HealthRecords');
+
+    return res.status(200).json({
+      message: "HealthRecords and related data retrieved successfully",
+      HealthRecords,
+    });
+    } catch (error) {
+    console.error("Error retrieving HealthRecords data:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
@@ -1198,5 +1241,6 @@ module.exports = {
   viewWallet,
   ccSubscriptionPayment,
   createCheckoutSession,
-  healthPackageInfo
+  healthPackageInfo,
+  viewPatientHealthRecords
 };

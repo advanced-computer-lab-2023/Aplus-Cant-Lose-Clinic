@@ -103,7 +103,7 @@ function Home() {
                             </NavLink>
                         </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                            <NavLink to='/Home'>
+                            <NavLink to='/HealthRecords'>
                                 <Button sx={{ color: 'white' }}>
                                     <IconButton>
                                         <MedicalInformationIcon style={styles} ></MedicalInformationIcon>

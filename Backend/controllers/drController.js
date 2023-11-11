@@ -470,7 +470,7 @@ const addHealthRecord = async (req, res) => {
   try {
     const patientID  = req.params.patientID;
 
-    const {data1,data2,data3,data4,data5,data6,doctorID}= req.body;
+    const {date,description,labResults,primaryDiagnosis,treatment,medicalInformation,doctorID}= req.body;
     console.log(req.body);
     console.log("entered post function addHealthRecord id of patient is :"+patientID)
 
@@ -487,12 +487,12 @@ const addHealthRecord = async (req, res) => {
     
     // Save the healthRecord in patient to the database
      patient.healthRecords.push({
-      date:data1,
-      description:data2,
-      labResults:data3,
-      medicalInformation:data4,
-      primaryDiagnosis:data5,
-      treatment:data6,
+      date,
+      description,
+      labResults,
+      medicalInformation,
+      primaryDiagnosis,
+      treatment,
     })
     await patient.save();
 
