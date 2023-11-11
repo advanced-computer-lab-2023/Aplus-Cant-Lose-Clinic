@@ -1029,7 +1029,7 @@ const healthPackageInfo = async (req, res) => {
 
       let endDate;
 
-      if (hPStatus === 'Subscribed') {
+      if (hPStatus === 'Subscribed' || hPStatus === 'Cancelled') {
         // If subscribed, calculate end date as one month more than subscribed date
         const endDateFormat = new Date(SubDate);
         endDateFormat.setMonth(endDateFormat.getMonth() + 1);
