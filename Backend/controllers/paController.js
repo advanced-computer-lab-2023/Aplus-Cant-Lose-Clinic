@@ -869,7 +869,7 @@ const subscribeToHealthPackage = async (req, res) => {
 // };
 
 
-
+//blabizozozozozo
 const unSubscribeToHealthPackage = async (req, res) => {
   const { patientId, healthPackageId } = req.query;
   console.log("entered unsubscribe to health package");
