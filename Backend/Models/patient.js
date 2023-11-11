@@ -89,28 +89,6 @@ const paSchema = new mongoose.Schema(
 
       },
     ],
-    medHist: [
-      {
-        title: {
-          type: String,
-          required: true,
-          trim: true
-        },
-        description: {
-          type: String,
-          required: true,
-          trim: true
-        },
-        file_path: {
-          type: String,
-          required: true
-        },
-        file_mimetype: {
-          type: String,
-          required: true
-        }
-      }
-    ],
     wallet: {
       type: Number,
       required: true, // wallet is required
