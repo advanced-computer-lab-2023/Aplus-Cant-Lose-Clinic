@@ -848,7 +848,8 @@ const unSubscribeToHealthPackage = async (req, res) => {
     }
 
     // Unsubscribe by setting the health package to null
-    patient.hPackage = null;
+    // patient.hPackage = null;
+    patient.hPStatus='Cancelled';
     await patient.save();
 
     // Now, call the viewHealthPackagesPatient function to retrieve the updated list
@@ -926,7 +927,7 @@ const viewHealthPackagesPatient = async (req, res) => {
       const isSubscribed =
   patientSubscribedPackage &&
   patientSubscribedPackage.equals(healthPackage._id) &&
-  patientSubscribedPackage.hPStatus !== "Cancelled";
+  patient.hPStatus === "Subscribed";
 
       return {
         ...healthPackage.toObject(),
