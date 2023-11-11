@@ -21,7 +21,7 @@ const {
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
-const File = require('../Models/file');
+const FileDr = require('../Models/fileDr');
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -51,7 +51,7 @@ router.post(
         file_mimetype: file.mimetype
       }));
 
-      await File.create({ files: fileObjects ,drID:req.params.id}); // Corrected typo
+      await FileDr.create({ files: fileObjects ,drID:req.params.id}); // Corrected typo
 
       res.send('Files uploaded successfully.');
     } catch (error) {
