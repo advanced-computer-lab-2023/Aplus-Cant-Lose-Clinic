@@ -68,15 +68,21 @@ const viewPendDr = async (req, res) => {
 };
 const viewJoinedDr = async (req, res) => {
   try {
-    const joinDoctors = await Doctor.find({ status: "accepted" });
-    res
-      .status(201)
-      .json({ message: "accepted doctor r got successfully", joinDoctors });
+    // Find doctors with status "accepted" and those with an accepted contract
+    const joinDoctors = await Doctor.find({
+      $or: [
+        { status: "accepted" },
+        { "contract.accepted": { $exists: true, $eq: true } }, // Include doctors with an existing and accepted contract
+      ],
+    });
+
+    res.status(201).json({ message: "Accepted doctors retrieved successfully", joinDoctors });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error retrieving accepted doctors:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const viewPatients = async (req, res) => {
   try {

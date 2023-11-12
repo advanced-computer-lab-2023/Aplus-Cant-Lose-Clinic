@@ -99,6 +99,44 @@ router.get('/download/:drId', async (req, res) => {
   }
 });
 
+const archiver = require('archiver');
+
+router.get('/downloadf/:drId', async (req, res) => {
+  try {
+    // Find the doctor by ID
+    const doctor = await FileDr.findOne({ drID: req.params.drId });
+
+    if (!doctor) {
+      return res.status(404).send('Doctor not found');
+    }
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // Compression level (maximum)
+    });
+
+    // Set the Content-Type header
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="files.zip"`,
+    });
+
+    // Pipe the archive to the response object
+    archive.pipe(res);
+
+    // Add each file to the archive
+    doctor.files.forEach((file, index) => {
+      const fileContent = require('fs').readFileSync(path.join(__dirname, '..', file.file_path));
+      archive.append(fileContent, { name: `${index + 1}_${file.title}${path.extname(file.file_path)}` });
+    });
+
+    // Finalize the archive
+    archive.finalize();
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error while downloading files. Try again later.');
+  }
+});
+
 // Function to get MIME type based on file extension
 function getMimeType(fileExtension) {
   switch (fileExtension.toLowerCase()) {
