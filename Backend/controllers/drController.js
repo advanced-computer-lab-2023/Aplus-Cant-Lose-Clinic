@@ -370,7 +370,6 @@ const addAppointmentTimeSlot = async (req, res) => {
       startDate:req.body.startDate,
       endDate:req.body.endDate,
       drID:doctorId,
-      pID:"65480dbbdde936238045fdd3",
       status:"Not_Reserved",
       Description: "",
     });

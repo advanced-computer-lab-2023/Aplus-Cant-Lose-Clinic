@@ -19,7 +19,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
+import { API_URL } from "../../Consts.js";
 function FollowUp() {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
@@ -31,7 +31,7 @@ function FollowUp() {
        //to get list of doctors patients so he can choose the name of the patient he want to schadule follow up with
     const getPatientList = async () => {
         try {
-            const response = await axios.get(`http://localhost:8000/api/doctor/patientsInUpcomingApointments/${id}`);
+            const response = await axios.get(`${API_URL}/doctor/patientsInUpcomingApointments/${id}`);
             const patientsdata = response.data.patients;
             setPatients(patientsdata);
         } catch (error) {
@@ -43,7 +43,7 @@ function FollowUp() {
         try {
             console.log(currentpatient);
 
-            const response = await axios.post(`http://localhost:8000/api/doctor/createFollowUpAppointment/${id}?patientID=${currentpatient}`, {
+            const response = await axios.post( `${API_URL}/doctor/createFollowUpAppointment/${id}?patientID=${currentpatient}`, {
                 startDate,
                 endDate
             });

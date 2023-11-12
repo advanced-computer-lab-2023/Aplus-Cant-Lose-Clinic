@@ -62,6 +62,8 @@ import ChangePass from "./components/Authentication/ChangePass";
 import Contract from "./components/doctor/Contract.js";
 import Success from "./components/patient/Success.js";
 import HealthRecords from "./components/patient/HealthRecords.js";
+import AvailableApp from "./components/patient/AvailableApp";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -83,7 +85,7 @@ const router = createBrowserRouter(
       <Route path="/Profile" element={<ProfileDirect />} />
       <Route path="/DocPatients" element={<DocPatients />} />
       <Route path="/Appointments" element={<Appointments />} />
-      <Route path="/appointmentPatientss/:doctorId" element={<Appointments />} />
+      <Route path="/appointmentPatientss/:doctorId" element={<AvailableApp />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
       <Route path="/Contract/:doctorId" element={<Contract />} />

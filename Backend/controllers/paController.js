@@ -326,11 +326,12 @@ const freeAppiontmentSlot = async (req, res) => {
     }
 
     // Fetch details about each free Appointment
-    const Appointmentss = await Appointment.find({ pID: "65480dbbdde936238045fdd3" });
-
+    const Appointments = await Appointment.find({ drID: doctorId }).populate(
+      "drID"
+    );
     return res.status(200).json({
       message: "Free Appointments retrieved successfully",
-      Appointmentss,
+      Appointments,
     });
   } catch (error) {
     console.error("Error retrieving Appointments:", error);

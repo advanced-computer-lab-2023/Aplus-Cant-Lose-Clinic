@@ -12,14 +12,14 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from 'react';
-
+import { API_URL } from "../../Consts.js";
 export default function Contract() {
     const { doctorId } = useParams();
     const [Doctor, setDoctor] = useState(null);
 
     const SetContracts = async () => {
         try {
-          const response = await axios.put(`http://localhost:8000/api/doctor/acceptContract/${doctorId}`);
+          const response = await axios.put( `${API_URL}/doctor/acceptContract/${doctorId}`);
           const ContractsData = response.data.doctor;
           console.log(ContractsData);
         } catch (error) {
@@ -28,7 +28,7 @@ export default function Contract() {
       }
       const getDoctor = async () => {
         try {
-          const response = await axios.get(`http://localhost:8000/api/doctor/getDoctor/${doctorId}`);
+          const response = await axios.get( `${API_URL}/doctor/getDoctor/${doctorId}`);
           const getDoctorData = response.data.doctor;
           setDoctor(getDoctorData);
         } catch (error) {

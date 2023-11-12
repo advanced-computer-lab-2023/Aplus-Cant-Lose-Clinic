@@ -10,7 +10,7 @@ const appointmentSchema = new mongoose.Schema({
   pID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Patient", // Reference to the Patient model
-    required: true,
+    
   },
   status: {
     type: String,

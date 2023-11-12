@@ -35,7 +35,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { useHistory, useNavigate } from "react-router-dom"; // Add this import
 import CreditCardForm from './CreditCardForm';
-
+import { API_URL } from "../../Consts.js";
 
 
 
@@ -70,7 +70,6 @@ function BasicTable({ status, date, onPayButtonClick }) {
               <TableCell align="left">Doctor Speciality</TableCell>
               <TableCell align="left">Date</TableCell>
               <TableCell align="left">Status </TableCell>
-              <TableCell align="left">Payment </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -91,10 +90,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
                       new Date(row.startDate).toLocaleDateString()}
                   </TableCell>
                   <TableCell align="left">{row.status}</TableCell>
-                  <TableCell align="left">
-                    {row.payment}
-                    <Button onClick={() => onPayButtonClick(row)}>Pay</Button>
-                  </TableCell>
+                
                 </TableRow>
               ))}
           </TableBody>
@@ -129,7 +125,7 @@ export default function SearchAppBar() {
   const getAppointments = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/patient/freeAppiontmentSlot/${doctorId}`
+         `${API_URL}/patient/freeAppiontmentSlot/${doctorId}`
       );
       const appointmentsData = response.data.Appointmentss;
       setAppointments(appointmentsData);
@@ -145,7 +141,7 @@ export default function SearchAppBar() {
       console.log("Description:", description);
 
       const response = await axios.patch(
-        `http://localhost:8000/api/patient/reserveAppointmentSlot/${currentAppointment}`,
+         `${API_URL}/patient/reserveAppointmentSlot/${currentAppointment}`,
         {
           username: pname,
           Description: description,
@@ -348,71 +344,11 @@ export default function SearchAppBar() {
         )}
       </Dialog>
 
-      {/* Payment Dialog */}
-      <Dialog
-        open={openPaymentDialog}
-        onClose={handleClosePaymentDialog}
-        PaperProps={{
-          style: { backgroundColor: "white" },
-        }}
-      >
-        <DialogTitle>Payment</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Payment for appointment:{" "}
-            {selectedAppointment && selectedAppointment.drID.name}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handlePaymentCreditCard}>Credit Card</Button>
-          <Button onClick={handlePaymentWallet}>Wallet</Button>
-          <Button onClick={handleClosePaymentDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+     
 
-      {/* Credit Card Dialog */}
-      <Dialog
-        open={openCreditCardDialog}
-        onClose={handleCloseCreditCardDialog}
-        PaperProps={{
-          style: { backgroundColor: "white" },
-        }}
-      >
-        <DialogTitle>Credit Card Information</DialogTitle>
-        <DialogContent>
-          {
-            <CreditCardForm>
-              
-            </CreditCardForm>
-          }
-          
-        </DialogContent>
-        <DialogActions>
-          {/* Add any actions or buttons for credit card processing */}
-          <Button onClick={handleCloseCreditCardDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+     
 
-      <Dialog
-  open={openWalletDialog}
-  onClose={handleCloseWalletDialog}
-  PaperProps={{
-    style: { backgroundColor: "white" },
-  }}
->
-  <DialogTitle>Wallet Payment</DialogTitle>
-  <DialogContent>
-    {/* Add wallet payment content here */}
-    <Typography>
-      Payment for appointment: {selectedAppointment && selectedAppointment.drID.name}
-    </Typography>
-  </DialogContent>
-  <DialogActions>
-    {/* Add wallet payment actions here */}
-    <Button>Pay with Wallet</Button>
-    <Button onClick={handleCloseWalletDialog}>Cancel</Button>
-  </DialogActions>
-</Dialog>
+     
 
     </Box>
   );

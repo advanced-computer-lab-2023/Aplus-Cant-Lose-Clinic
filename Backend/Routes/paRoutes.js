@@ -74,5 +74,49 @@ router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
 router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
 
+router.post('/scheduleAppointment', async (req, res) => {
+  try {
+    const { doctorId, patientId, appointmentId } = req.body;
+
+    // Check if the doctor and patient exist
+    const doctor = await Doctor.findById(doctorId);
+    const patient = await Patient.findById(patientId);
+
+    if (!doctor || !patient) {
+      return res.status(404).json({ message: 'Doctor or Patient not found' });
+    }
+
+    // Check if the appointment exists
+    const appointment = await Appointment.findOne({
+      _id: appointmentId,
+      drID: doctorId,
+       // Appointment not associated with any patient initially
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found or already scheduled' });
+    }
+
+    // Associate the appointment with the patient
+    appointment.pID = patientId;
+    
+    // Calculate appointment price based on doctor's rate and patient's health package
+    let appointmentPrice = doctor.rate*100;
+
+    if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
+      // Assuming hPackage has a price field
+      appointmentPrice -= patient.hPackage.price;
+    }
+
+    // Save changes to the appointment
+    await appointment.save();
+
+    res.json({ message: 'Appointment scheduled successfully', appointmentPrice });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;
