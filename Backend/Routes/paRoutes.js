@@ -1,3 +1,8 @@
+const Appointment = require("../Models/appointments");
+const Doctor = require("../Models/doctor");
+
+
+
 const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
 const multer = require('multer');
@@ -74,7 +79,7 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
-router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
+router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {
@@ -87,29 +92,30 @@ router.post('/scheduleAppointment', async (req, res) => {
     if (!doctor || !patient) {
       return res.status(404).json({ message: 'Doctor or Patient not found' });
     }
-
+    console.log(req.body);
     // Check if the appointment exists
     const appointment = await Appointment.findOne({
       _id: appointmentId,
       drID: doctorId,
        // Appointment not associated with any patient initially
+      
     });
-
-    if (!appointment) {
+    
+   if (!appointment) {
       return res.status(404).json({ message: 'Appointment not found or already scheduled' });
-    }
+    } 
 
     // Associate the appointment with the patient
     appointment.pID = patientId;
-    
+    console.log(doctor.rate);
     // Calculate appointment price based on doctor's rate and patient's health package
     let appointmentPrice = doctor.rate*100;
-
-    if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
-      // Assuming hPackage has a price field
-      appointmentPrice -= patient.hPackage.price;
-    }
-
+     console.log(patient.populate('hPackage'));
+    //  if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
+    //   // Assuming hPackage has a price field
+    //    appointmentPrice -= patient.populate('hPackage').rate;
+    //  }
+    
     // Save changes to the appointment
     await appointment.save();
 
