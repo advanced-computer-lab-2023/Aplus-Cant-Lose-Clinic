@@ -17,20 +17,23 @@ import {NavLink} from 'react-router-dom';
 
 
 
+
 export default function Contract() {
   const { doctorId } = useParams();
   const [doctor, setDoctor] = useState(null);
- 
+  
   const SetContracts = async () => {
-      try {
-          const response = await axios.put(`http://localhost:8000/api/doctor/acceptContract/${doctorId}`);
-          const ContractsData = response.data.doctor;
-          console.log(ContractsData);
-         
-      } catch (error) {
-          console.error("Error fetching Contracts:", error);
-      }
-  }
+    try {
+        const response = await axios.put(`http://localhost:8000/api/doctor/acceptContract/${doctorId}`);
+        const ContractsData = response.data.doctor;
+        console.log(ContractsData);
+        // Redirect back to the  Home (Login as a verification of accepting the contract) page upon accepting the contract
+        window.location.href = "/Home"; 
+    } catch (error) {
+        console.error("Error fetching Contracts:", error);
+    }
+};
+
 
   const getDoctor = async () => {
       try {
