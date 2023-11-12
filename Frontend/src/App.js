@@ -88,7 +88,7 @@ const router = createBrowserRouter(
       <Route path="/appointmentPatientss/:doctorId" element={<AvailableApp />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
-      <Route path="/Contract/:doctorId" element={<Contract />} />
+      <Route path="/Contract" element={<Contract />} />
       <Route path="HealthRecords" element={<HealthRecords />} />
   
 

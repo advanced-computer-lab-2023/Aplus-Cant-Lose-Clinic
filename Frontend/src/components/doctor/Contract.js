@@ -1,81 +1,148 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import download from "downloadjs"; // Import download function
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Snackbar from "@mui/material/Snackbar";
+import { useSelector } from "react-redux";
+import { API_URL } from "../../Consts.js";
+import HomeIcon from "@mui/icons-material/Home";
+import SearchIcon from "@mui/icons-material/Search";
+import { IconButton,Box } from "@mui/material";
+const { useNavigate } = require("react-router-dom");
 
-const ContractDetails = ({ doctorId }) => {
+const ContractDetails = () => {
+  const iconStyle = {
+    color: "blue", // Set the icon color to blue
+  };
+
+  const navigate = useNavigate();
   const [contractPath, setContractPath] = useState(null);
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false); // New state for success color
+  const { id } = useSelector((state) => state.user);
   useEffect(() => {
     // Load contract details when the component mounts
-    axios.get(`/api/doctor/getContract/${doctorId}`)
-      .then(response => {
+    axios
+      .get(`${API_URL}/doctor/getContract/${id}`)
+      .then((response) => {
         setContractPath(response.data.contract);
       })
-      .catch(error => {
-        console.error('Error fetching contract details', error);
+      .catch((error) => {
+        console.error("Error fetching contract details", error);
       });
-  }, [doctorId]);
+  }, [id]);
 
   const handleAcceptContract = () => {
     // Implement the logic to accept the contract using axios
-    axios.put(`/api/doctor/acceptContract/${doctorId}`)
-      .then(response => {
-        console.log('Contract accepted successfully', response.data);
+    axios
+      .put(`${API_URL}/doctor/acceptContract/${id}`)
+      .then((response) => {
+        console.log("Contract accepted successfully", response.data);
+        setSnackbarSuccess(true);
+
+        setSnackbarMessage("Contract accepted successfully");
+        setSnackbarOpen(true);
+        setSnackbarSuccess(true);
+
         // You may want to update the UI or perform other actions after accepting the contract
       })
-      .catch(error => {
-        console.error('Error accepting contract', error);
+      .catch((error) => {
+        console.error("Error accepting contract", error);
+        setSnackbarMessage("Error accepting contract");
+        setSnackbarSuccess(false);
+        setSnackbarOpen(true);
       });
   };
 
-  const handleDownloadContract = () => {
+  const handleDownloadContract = async () => {
     try {
-      const result = await axios.get(
-        `${API_URL}/doctor/download/${fid}/${id}`,
-        { responseType: "blob" }
-      );
-      const split = path.split("/");
-      const filename = split[split.length - 1];
-      setErrorMsg("");
-      // Show Snackbar for download success
-      setSnackbarMessage(`File ${filename} downloaded successfully`);
-      setSnackbarOpen(true);
-      download(result.data, filename, mimetype);
+      const result = await axios.get(`${API_URL}/doctor/download/${id}`, {
+        responseType: "blob",
+      });
+      const filename = "contract"; // Set the filename as needed
+      download(result.data, filename);
     } catch (error) {
-      if (error.response && error.response.status === 400) {
-        setErrorMsg("Error while downloading file. Try again later");
-      }
+      console.error("Error while downloading file. Try again later.", error);
     }
   };
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          Contract Details
-        </Typography>
-        {contractPath ? (
-          <>
-            <Typography variant="body2" color="text.secondary">
-              Contract Path: {contractPath}
-            </Typography>
-            <Button onClick={handleAcceptContract} variant="contained" color="primary">
-              Accept Contract
-            </Button>
-            <Button onClick={handleDownloadContract} variant="contained" color="secondary">
-              Download Contract
-            </Button>
-          </>
-        ) : (
-          <Typography variant="body2" color="text.secondary">
-            No contract found
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <Card style={{ width: "400px", padding: "20px" }}>
+        <CardContent>
+          <Typography variant="h5" component="div">
+            Contract Details
           </Typography>
-        )}
-      </CardContent>
-    </Card>
+          {contractPath ? (
+            <>
+              <Typography variant="body2" color="text.secondary">
+                Contract Path: {contractPath}
+              </Typography>
+              <Button
+                onClick={handleAcceptContract}
+                variant="contained"
+                color="primary"
+                style={{ width: "150px", marginTop: "20px" }}
+              >
+                Accept Contract
+              </Button>
+              <Button
+                onClick={handleDownloadContract}
+                variant="contained"
+                color="secondary"
+                style={{
+                  width: "150px",
+                  marginTop: "20px",
+                  marginLeft: "10px",
+                }}
+              >
+                Download Contract
+              </Button>
+            </>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No contract found
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message={snackbarMessage}
+        sx={{
+          backgroundColor: snackbarSuccess ? "#4CAF50" : "#f44336", // Set background color based on success state
+        }}
+      />
+      <Box sx={{}}>
+      <Button
+        Speciality="large"
+        onClick={() => {
+          navigate("/Home");
+        }}
+      >
+        <IconButton>
+          <HomeIcon style={iconStyle} />
+        </IconButton>
+      </Button></Box>
+    </div>
   );
 };
 

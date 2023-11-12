@@ -116,7 +116,7 @@ const handleCloseDialog = () => {
                     </div>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to={`/Contract/${user.id}`}>
+                    <NavLink to={`/Contract`}>
                         <Button sx={{ color: 'white' }}>
                             <IconButton>
                                 <GroupIcon style={styles} ></GroupIcon>
