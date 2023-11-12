@@ -1,9 +1,10 @@
 import React from 'react'
 import Button from "@mui/material/Button";
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import {  useSelector } from "react-redux";
 import { useLocation ,useParams,useNavigate} from 'react-router-dom';
 import { API_URL } from "../../Consts.js";
+import { SnackbarContext } from "../../App";
 import axios from "axios";
 import {
 
@@ -23,6 +24,7 @@ const SubsciptionPayment = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const id = useSelector((state) => state.user.id);
   const navigate = useNavigate();
+  const snackbarMessage = useContext(SnackbarContext);
   //const location=useLocation();
  
   //const h_id = location.state ? location.state.healthPackageId : null;
@@ -39,12 +41,14 @@ const SubsciptionPayment = () => {
       try{
         const body={amount:amount};
         const response=await axios.patch(`${API_URL}/patient/SubscriptionPayment/${id}/${h_id}`,body)
+        snackbarMessage("You have successfully Subscribed to HealthPackage", "success");
         navigate('/Home');
 
       }catch(error)
       {
         console.error('Error:', error);
-        alert("No Sufficient Balance!")
+        snackbarMessage("No Sufficient Balance!", "error");
+        
       }
      
      

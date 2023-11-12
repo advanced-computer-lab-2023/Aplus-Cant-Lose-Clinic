@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
 const multer = require('multer');
 const Patient = require("../Models/patient");
+const Doctor = require("../Models/doctor");
+const Appointment = require("../Models/appointments");
 const path = require('path');
 
 const {
@@ -74,7 +76,7 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
-router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
+router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {
