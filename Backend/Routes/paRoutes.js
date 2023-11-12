@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
 const multer = require('multer');
 const Patient = require("../Models/patient");
+const path = require('path');
 
 const {
   addPatient,

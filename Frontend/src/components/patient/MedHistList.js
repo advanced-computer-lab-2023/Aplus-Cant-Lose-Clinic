@@ -5,12 +5,15 @@ import { API_URL } from "../../Consts";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 const MedHistList = () => {
   const [filesList, setFilesList] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const { id } = useSelector((state) => state.user);
   useEffect(() => {
     const getFilesList = async () => {
@@ -25,31 +28,46 @@ const MedHistList = () => {
       }
     };
     getFilesList();
-  }, []);
+  }, [filesList]);
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
+
+
+
+
   const downloadFile = async (fid, path, mimetype) => {
     try {
       const result = await axios.get(
         `${API_URL}/patient/download/${fid}/${id}`,
-        {
-          responseType: "blob",
-        }
+        { responseType: "blob" }
       );
       const split = path.split("/");
       const filename = split[split.length - 1];
       setErrorMsg("");
-      return download(result.data, filename, mimetype);
+      // Show Snackbar for download success
+      setSnackbarMessage(`File ${filename} downloaded successfully`);
+      setSnackbarOpen(true);
+      download(result.data, filename, mimetype);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setErrorMsg("Error while downloading file. Try again later");
       }
     }
   };
+
   const deleteFile = async (fid, path, mimetype) => {
     try {
-      const result = await axios.get(`${API_URL}/patient/delete/${fid}/${id}`);
+      await axios.get(`${API_URL}/patient/delete/${fid}/${id}`);
       const split = path.split("/");
       const filename = split[split.length - 1];
       setErrorMsg("");
+      // Show Snackbar for deletion success
+      setSnackbarMessage(`File ${filename} deleted successfully`);
+      setSnackbarOpen(true);
       // Perform additional actions here if needed
       console.log(`File ${filename} deleted successfully`);
     } catch (error) {
@@ -60,6 +78,7 @@ const MedHistList = () => {
       }
     }
   };
+
 
   return (
     <div className="files-container">
@@ -95,7 +114,7 @@ const MedHistList = () => {
                       href="#/"
                       onClick={() => deleteFile(_id, file_path, file_mimetype)}
                     >
-                      Download
+                      Delete
                     </a>
                   </td>
                 </tr>

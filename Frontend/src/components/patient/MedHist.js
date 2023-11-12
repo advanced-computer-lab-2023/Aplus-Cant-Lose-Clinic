@@ -6,10 +6,24 @@ import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { API_URL } from "../../Consts.js";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 const MedHist = (props) => {
   const { id } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
 
+
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
   const [file, setFile] = useState(null); // state for storing the uploaded file
   const [previewSrc, setPreviewSrc] = useState(''); // state for storing the preview source
   const [state, setState] = useState({
@@ -51,13 +65,21 @@ const MedHist = (props) => {
           formData.append('title', title);
           formData.append('description', description);
           setErrorMsg('');
+          
+          // Try to upload the file
           await axios.post(`${API_URL}/patient/upload/${id}`, formData, {
             headers: {
               'Content-Type': 'multipart/form-data'
             }
           });
-          props.history.push('/MedHisList'); // add this line
 
+          // If upload is successful, show success Snackbar
+          setSnackbarSeverity('success');
+          setSnackbarMessage('File uploaded successfully');
+          setSnackbarOpen(true);
+
+          // Navigate to MedHistList
+          navigate('/MedHistList');
         } else {
           setErrorMsg('Please select a file to add.');
         }
@@ -65,6 +87,15 @@ const MedHist = (props) => {
         setErrorMsg('Please enter all the field values.');
       }
     } catch (error) {
+      // If upload fails, show error Snackbar
+      setSnackbarSeverity('error');
+      setSnackbarMessage('Error while uploading file. Try again later.');
+      setSnackbarOpen(true);
+
+      // Log the detailed error to the console
+      console.error(error);
+
+      // If there is a response from the server, use it as the error message
       error.response && setErrorMsg(error.response.data);
     }
   };
@@ -115,7 +146,7 @@ const MedHist = (props) => {
           {previewSrc && (
             <div className="preview-container">
               {isPreviewAvailable ? (
-                file.name.match(/\.(jpeg|jpg|png)$/) ? (
+                file.name.match(/\.(jpeg|jpg|png|pdf)$/) ? (
                   <img className="preview-image" src={previewSrc} alt="Preview" />
                 ) : (
                   <div className="pdf-preview">
