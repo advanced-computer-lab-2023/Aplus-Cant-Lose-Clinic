@@ -133,7 +133,7 @@ function Home() {
                             </NavLink>
                         </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                            <NavLink to='/MedHist'>
+                            <NavLink to='/MedHistList'>
                                 <Button sx={{ color: 'white' }}>
                                     <IconButton>
                                         <VaccinesIcon style={styles} ></VaccinesIcon>

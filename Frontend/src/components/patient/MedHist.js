@@ -56,6 +56,8 @@ const MedHist = (props) => {
               'Content-Type': 'multipart/form-data'
             }
           });
+          props.history.push('/MedHisList'); // add this line
+
         } else {
           setErrorMsg('Please select a file to add.');
         }

@@ -63,7 +63,7 @@ import Contract from "./components/doctor/Contract.js";
 import Success from "./components/patient/Success.js";
 import HealthRecords from "./components/patient/HealthRecords.js";
 import AvailableApp from "./components/patient/AvailableApp";
-
+import MedHistList from "./components/patient/MedHistList";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -78,7 +78,7 @@ const router = createBrowserRouter(
       <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
       
       <Route path="/MedHist" element={<MedHist />} />
-
+      <Route path="/MedHistList" element={<MedHistList />} />
       <Route path="/Home" element={<HomeDirect />} />
       <Route path="/upload" element={<Upload />} />
 
@@ -90,6 +90,7 @@ const router = createBrowserRouter(
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
       <Route path="/Contract/:doctorId" element={<Contract />} />
       <Route path="HealthRecords" element={<HealthRecords />} />
+  
 
     
 

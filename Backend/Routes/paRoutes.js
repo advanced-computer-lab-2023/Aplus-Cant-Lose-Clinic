@@ -61,6 +61,7 @@ router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
 
 
+const fs = require('fs').promises; // Import the 'fs' module for file deletion
 
 
 router.patch("/subscribeToHealthPackage", subscribeToHealthPackage);
@@ -117,6 +118,145 @@ router.post('/scheduleAppointment', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+const upload = multer({
+  storage: multer.diskStorage({
+    destination(req, file, cb) {
+      cb(null, './medHist');
+    },
+    filename(req, file, cb) {
+      cb(null, `${new Date().getTime()}_${file.originalname}`);
+    }
+  }),
+  
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpeg|jpg|png|pdf)$/)) {
+      return cb(
+        new Error(
+          'only upload files with jpg, jpeg, png, pdf, doc, docx, xslx, xls format.'
+        )
+      );
+    }
+    cb(undefined, true); // continue with upload
+  }
+});
 
+router.post('/upload/:id', upload.single('file'), async (req, res) => {
+  try {
+    const { title, description } = req.body;
+    const { path, mimetype } = req.file;
+
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.id);
+
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+
+    // Add the uploaded file to the patient's medHist attribute
+    patient.medHist.push({
+      title,
+      description,
+      file_path: path,
+      file_mimetype: mimetype,
+    });
+
+    // Save the updated patient
+    await patient.save();
+
+    // Save the file details to your File model if needed
+
+
+    res.send('File uploaded and added to patient\'s medHist successfully.');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error while uploading file. Try again later.');
+  }
+});
+
+router.get('/getAllFiles/:id', async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.id);
+
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+
+    // Extract files from the medHist attribute
+    const files = patient.medHist;
+
+    // Sort files by creation date if they have a createdAt property
+    const sortedByCreationDate = files.sort(
+      (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
+    );
+
+    res.send(sortedByCreationDate);
+  } catch (error) {
+    console.error(error);
+    res.status(400).send('Error while getting list of files. Try again later.');
+  }
+});
+
+router.get('/download/:id/:pid', async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.pid);
+
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+
+    // Find the file by ID in the medHist attribute
+    const file = patient.medHist.find((f) => f._id.toString() === req.params.id);
+
+    if (!file) {
+      return res.status(404).send('File not found');
+    }
+
+    res.set({
+      'Content-Type': file.file_mimetype
+    });
+
+    res.sendFile(path.join(__dirname, '..', file.file_path));
+  } catch (error) {
+    console.error(error);
+    res.status(400).send('Error while downloading file. Try again later.');
+  }
+});
+
+
+router.get('/delete/:id/:pid', async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Patient.findById(req.params.pid);
+
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+
+    // Find the file by ID in the medHist attribute
+    const fileIndex = patient.medHist.findIndex((f) => f._id.toString() === req.params.id);
+
+    if (fileIndex === -1) {
+      return res.status(404).send('File not found');
+    }
+
+    // Delete the file from the file system
+  //  await fs.unlink(path.join(__dirname, 'medHist', patient.medHist[fileIndex].file_path));
+
+    // Remove the file from the medHist array
+    patient.medHist.splice(fileIndex, 1);
+
+    // Save the updated patient
+    await patient.save();
+
+
+
+    res.send('File deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(400).send('Error while deleting file. Try again later.');
+  }
+});
 
 module.exports = router;
