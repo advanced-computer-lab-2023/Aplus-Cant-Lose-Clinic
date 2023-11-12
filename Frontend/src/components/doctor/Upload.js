@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URL } from "../../Consts.js";
 import { useSelector } from 'react-redux';
-
+import {useNavigate} from "react-router-dom";
 const containerStyle = {
   display: 'flex',
   flexDirection: 'column',
@@ -10,6 +10,8 @@ const containerStyle = {
   padding: '20px',
   border: '1px solid #ddd',
   borderRadius: '8px',
+  marginTop: 'auto',  // Corrected the typo
+  margin: 'auto',     // Center horizontally
   boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
 };
 
@@ -18,6 +20,8 @@ const inputStyle = {
   padding: '10px',
   border: '1px solid #ddd',
   borderRadius: '5px',
+  width: '40%',
+  paddingLeft: '50px',
 };
 
 const buttonStyle = {
@@ -36,7 +40,7 @@ function Upload() {
   const [degreeFile, setDegreeFile] = useState(null);
   const [licenseFile, setLicenseFile] = useState(null);
   const id = useSelector(state => state.doctor.ndrID);
-
+const navigate = useNavigate();
   const handleFileChange = (e, fileType) => {
     const file = e.target.files[0];
 
@@ -70,6 +74,7 @@ function Upload() {
     .then((response) => {
         console.log(response);
         alert(response.data);
+        navigate("/Login");
       })
       .catch((error) => {
         console.error(error);
@@ -81,15 +86,15 @@ function Upload() {
     <div style={containerStyle}>
       <h1>File Uploader</h1>
       <div style={inputStyle}>
-        <label>ID File:</label>
+        <label style={{paddingRight:"150px"}}>ID File:</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'id')} />
       </div>
       <div style={inputStyle}>
-        <label>Medical Degree File:</label>
+        <label style={{paddingRight:"40px"}}>Medical Degree File:</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'degree')} />
       </div>
       <div style={inputStyle}>
-        <label>Medical License File:</label>
+        <label style={{paddingRight:"40px"}}>Medical License File:</label>
         <input type="file" onChange={(e) => handleFileChange(e, 'license')} />
       </div>
       <button style={buttonStyle} onClick={uploadFiles}>Upload Files</button>

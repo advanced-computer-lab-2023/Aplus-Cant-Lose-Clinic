@@ -122,7 +122,7 @@ router.get('/downloadf/:drId', async (req, res) => {
 
     // Pipe the archive to the response object
     archive.pipe(res);
-
+console.log(doctor);
     // Add each file to the archive
     doctor.files.forEach((file, index) => {
       const fileContent = require('fs').readFileSync(path.join(__dirname, '..', file.file_path));

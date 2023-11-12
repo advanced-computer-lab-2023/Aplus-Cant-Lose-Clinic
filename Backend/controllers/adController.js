@@ -70,12 +70,12 @@ const viewJoinedDr = async (req, res) => {
   try {
     // Find doctors with status "accepted" and those with an accepted contract
     const joinDoctors = await Doctor.find({
-      $or: [
+      $and: [
         { status: "accepted" },
         { "contract.accepted": { $exists: true, $eq: true } }, // Include doctors with an existing and accepted contract
       ],
     });
-
+    
     res.status(201).json({ message: "Accepted doctors retrieved successfully", joinDoctors });
   } catch (error) {
     console.error("Error retrieving accepted doctors:", error);
@@ -381,7 +381,7 @@ const sendRejectEmail = async (req, res) => {
     const mailOptions = {
       from:"sohailahakeem17@gmail.com",
       to: user.email, // Assuming the user has an 'email' field, adjust as needed
-      subject: "Acceptance Confirmation",
+      subject: "Rejection Confirmation",
       text: `Unfortunately! You did not get accepted  to join El7a2ni Clinic as a Doctor.`,
     };
 

@@ -46,7 +46,8 @@ export default function ViewPendingDr() {
     backgroundColor: "#1776d1",
     color: "black",
     marginRight: "10px",
-    width: "65px", // Set minWidth to "auto" to make the button fit the content
+    marginBottom: "10px",
+    width: "75px", // Set minWidth to "auto" to make the button fit the content
   };
 
   const redButtonStyle = {
@@ -54,6 +55,8 @@ export default function ViewPendingDr() {
     color: "black",
     marginRight: "10px",
     marginButtom: "10px",
+    width: "75px", // Set minWidth to "auto" to make the button fit the content
+
     minWidth: "auto", // Set minWidth to "auto" to make the button fit the content
   };
 
@@ -147,7 +150,7 @@ documents            </TableCell>
                 sx={ { backgroundColor: "#1776d1",
                 color: "black",
                 marginRight: "10px",
-                marginTop: "10px",
+                marginTop: "45px",
 
                 width: "100px"}}
                 onClick={() => handleDownload(row._id)}
@@ -159,19 +162,19 @@ documents            </TableCell>
                 {row.status}
               </TableCell>
               <TableCell>
-            
+              <Button
+                  sx={buttonStyle}
+                  onClick={() => handleAccept(row._id)}
+                >
+                  <Typography>Accept</Typography>
+                </Button>
               <Button
                   sx={redButtonStyle}
                   onClick={() => handleReject(row._id)}
                 >
                   <Typography>Reject</Typography>
                 </Button>
-                <Button
-                  sx={buttonStyle}
-                  onClick={() => handleAccept(row._id)}
-                >
-                  <Typography>Accept</Typography>
-                </Button>
+            
               </TableCell>
             </TableRow>
           ))}
