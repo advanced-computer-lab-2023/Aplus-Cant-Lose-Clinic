@@ -12,6 +12,7 @@ const app = express(); // Move this line to the top
 const port = "8000";
 app.use(cors());
 
+
 app.use(express.json());
 app.use(cookieParser());
 

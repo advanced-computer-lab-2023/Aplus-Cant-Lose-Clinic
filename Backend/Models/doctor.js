@@ -4,16 +4,16 @@ const drSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true, // Email is required
+      required: true,
     },
     email: {
       type: String,
-      required: true, // Email is required
+      required: true,
       unique: true,
     },
-    speciality:{  
+    speciality: {
       type: String,
-      required: true // Email is required
+      required: true,
     },
     username: {
       type: String,
@@ -23,7 +23,7 @@ const drSchema = new mongoose.Schema(
     Dbirth: Date,
     gender: {
       type: String,
-      enum: ["male", "female", "none"], // Define allowed values for the 'role' field
+      enum: ["male", "female", "none"],
       default: "none",
       required: true,
     },
@@ -41,25 +41,25 @@ const drSchema = new mongoose.Schema(
     },
     docs: [
       {
-        url: String, // Store the URL to the uploaded image
-        desc: String, // Optional description for the image
+        url: String,
+        desc: String,
       },
     ],
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected"], // Define allowed values for the 'role' field
+      enum: ["pending", "accepted", "rejected"],
       default: "pending",
     },
-
     wallet: {
       type: Number,
-     // required: true, // wallet is required
     },
-    contract:{
-      type: String,
-      enum: ["pending", "accepted"], // Define allowed values for the 'role' field
-      default: "pending",
-    }
+    contract: {
+      file: String, // assuming you store the file path, adjust as needed
+      accepted: {
+        type: Boolean,
+        default: false,
+      },
+    },
   }
 );
 

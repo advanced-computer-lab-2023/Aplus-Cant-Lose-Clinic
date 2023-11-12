@@ -6,6 +6,8 @@ const Prescription = require("../Models/prescription")
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
 const bcrypt = require("bcrypt");
+const path = require('path');
+
 const jwt = require("jsonwebtoken");
 const Medicine = require("../Models/medicine");
 const nodemailer = require('nodemailer');
@@ -280,16 +282,27 @@ const sendAcceptEmail = async (req, res) => {
   const { id } = req.body;
 
   try {
-    // Find the user by ID
-    const user = await Doctor.findById(id);
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(id);
 
-    if (!user) {
-      return res.status(404).send({ Status: "User not found" });
+    if (!doctor) {
+      return res.status(404).send({ Status: "Doctor not found" });
     }
 
-    // Update the user's status to "accepted"
-    user.status = "accepted";
-    await user.save();
+    // Update the doctor's status to "accepted"
+    doctor.status = "accepted";
+
+    // Assuming you have the file path of the contract image
+    const contractImagePath = path.join(__dirname, 'contract.png');
+
+    // Update the doctor's contract attribute with the image path
+    doctor.contract = {
+      file: contractImagePath,
+      accepted: true,
+    };
+
+    // Save the changes to the doctor
+    await doctor.save();
 
     // Create a transporter for sending email
     const transporter = nodemailer.createTransport({
@@ -303,9 +316,20 @@ const sendAcceptEmail = async (req, res) => {
     // Define email options
     const mailOptions = {
       from: "sohailahakeem17@gmail.com",
-      to: user.email, // Assuming the user has an 'email' field, adjust as needed
+      to: doctor.email, // Assuming the doctor has an 'email' field, adjust as needed
       subject: "Acceptance Confirmation",
       text: `Congratulations! You have been accepted to join El7a2ni Clinic as a Doctor.`,
+      attachments: [
+        {
+          filename: 'contract.png', // Change the filename as needed
+          path: contractImagePath,
+          cid: 'unique@cid', // use unique cid for image embedding
+        },
+      ],
+      html: `
+        <p>Congratulations! You have been accepted to join El7a2ni Clinic as a Doctor.</p>
+        <p><img src="cid:unique@cid" alt="Contract Image"/></p>
+      `,
     };
 
     // Send the email

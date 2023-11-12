@@ -22,6 +22,8 @@ const {
 const path = require('path');
 const multer = require('multer');
 const FileDr = require('../Models/fileDr');
+const Doctor = require('../Models/doctor');
+
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -66,6 +68,56 @@ router.post(
     }
   }
 );
+
+router.get('/download/:drId', async (req, res) => {
+  try {
+    // Find the patient by ID
+    const doctor = await Doctor.findById(req.params.drId);
+
+    if (!doctor) {
+      return res.status(404).send('doctor not found');
+    }
+
+    // Find the file by ID in the medHist attribute
+    const file = doctor.contract;
+
+    if (!file) {
+      return res.status(404).send('File not found');
+    }
+
+    res.set({
+      'Content-Type': file.file_mimetype
+    });
+
+    res.sendFile(path.join(__dirname, '..', file.file_path));
+  } catch (error) {
+    console.error(error);
+    res.status(400).send('Error while downloading file. Try again later.');
+  }
+});
+router.get('/getContract/:id', async (req, res) => {
+  const doctorId = req.params.id;
+
+  try {
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor not found' });
+    }
+
+    // Check if the doctor has a contract
+    if (!doctor.contract || !doctor.contract.file) {
+      return res.status(404).json({ error: 'Contract not found' });
+    }
+
+    // Return the contract file path
+    res.json({ contract: doctor.contract.file });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 router.post("/addPrescription", addPrescription);
 router.post("/getUser", getUser);
 router.post("/addDoctor", addDoctor);
