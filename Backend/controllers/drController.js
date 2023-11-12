@@ -565,7 +565,7 @@ const acceptContract = async (req, res) => {
 
 
     // Perform the action to accept the contract, e.g., update the status field
-    doctor.contract = true;
+    doctor.contract.accepted = true;
 
     await doctor.save();
 

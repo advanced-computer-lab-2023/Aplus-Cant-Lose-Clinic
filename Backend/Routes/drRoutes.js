@@ -71,30 +71,50 @@ router.post(
 
 router.get('/download/:drId', async (req, res) => {
   try {
-    // Find the patient by ID
+    // Find the doctor by ID
     const doctor = await Doctor.findById(req.params.drId);
 
     if (!doctor) {
-      return res.status(404).send('doctor not found');
+      return res.status(404).send('Doctor not found');
     }
 
-    // Find the file by ID in the medHist attribute
-    const file = doctor.contract;
-
-    if (!file) {
-      return res.status(404).send('File not found');
+    // Check if the doctor has a contract
+    if (!doctor.contract) {
+      return res.status(404).send('Contract not found');
     }
+
+    // Set the Content-Type header based on the file extension (assuming it's stored in the file field)
+    const fileExtension = path.extname(doctor.contract.file);
+    const mimeType = getMimeType(fileExtension);
 
     res.set({
-      'Content-Type': file.file_mimetype
+      'Content-Type': mimeType,
     });
 
-    res.sendFile(path.join(__dirname, '..', file.file_path));
+    // Send the file
+    res.sendFile(path.join(__dirname, '..', doctor.contract.file));
   } catch (error) {
     console.error(error);
-    res.status(400).send('Error while downloading file. Try again later.');
+    res.status(500).send('Error while downloading file. Try again later.');
   }
 });
+
+// Function to get MIME type based on file extension
+function getMimeType(fileExtension) {
+  switch (fileExtension.toLowerCase()) {
+    case '.png':
+      return 'image/png';
+    case '.jpg':
+    case '.jpeg':
+      return 'image/jpeg';
+    case '.pdf':
+      return 'application/pdf';
+    // Add more cases for other file types as needed
+    default:
+      return 'application/octet-stream';
+  }
+}
+
 router.get('/getContract/:id', async (req, res) => {
   const doctorId = req.params.id;
 
@@ -143,5 +163,29 @@ router.post("/addHealthRecord/:patientID", addHealthRecord);
 
 router.get("/viewWallet/:doctorId",viewWallet );
 
+router.get('/download/:drid', async (req, res) => {
+  try {
+    // Find the patient by ID
+    const patient = await Doctor.findById(req.params.drid);
+
+    if (!patient) {
+      return res.status(404).send('Patient not found');
+    }
+
+    // Check if the patient has a contract
+    if (!patient.contract || !patient.contract.file) {
+      return res.status(404).send('Contract not found');
+    }
+
+    // Return the contract file path
+    const contractRelativePath = patient.contract.file;
+    const contractAbsolutePath = path.join(__dirname, '..', contractRelativePath);
+
+    res.sendFile(contractAbsolutePath);
+  } catch (error) {
+    console.error(error);
+    res.status(400).send('Error while downloading file. Try again later.');
+  }
+});
 
 module.exports = router;

@@ -293,12 +293,12 @@ const sendAcceptEmail = async (req, res) => {
     doctor.status = "accepted";
 
     // Assuming you have the file path of the contract image
-    const contractImagePath = path.join(__dirname, 'contract.png');
+    const contractImagePath = 'contract.png';  // Replace with the actual path
 
     // Update the doctor's contract attribute with the image path
     doctor.contract = {
       file: contractImagePath,
-      accepted: true,
+      accepted: false,
     };
 
     // Save the changes to the doctor
@@ -346,6 +346,7 @@ const sendAcceptEmail = async (req, res) => {
     return res.status(500).send({ Status: "Server Error" });
   }
 };
+
 const sendRejectEmail = async (req, res) => {
   const { id } = req.body;
 
