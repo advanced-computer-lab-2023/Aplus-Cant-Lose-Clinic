@@ -33,7 +33,9 @@ const {
   ccSubscriptionPayment,
   healthPackageInfo,
   createCheckoutSession,
-  viewPatientHealthRecords
+  viewPatientHealthRecords,
+  successCreditCardPayment,
+  createAppointmentCheckoutSession
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");

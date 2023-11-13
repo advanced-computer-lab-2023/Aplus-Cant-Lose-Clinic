@@ -73,6 +73,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
             </TableRow>
           </TableHead>
           <TableBody>
+            console.log(rows);
             {rows
               .filter((row) => status === "Any" || status === row.status)
               .filter(
