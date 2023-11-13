@@ -2,6 +2,7 @@ import React from "react";
 import download from "downloadjs"; // Import download function
 import axios from "axios";
 import { API_URL } from "../../Consts.js";
+import { SnackbarContext } from "../../App";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,20 +15,32 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { viewPendDr, acceptDr, rejectDr } from "../../features/adminSlice";
-import { useEffect } from "react";
+import { useEffect,useContext } from "react";
 import { AutoFixNormal } from "@mui/icons-material";
 
 export default function ViewPendingDr() {
+  const snackbarMessage = useContext(SnackbarContext);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(viewPendDr());
   }, [dispatch]);
   const dummyData = useSelector((state) => state.admin.pdoctors);
   const handleAccept = (id) => {
-    dispatch(acceptDr(id));
+  const responseData=dispatch(acceptDr(id));
+    if (responseData === undefined) {
+      snackbarMessage(`error: error in sending an email`, "error");
+    } else {
+      snackbarMessage("Email sent to accepted Pahrmacist", "success");
+    }
   };
   const handleReject = (id) => {
-    dispatch(rejectDr(id));
+    const responseData=dispatch(rejectDr(id));
+    if (responseData === undefined) {
+      snackbarMessage(`error: error in sending an email`, "error");
+    } else {
+      snackbarMessage("Email sent to rejected doctor", "success");
+    }
   };
 
   const tableStyle = {
