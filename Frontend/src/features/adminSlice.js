@@ -57,6 +57,7 @@ export const viewHealthP = createAsyncThunk("admin/viewHealthP", async () => {
   const response = await axios.get(
     `${API_URL}/admin/viewHealthP`
   );
+  console.log("hbacp")
   return response;
 })
 
@@ -190,6 +191,7 @@ state.hpackages[i]={...action.payload.newData};
     builder
       .addCase(viewHealthP.fulfilled, (state, action) => {
         state.loading = false;
+        console.log(action.payload.data.HealthPack);
         state.hpackages = action.payload.data.HealthPack;
       })
     builder

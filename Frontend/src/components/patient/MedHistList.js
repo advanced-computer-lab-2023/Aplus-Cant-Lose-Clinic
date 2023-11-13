@@ -9,6 +9,9 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
+import HomeIcon from "@mui/icons-material/Home";
+import Typography from "@mui/material/Typography";
+
 const MedHistList = () => {
   const [filesList, setFilesList] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
@@ -82,6 +85,8 @@ const MedHistList = () => {
 
   return (
     <div className="files-container">
+                    <Typography variant="h5">Medical History</Typography>
+
       {errorMsg && <p className="errorMsg">{errorMsg}</p>}
       <table className="files-table">
         <thead>
@@ -129,11 +134,19 @@ const MedHistList = () => {
           )}
         </tbody>
       </table>
-      <Box sx={{ "& > :not(style)": { m: 1 } }}>
+      <Box sx={{ "& > :not(style)": { m: 1 } ,position:"fixed",left:"0px",bottom:"20px"}}>
         <Link to="/MedHist">
           {" "}
           <Fab color="primary" aria-label="add">
             <AddIcon />
+          </Fab>
+        </Link>
+      </Box>
+      <Box sx={{ "& > :not(style)": { m: 1 } ,position:"fixed",right:"0px",bottom:"20px"}}>
+        <Link to="/Home">
+          {" "}
+          <Fab color="primary" aria-label="add">
+            <HomeIcon />
           </Fab>
         </Link>
       </Box>

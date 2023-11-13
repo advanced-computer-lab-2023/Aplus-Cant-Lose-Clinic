@@ -2,9 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { API_URL } from "../Consts";
 
-const userToken = localStorage.getItem("userToken")
-  ? localStorage.getItem("userToken")
-  : null;
 
 const userInitial = {
   logged: false,
@@ -12,11 +9,10 @@ const userInitial = {
   username: "",
   password: "",
   role: "",
-  error: "",
   response: "",
   id: "",
-  error: "",
-  token: userToken,
+  error: false,
+  token: "",
 };
 export const loginGuest = createAsyncThunk(
   "user/loginGuest",
@@ -38,10 +34,8 @@ export const sendResetEmail = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/sendResetEmail`, {
-        email: data,
+        username: data,
       });
-
-      console.log(response.token);
 
       return response;
     } catch (error) {
@@ -81,6 +75,17 @@ export const changePassword = createAsyncThunk(
     }
   }
 );
+export const changePass = createAsyncThunk("user/changePass", async (data) => {
+  try {
+    console.log(data);
+    const response = await axios.post(`${API_URL}/changePass/${data.username}`, data);
+    console.log("Response:", response);
+    return response;
+  } catch (error) {
+    console.error("Error:", error.response.data);
+  }
+});
+
 export const logout = createAsyncThunk(
   "user/logout",
   async (data, { rejectWithValue }) => {
@@ -103,23 +108,34 @@ export const logout = createAsyncThunk(
 
 const user = createSlice({
   name: "user",
-  initialState: userInitial,
+  initialState: {
+    ...userInitial,
+    ...JSON.parse(localStorage.getItem("user") || "{}"),
+  },
   reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(loginGuest.pending, (state) => {
         state.loading = true;
+        state.error = false;
+
       })
       .addCase(loginGuest.fulfilled, (state, action) => {
         state.loading = false;
         state.logged = true;
+        state.error = false;
 
         state.role = action.payload.data.role;
         state.username = action.payload.data.userData.fUser.username;
         state.id = action.payload.data.userData.fUser._id;
         console.log(action.payload.data.userData.fUser._id);
         state.token = action.payload.data.token;
-
+        localStorage.setItem("user", JSON.stringify({
+          username: state.username,
+          role: state.role,
+          id: state.id,
+          token:state.token
+        }));
         console.log(state.token);
       })
       .addCase(loginGuest.rejected, (state, action) => {
@@ -127,20 +143,23 @@ const user = createSlice({
         state.username = "";
         state.id = 0;
         state.role = "none";
-        state.error = "login error";
+        state.error = true;
         console.log(state.error);
       });
     builder.addCase(logout.fulfilled, (state, action) => {
-      state.token = null;
+      state.token = "";
       state.logged = false;
       state.username = "";
       state.password = "";
       state.role = "";
       state.id = "";
-      localStorage.removeItem("userToken"); // Remove the user token
-
+      localStorage.removeItem("user"); 
       console.log(action.payload);
       console.log(state);
+    });
+    builder.addCase(changePass.fulfilled, (state, action) => {
+      state.loading = false;
+      state.response = "delete HealthPackages";
     });
     builder.addCase(sendResetEmail.fulfilled, (state, action) => {});
     builder.addCase(changePassword.fulfilled, (state, action) => {});

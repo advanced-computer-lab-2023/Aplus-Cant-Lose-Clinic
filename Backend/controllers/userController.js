@@ -2,6 +2,8 @@ const User = require("../Models/user.js");
 const Doctor = require("../Models/doctor.js");
 const Patient = require("../Models/patient.js");
 const Pharmacist = require("../Models/pharmacist.js");
+const Admin = require("../Models/admin.js");
+
 const nodemailer = require("nodemailer");
 
 const { default: mongoose } = require("mongoose");
@@ -115,36 +117,39 @@ const login = async (req, res) => {
   }
 };
 const sendResetEmail = async (req, res) => {
-  const { email } = req.body;
+
+  const { username } = req.body;
+  console.log(username);
+
   let user; // Declare the user variable
 
-  const u1 = await Patient.findOne({ email });
-  const u2 = await Doctor.findOne({ email });
-  const u3 = await User.findOne({ email });
-  const u4 = await Pharmacist.findOne({ email });
+  const u1 = await Patient.findOne({ username });
+  const u2 = await Doctor.findOne({ username });
+  const u3 = await Admin.findOne({ username });
 
   if (u1) user = u1;
   else if (u2) user = u2;
   else if (u3) user = u3;
-  else if (u4) user = u4;
 
   if (!user) {
     return res.send({ Status: "User not found" });
   }
+  console.log(user.email);
+
   const token = jwt.sign({ id: user._id }, process.env.TOKEN_SECRET, {
     expiresIn: "1d",
   });
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "sohailahakeem17@gmail.com",
-      pass: "yvxbdrovrmhebgxv",
+      user: "apluscantlose@gmail.com",
+      pass: "xphjykxmoqljnpen",
     },
   });
-
+console.log(user.email);
   var mailOptions = {
     from: "apluscantlose@gmail.com",
-    to: email,
+    to: user.email,
     subject: "Reset Password Link",
     text: `http://localhost:3000/reset_password/${user._id}/${token}`,
   };
@@ -235,6 +240,43 @@ const deleteUser = async (req, res) => {
   });
 };
 
+const changePass = async (req, res) => {
+  const { username } = req.params;
+  const { oldPassword, newPassword } = req.body;
+  console.log(username)
+  console.log(oldPassword)
+  console.log(newPassword)
+
+  try {
+    // Find the user by username
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Check if the old password matches the user's current password
+    console.log(user.password);
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Current password is incorrect" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    user.password = hashedPassword;
+    await user.save();
+    // Update the password with the new one
+
+    return res.status(200).json({
+      message: "Password updated successfully",
+      password: newPassword,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const logout = (req, res) => {
   // Clear the token cookie
   res.clearCookie("jwt");
@@ -252,7 +294,7 @@ const changePassword = async (req, res) => {
         return res.json({ Status: "Error with token" });
       } else {
         // Find the user by ID
-        const user = await Patient.findById(id) || await User.findById(id) || await Doctor.findById(id) || await Pharmacist.findById(id);
+        const user = await Patient.findById(id) || await User.findById(id) || await Doctor.findById(id) || await Admin.findById(id);
 
         if (!user) {
           return res.json({ Status: "User not found" });
@@ -299,5 +341,5 @@ module.exports = {
   login,
   logout,
   sendResetEmail,
-  changePassword,
+  changePassword,changePass
 };

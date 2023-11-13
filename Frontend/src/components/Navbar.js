@@ -14,7 +14,7 @@ export default function Navbar() {
       if(response){
         
         console.log(role);
-      navigate('/');}
+      navigate('/Login');}
     }
 
   return (
@@ -35,9 +35,7 @@ export default function Navbar() {
         </>}
         {role !== '' &&
         <>
-        <Button onClick={() => {navigate('/Profile')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Profile</Button>
    {/* <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button> */}
-        <Button onClick={handleLogout } sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: 'red'}}>Logout</Button>
 
         </>}
 

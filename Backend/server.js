@@ -37,12 +37,13 @@ const paRouter = require("./Routes/paRoutes");
 app.use("/api/patient", paRouter);
 const drRouter = require("./Routes/drRoutes");
 app.use("/api/doctor", drRouter);
-const { login ,logout,sendResetEmail,changePassword} = require("./controllers/userController");
+const { login ,logout,sendResetEmail,changePassword,changePass} = require("./controllers/userController");
 app.post("/api/login", login);
 app.get("/api/logout", logout);
 app.post("/api/sendResetEmail", sendResetEmail);
 app.post("/api/changePassword/:id/:token", changePassword);
 
+app.post("/api/changePass/:username", changePass);
 
 
 // Rest of your code

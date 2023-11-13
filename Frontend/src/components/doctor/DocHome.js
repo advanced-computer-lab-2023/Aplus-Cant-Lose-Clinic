@@ -125,6 +125,16 @@ const handleCloseDialog = () => {
                         </Button>
                     </NavLink>
                 </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to={`/Profile`}>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography > job credentials</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
                 <Box sx={{ flexGrow: 0 }}>
                     <Tooltip title="Open settings">
                         <IconButton sx={{ p: 0 }}>
