@@ -65,6 +65,7 @@ router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
+router.patch("/successCreditCardPayment/:patientId/:appointmentID",successCreditCardPayment);
 
 
 const fs = require('fs').promises; // Import the 'fs' module for file deletion
@@ -80,6 +81,7 @@ router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
 router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
+router.post("/createAppointmentCheckoutSession/:appointmentId",createAppointmentCheckoutSession);
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {
@@ -125,6 +127,72 @@ router.post('/scheduleAppointment', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+
+router.get('/calculateAmount', async (drId, patientId) => {
+  try {
+
+    // Check if the doctor and patient exist
+    const doctor = await Doctor.findById(drId);
+    const patient = await Patient.findById(patientId).populate('hPackage');
+
+    if (!doctor || !patient) {
+      return res.status(404).json({ message: 'Doctor or Patient not found' });
+    }
+
+    // Calculate amount based on doctor's rate and patient's health package
+    let amount = doctor.rate*100;
+
+    if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
+      // Assuming hPackage has a rate field
+      amount -= patient.hPackage.rate;
+    }
+
+    res.json({ amount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.post('/payAppWithWallet', async (req, res) => {
+  try {
+    const { patientID, amount, drID, appointmentID } = req.body;
+
+    // Check if the patient, doctor, and appointment exist
+    const patient = await Patient.findById(patientID);
+    const doctor = await Doctor.findById(drID);
+    const appointment = await Appointment.findById(appointmentID);
+
+    if (!patient || !doctor || !appointment) {
+      return res.status(404).json({ message: 'Patient, Doctor, or Appointment not found' });
+    }
+
+    // Check if the patient has enough balance in the wallet
+    if (patient.wallet < amount) {
+      return res.status(400).json({ message: 'Insufficient funds in the wallet' });
+    }
+
+    // Deduct the amount from the patient's wallet
+    patient.wallet -= amount;
+
+    // Update the appointment details
+    appointment.pID = patientID;
+    appointment.status = 'completed';  // Adjust the status accordingly
+
+    // Save changes to the patient and appointment
+    await Promise.all([patient.save(), appointment.save()]);
+
+    res.json({ message: 'Payment successful', newBalance: patient.wallet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {

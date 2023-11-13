@@ -1151,7 +1151,61 @@ const viewPatientHealthRecords = async (req, res) => {
 };
 
 
+const createAppointmentCheckoutSession = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const  drID  = await Appointment.findOne({ _id: appointmentId}, {drID:1});
+    const  rate  = await doctor.findOne({ _id: drID}, {rate:1});
+    const newRate = rate * 100;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      mode: "payment",
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Appointment",
+            },
+            unit_amount: newRate,
+          },
+          quantity: 1,
+        },
+      ],
+     success_url: `http://localhost:3000/SuccessAppoint/${appointmentId}`,
+     cancel_url: `http://localhost:3000/ViewAppointments`,
+    });
 
+    res.json({ url: session.url });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+};
+
+const successCreditCardPayment = async (req, res) => {
+  try {
+    const { patientID, appointmentID } = req.params;
+
+    // Check if the patient and appointment exist
+    const patient = await patient.findById(patientID);
+    const appointment = await Appointment.findById(appointmentID);
+
+    if (!patient || !appointment) {
+      return res.status(404).json({ message: 'Patient or Appointment not found' });
+    }
+
+    // Update the appointment status to 'completed' (or any other desired status)
+    appointment.status = 'completed';
+
+    // Save changes to the appointment
+    await appointment.save();
+
+    res.json({ message: 'Credit card payment successful, appointment scheduled' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 
 
@@ -1180,5 +1234,7 @@ module.exports = {
   ccSubscriptionPayment,
   createCheckoutSession,
   healthPackageInfo,
-  viewPatientHealthRecords
+  viewPatientHealthRecords,
+  createAppointmentCheckoutSession,
+  successCreditCardPayment
 };
