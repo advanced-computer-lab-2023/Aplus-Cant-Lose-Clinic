@@ -67,29 +67,30 @@ import AvailableApp from "./components/patient/AvailableApp";
 import MedHistList from "./components/patient/MedHistList";
 const router = createBrowserRouter(
   createRoutesFromElements(
+    
+    //authentications
+    //patient
+    //doctor
+    //admin
+
     <Route>
-      <Route  path="/"element={<Start />} />
+
+      <Route path="/"element={<Start />} />
       <Route path="/Login" element={<Login />} />
       <Route path="/reset_password/:id/:token" element={<ChangePass />} />
       <Route path="/ResetPassword" element={<ResetPassword />} />
-
-      
       <Route path="/RegisterAs" element={<RegisterAs />} />
+      <Route path="/Home" element={<HomeDirect />} />
+
+
+
       <Route path="/RegisterAsPatient" element={<RegisterAsPatient />} />
-      <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
-      
       <Route path="/MedHist" element={<MedHist />} />
       <Route path="/MedHistList" element={<MedHistList />} />
-      <Route path="/Home" element={<HomeDirect />} />
-      <Route path="/upload" element={<Upload />} />
-
-      <Route path="/Profile" element={<ProfileDirect />} />
-      <Route path="/DocPatients" element={<DocPatients />} />
       <Route path="/Appointments" element={<Appointments />} />
       <Route path="/appointmentPatientss/:doctorId" element={<AvailableApp />} />
       <Route path="viewfamilymembers" element={<ViewFamilyMember />} />
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
-      <Route path="/Contract" element={<Contract />} />
       <Route path="HealthRecords" element={<HealthRecords />} />
       <Route
         path="viewfamilymembers/newfamilymembers"
@@ -100,14 +101,26 @@ const router = createBrowserRouter(
         path="viewSpecificPrescription/:id"
         element={<Prescriptions />}
       />
-
-      
       <Route path="DoctorsList" element={<DoctorsList />} />
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
-      <Route path="AddHealthPackages" element={<AddPack />} />
-      <Route path="/PatientsList" element={<PatientView />} />
       <Route path="/SubscriptionPayment/:h_id/:amount" element={<SubsciptionPayment/>} />  
       <Route path="/Success/:id/:h_id" element={<Success/>}/>
+
+
+
+      <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
+      <Route path="/upload" element={<Upload />} />
+      <Route path="/Profile" element={<ProfileDirect />} />
+      <Route path="/DocPatients" element={<DocPatients />} />
+      <Route path="/Contract" element={<Contract />} />
+      <Route path="/PatientsList" element={<PatientView />} />
+
+      
+      
+      <Route path="AddHealthPackages" element={<AddPack />} />
+
+
+      
     </Route>
   )
   );
