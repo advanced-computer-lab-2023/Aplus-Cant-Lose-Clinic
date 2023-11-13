@@ -4,6 +4,7 @@ import { Provider } from "react-redux"; // Import Provider from 'react-redux'
 import store from "./store";
 import HomeDirect from "./HomeDirect";
 import PatientDirect from "./PatientDirect";
+import AdminDirect from "./PatientDirect";
 
 import DoctorDirect from "./DoctorDirect";
 import { createContext, useState } from "react";
@@ -90,10 +91,6 @@ const router = createBrowserRouter(
       <Route path="ViewHealthPackage" element={<ViewHealthPackage />} />
       <Route path="/Contract" element={<Contract />} />
       <Route path="HealthRecords" element={<HealthRecords />} />
-  
-
-    
-
       <Route
         path="viewfamilymembers/newfamilymembers"
         element={<NewFamilyMember />}
@@ -103,6 +100,8 @@ const router = createBrowserRouter(
         path="viewSpecificPrescription/:id"
         element={<Prescriptions />}
       />
+
+      
       <Route path="DoctorsList" element={<DoctorsList />} />
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="AddHealthPackages" element={<AddPack />} />
