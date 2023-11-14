@@ -127,7 +127,7 @@ function FollowUp() {
                         <ListItem disableGutters key={patient}>
                             <ListItemButton onClick={() => setCurrentPatient(patient._id)}>
                                 {console.log(patients)}
-                                <ListItemText primary={patient.name} />
+                                <ListItemText primary={patient?.name} />
                             </ListItemButton>
                         </ListItem>
                     ))}

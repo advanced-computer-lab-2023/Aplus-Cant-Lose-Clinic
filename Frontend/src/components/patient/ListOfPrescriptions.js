@@ -107,7 +107,7 @@ const App = () => {
                 <Box style={Info}>
                   <Typography sx={{ fontSize: "16px" }}>
                     <strong>Date : </strong>
-                    {prescriptionid.datePrescribed}
+                    {prescriptionid?.datePrescribed}
                   </Typography>
                 </Box>
               </Grid>
@@ -122,10 +122,10 @@ const App = () => {
               <Grid item xs={12} md={4}>
                 <Box sx={{ margin: "20px 20px 0px 80px" }}>
                   <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID.name}
+                    {prescriptionid.doctorID?.name}
                   </Typography>
                   <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID.speciality}
+                    {prescriptionid.doctorID?.speciality}
                   </Typography>
                 </Box>
               </Grid>
@@ -133,17 +133,17 @@ const App = () => {
             <Grid item xs={12} md={4}>
               <Box sx={{ margin: "20px 20px 0px 80px" }}>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Name :{prescriptionid.medID.name}
+                  Medicine Name :{prescriptionid.medID?.name}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
                   Medicine Active elements:
-                  {prescriptionid.medID.activeElement}
+                  {prescriptionid.medID?.activeElement}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Used for :{prescriptionid.medID.use}
+                  Medicine Used for :{prescriptionid.medID?.use}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Frequency :{prescriptionid.medID.amount}
+                  Medicine Frequency :{prescriptionid.medID?.amount}
                 </Typography>
               </Box>
             </Grid>
@@ -300,7 +300,7 @@ const App = () => {
                 .filter((row) => {
                   return (
                     nameFilter === "" ||
-                    row.doctorID.name
+                    row.doctorID?.name
                       .toLowerCase()
                       .includes(nameFilter.toLowerCase())
 
@@ -336,9 +336,9 @@ const App = () => {
                       />
                     </TableCell>
                     <TableCell align="left">{row.datePrescribed}</TableCell>
-                    <TableCell align="left">{row.doctorID.name}</TableCell>
+                    <TableCell align="left">{row.doctorID?.name}</TableCell>
                     <TableCell align="left">
-                      {row.doctorID.speciality}
+                      {row.doctorID?.speciality}
                     </TableCell>
                     <TableCell align="left">
                       <IconButton onClick={() => handleView(row._id)}>
