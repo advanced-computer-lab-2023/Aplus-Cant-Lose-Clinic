@@ -54,11 +54,12 @@ function BasicTable({ status, date, onPayButtonClick }) {
   };
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
-  const rows = useSelector((state) => state.patient.appoints);
 
   useEffect(() => {
     dispatch(viewAppoints(pId));
   }, [dispatch]);
+  const rows = useSelector((state) => state.patient.appoints);
+  console.log(rows);
 
   return (
     <>
@@ -73,7 +74,6 @@ function BasicTable({ status, date, onPayButtonClick }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            console.log(rows);
             {rows
               .filter((row) => status === "Any" || status === row.status)
               .filter(
@@ -83,9 +83,10 @@ function BasicTable({ status, date, onPayButtonClick }) {
               .map((row, index) => (
                 <TableRow key={index}>
                   <TableCell component="th" scope="row">
-                    {row.drID.name}
+
+                    {row.drID?.name}
                   </TableCell>
-                  <TableCell align="left">{row.drID.speciality}</TableCell>
+                  <TableCell align="left">{row.drID?.speciality}</TableCell>
                   <TableCell align="left">
                     {row.startDate &&
                       new Date(row.startDate).toLocaleDateString()}
