@@ -41,7 +41,6 @@ import { SnackbarContext } from "../../App";
 import { useContext } from "react";
 export default function AvailableApp({ status, date, onPayButtonClick }) {
   const snackbarMessage = useContext(SnackbarContext);
-  const navigate=useNavigate();
 
   const tableContainerStyle = {
     maxWidth: "80%",
@@ -51,6 +50,8 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   };
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const [calculatedAmount, setCalculatedAmount] = useState(0);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const { doctorId } = useParams();
@@ -72,7 +73,7 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   useEffect(() => {
       getAppointments(doctorId);
 }, [doctorId]);
-
+const navigate=useNavigate();
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
   const handleOpenPaymentDialog = async (appointment) => {
@@ -181,8 +182,9 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   };
 ///
   return (
+    role ==="patient" ?
+
     <>
-    
       <TableContainer component={Paper} style={tableContainerStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -278,6 +280,6 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
               <HomeIcon />
             </IconButton>
           </Link>
-    </>
+    </>:navigate("/Login")
   );
 }

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 const MedHist = (props) => {
-  const { id } = useSelector((state) => state.user);
+  const { id ,role} = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -100,6 +100,7 @@ const MedHist = (props) => {
     }
   };
   return (
+role==='patient' ?
     <React.Fragment>
       <Form className="search-form" onSubmit={handleOnSubmit}>
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
@@ -167,7 +168,7 @@ const MedHist = (props) => {
           Submit
         </Button>
       </Form>
-    </React.Fragment>
+    </React.Fragment>:navigate("/Login")
   );
 };
 

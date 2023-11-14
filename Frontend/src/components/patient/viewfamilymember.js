@@ -19,15 +19,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
-
+import {useNavigate} from "react-router-dom";
 export default function ButtonAppBar() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(viewFamilyMembers({patientId}));
   }, [dispatch]);
   const patientId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
 
 
+const navigate = useNavigate();
   const iconStyle = {
     color: "white",
     fontSize: "30px",
@@ -36,6 +38,8 @@ export default function ButtonAppBar() {
   };
   
   return (
+    role==="patient"?
+
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -66,7 +70,7 @@ export default function ButtonAppBar() {
         </Toolbar>
       </AppBar>
       <BasicTable  />
-    </Box>
+    </Box>:navigate("/Login")
   );
 }
 

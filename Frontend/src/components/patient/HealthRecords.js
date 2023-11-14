@@ -44,7 +44,7 @@ const styles = {
 function HealthRecords() {
   const [selectedHealthRecord, setSelectedHealthRecord] = useState([]);
   const navigate = useNavigate();
-  const { id } = useSelector((state) => state.user);
+  const { id,role } = useSelector((state) => state.user);
 
   const getHealthRecords = async () => {
     try {
@@ -59,6 +59,7 @@ function HealthRecords() {
   };
 
   return (
+    role==="patient" ?
     <div>
       <div style={{ paddingBottom: '1.5%', backgroundColor: '#1769aa' }}>
         <IconButton
@@ -114,7 +115,7 @@ function HealthRecords() {
           </Accordion>
         ))}
       </Paper>
-    </div>
+    </div>:navigate("/Login")
   );
 }
 

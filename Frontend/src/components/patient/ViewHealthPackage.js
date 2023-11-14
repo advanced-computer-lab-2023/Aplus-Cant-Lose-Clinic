@@ -17,10 +17,12 @@ import {Link } from 'react-router-dom';
 import { Dialog,DialogTitle, DialogContent, DialogActions,DialogD } from '@mui/material';
 import axios from 'axios';
 import { API_URL } from "../../Consts";
-
+import { useNavigate } from 'react-router-dom';
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
   const id = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   console.log("patient id is "+id);
  
 
@@ -47,7 +49,7 @@ export default function Hpackages() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState("");
 
-
+const navigate = useNavigate();
   const handleOpenDialog = async (healthPackageId) => {
     try {
       const response = await axios.get(`${API_URL}/patient/healthPackageInfo/${id}/${healthPackageId}`);
@@ -98,6 +100,7 @@ export default function Hpackages() {
   }
 
   return (
+    role==="patient"?
     <>
       <TableContainer component={Paper} style={tableStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -196,7 +199,7 @@ export default function Hpackages() {
           </TableBody>
         </Table>
       </TableContainer>
-    </>
+    </>:navigate("/Login")
   );
 }
 

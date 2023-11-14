@@ -82,10 +82,10 @@ const router = createBrowserRouter(
       <Route path="/ResetPassword" element={<ResetPassword />} />
       <Route path="/RegisterAs" element={<RegisterAs />} />
       <Route path="/Home" element={<HomeDirect />} />
+      <Route path="/upload" element={<Upload />} />
+    <Route path="/RegisterAsPatient" element={<RegisterAsPatient />} />
+    <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
 
-
-
-      <Route path="/RegisterAsPatient" element={<RegisterAsPatient />} />
       <Route path="/MedHist" element={<MedHist />} />
       <Route path="/MedHistList" element={<MedHistList />} />
       <Route path="/Appointments" element={<Appointments />} />
@@ -109,8 +109,6 @@ const router = createBrowserRouter(
 
 
 
-      <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
-      <Route path="/upload" element={<Upload />} />
       <Route path="/Profile" element={<ProfileDirect />} />
       <Route path="/DocPatients" element={<DocPatients />} />
       <Route path="/Contract" element={<Contract />} />

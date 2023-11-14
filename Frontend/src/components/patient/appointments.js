@@ -121,6 +121,8 @@ export default function SearchAppBar() {
 
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const rows = useSelector((state) => state.patient.appoints);
   var noappoints = false;
 
@@ -221,8 +223,9 @@ export default function SearchAppBar() {
     const dateFormatter = new Intl.DateTimeFormat("en-US", options);
     return dateFormatter.format(date);
   }
-
+const navigate = useNavigate();
   return (
+    role==="patient"?
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -352,6 +355,6 @@ export default function SearchAppBar() {
 
      
 
-    </Box>
+    </Box>:navigate("/Login")
   );
 }

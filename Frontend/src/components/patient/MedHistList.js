@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import download from "downloadjs";
 import axios from "axios";
 import { API_URL } from "../../Consts";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Switch, Navigate } from "react-router-dom";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 import Snackbar from '@mui/material/Snackbar';
@@ -11,13 +11,13 @@ import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import Typography from "@mui/material/Typography";
-
+import { useNavigate } from "react-router-dom";
 const MedHistList = () => {
   const [filesList, setFilesList] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { id } = useSelector((state) => state.user);
+  const { id,role } = useSelector((state) => state.user);
   useEffect(() => {
     const getFilesList = async () => {
       try {
@@ -82,8 +82,10 @@ const MedHistList = () => {
     }
   };
 
+  const navigate=useNavigate();
 
   return (
+    role==="patient" ?
     <div className="files-container">
                     <Typography variant="h5">Medical History</Typography>
 
@@ -150,7 +152,7 @@ const MedHistList = () => {
           </Fab>
         </Link>
       </Box>
-    </div>
+    </div>:navigate("/Login")
   );
 };
 export default MedHistList;
