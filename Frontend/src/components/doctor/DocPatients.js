@@ -176,7 +176,7 @@ export default function DocPatients() {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography>{res.pID.name}</Typography>
+                    <Typography>{res.pID?.name}</Typography>
                     <div style={{ marginLeft: "auto" }}></div>
                     <Typography>{res.status}</Typography>
                     <Typography sx={{ marginLeft: "10px" }}>
@@ -194,7 +194,7 @@ export default function DocPatients() {
                       <Typography sx={{ width: "300px" }}>
                         res Name:{" "}
                       </Typography>
-                      <Typography>{res.pID.name} </Typography>
+                      <Typography>{res.pID?.name} </Typography>
                     </div>
                     <Divider />
                     <div style={{ display: "flex", flexDirection: "row" }}>

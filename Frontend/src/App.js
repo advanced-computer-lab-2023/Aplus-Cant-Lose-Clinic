@@ -33,7 +33,7 @@ import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
 import ViewHealthPackage from "./components/patient/ViewHealthPackage";
 import SubsciptionPayment from "./components/patient/SubscriptionPayment"
-
+import FamilyMemberForm from "./components/patient/FamilyMemberForm.js";
 
 import {
   createBrowserRouter,
@@ -106,7 +106,7 @@ const router = createBrowserRouter(
       <Route path="DoctorsList/Doctordetails" element={<Doctordetails />} />
       <Route path="/SubscriptionPayment/:h_id/:amount" element={<SubsciptionPayment/>} />  
       <Route path="/Success/:id/:h_id" element={<Success/>}/>
-
+      <Route path="/FamilyMemberForm" element={<FamilyMemberForm/>}/>
 
 
       <Route path="/Profile" element={<ProfileDirect />} />
