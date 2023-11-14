@@ -65,6 +65,7 @@ import Success from "./components/patient/Success.js";
 import HealthRecords from "./components/patient/HealthRecords.js";
 import AvailableApp from "./components/patient/AvailableApp";
 import MedHistList from "./components/patient/MedHistList";
+import SuccessAppoint from "./components/patient/SuccessAppoint";
 const router = createBrowserRouter(
   createRoutesFromElements(
     
@@ -119,6 +120,7 @@ const router = createBrowserRouter(
       
       <Route path="AddHealthPackages" element={<AddPack />} />
 
+      <Route path="/SuccessAppoint/:appointmentID/:patientId" element={<SuccessAppoint/>}/>
 
       
     </Route>

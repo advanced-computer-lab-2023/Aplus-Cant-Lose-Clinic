@@ -3,9 +3,13 @@ import {useEffect} from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from "axios";
 import { API_URL } from "../../Consts.js";
+import { SnackbarContext } from "../../App";
+import {useContext} from 'react'
 const SuccessAppoint = () => {
+  const snackbarMessage = useContext(SnackbarContext);
+
     const navigate=useNavigate()
-    const {patientId,appointmentID}=useParams()
+    const {appointmentID,patientId}=useParams()
     useEffect(() => {
       
         const mySuccessMethod = async() => {
@@ -13,7 +17,11 @@ const SuccessAppoint = () => {
             try{
          
                 const response=await axios.patch(`${API_URL}/patient/successCreditCardPayment/${patientId}/${appointmentID}`)
-             
+                if (response< 300) {
+                  snackbarMessage("You have successfully edited", "success");
+                } else {
+                  snackbarMessage(`error: ${response} has occurred`, "error");
+                }
         
               }catch(error)
               {

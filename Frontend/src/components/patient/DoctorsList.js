@@ -201,9 +201,7 @@ function BasicTable({ nameFilter, specialityFilter }) {
             <TableCell align="left" style={cellStyle}>
               Background
             </TableCell>
-            <TableCell align="left" style={cellStyle}>
-              Docs
-            </TableCell>
+        
             <TableCell align="left" style={cellStyle}>
               Session Price
             </TableCell>
@@ -243,9 +241,7 @@ function BasicTable({ nameFilter, specialityFilter }) {
                 <TableCell align="left" style={cellStyle}>
                   {row.background}
                 </TableCell>
-                <TableCell align="left" style={cellStyle}>
-                  {`${row.docs.url}, ${row.docs.desc}`}
-                </TableCell>
+            
                 <TableCell align="left" style={cellStyle}>
                   23
                 </TableCell>

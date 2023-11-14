@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import axios from "axios";
+import HomeIcon from "@mui/icons-material/Home";
+
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
-import HomeIcon from "@mui/icons-material/Home";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -34,10 +35,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { useHistory, useNavigate } from "react-router-dom"; // Add this import
-import CreditCardForm from './CreditCardForm';
+import CreditCardForm from "./CreditCardForm";
 import { API_URL } from "../../Consts.js";
-
+import { SnackbarContext } from "../../App";
+import { useContext } from "react";
 export default function AvailableApp({ status, date, onPayButtonClick }) {
+  const snackbarMessage = useContext(SnackbarContext);
+  const navigate=useNavigate();
+
   const tableContainerStyle = {
     maxWidth: "80%",
     margin: "0 auto",
@@ -49,12 +54,14 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   const [calculatedAmount, setCalculatedAmount] = useState(0);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const { doctorId } = useParams();
-  const [rows, setRows] = useState([]); 
+  const [rows, setRows] = useState([]);
+  const [aid, setAid] = useState(0);
 
   const getAppointments = async (doctorId) => {
+
     try {
       const response = await axios.get(
-         `${API_URL}/patient/freeAppiontmentSlot/${doctorId}`
+        `${API_URL}/patient/freeAppiontmentSlot/${doctorId}`
       );
       setRows(response.data.Appointments);
     } catch (error) {
@@ -63,20 +70,23 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   };
 
   useEffect(() => {
-    if (doctorId) {
       getAppointments(doctorId);
-    }
-  }, [doctorId]);
+}, [doctorId]);
 
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
   const handleOpenPaymentDialog = async (appointment) => {
     try {
-      const response = await axios.get(`${API_URL}/calculateAmount/${doctorId}/${pId}`);
+      const response = await axios.get(
+        `${API_URL}/patient/calculateAmount/${doctorId}/${pId}`
+      );
       const calculatedAmount = response.data.amount;
       setCalculatedAmount(calculatedAmount);
       setSelectedAppointmentId(appointment._id); // Assuming _id is the appointment ID
       setOpenPaymentDialog(true);
+      // Assuming _id is the appointment ID
+
+      setAid(appointment._id);
     } catch (error) {
       console.error("Error calculating amount:", error);
     }
@@ -86,19 +96,13 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   const handleClosePaymentDialog = () => {
     setOpenPaymentDialog(false);
   };
-  
+
   const [openCreditCardDialog, setOpenCreditCardDialog] = useState(false);
   const [openWalletDialog, setOpenWalletDialog] = useState(false);
+
   const [walletBalance, setWalletBalance] = useState(1000);
 
-  const handlePaymentCreditCard = () => {
-    setOpenCreditCardDialog(false);
-    handleOpenCreditCardDialog();
-  };
-
-  const handleOpenCreditCardDialog = () => {
-    setOpenCreditCardDialog(true);
-  };
+  const handlePaymentCreditCard = () => {};
 
   const handleCloseCreditCardDialog = () => {
     setOpenCreditCardDialog(false);
@@ -107,7 +111,7 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   const handleOpenWalletDialog = () => {
     setOpenWalletDialog(true);
   };
-  
+
   const handleCloseWalletDialog = () => {
     setOpenWalletDialog(false);
   };
@@ -116,17 +120,19 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
     try {
       // Check if an appointment is selected
       if (!selectedAppointmentId) {
-        console.error('No appointment selected for payment');
+        console.error("No appointment selected for payment");
         return;
       }
 
       // Fetch the calculated amount for the selected appointment
-      const response = await axios.get(`${API_URL}/calculateAmount/${doctorId}/${pId}`);
+      const response = await axios.get(
+        `${API_URL}/patient/calculateAmount/${doctorId}/${pId}`
+      );
       const calculatedAmount = response.data.amount;
-
+      console.log(calculatedAmount);
       // Check if the calculated amount is valid
       if (!calculatedAmount || calculatedAmount <= 0) {
-        console.error('Invalid calculated amount');
+        console.error("Invalid calculated amount");
         return;
       }
 
@@ -138,21 +144,45 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
         appointmentID: selectedAppointmentId,
       };
 
-      const paymentResponse = await axios.post(`${API_URL}/payAppWithWallet/`, body);
-
+      const paymentResponse = await axios.post(
+        `${API_URL}/patient/payAppWithWallet/`,
+        body
+      );
+      if (response) {
+        snackbarMessage("You have successfully edited", "success");
+      } else {
+        snackbarMessage(`error: ${response} has occurred`, "error");
+      }
       // Handle the payment response as needed
       console.log(paymentResponse.data);
+      navigate('/Home');
 
       // Close the payment dialog
       handleClosePaymentDialog();
     } catch (error) {
-      console.error('Error making wallet payment:', error);
+      console.error("Error making wallet payment:", error);
       // Handle error
     }
   };
 
+///
+  const handleOpenCreditCardDialog = async () => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/patient/createAppointmentCheckoutSession/${calculatedAmount}/${aid}/${pId}`
+      );
+      //should add await here?
+      const { url } = response.data;
+
+      window.location = url;
+    } catch (error) {
+      console.error(error.response.data.error);
+    }
+  };
+///
   return (
     <>
+    
       <TableContainer component={Paper} style={tableContainerStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -178,7 +208,9 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
                 <TableCell align="left">{row.status}</TableCell>
                 <TableCell align="left">
                   {row.payment}
-                  <Button onClick={() => handleOpenPaymentDialog(row)}>Pay</Button>
+                  <Button onClick={() => handleOpenPaymentDialog(row)}>
+                    Pay
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -195,12 +227,10 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
       >
         <DialogTitle>Payment</DialogTitle>
         <DialogContent>
-          <Typography>
-            Payment for appointment:{" "}
-          </Typography>
+          <Typography>Payment for appointment: </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handlePaymentCreditCard}>Credit Card</Button>
+          <Button onClick={handleOpenCreditCardDialog}>Credit Card</Button>
           <Button onClick={handleOpenWalletDialog}>Wallet</Button>
           <Button onClick={handleClosePaymentDialog}>Cancel</Button>
         </DialogActions>
@@ -231,15 +261,23 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
       >
         <DialogTitle>Wallet Payment</DialogTitle>
         <DialogContent>
-          <Typography>
-            Payment for appointment:{" "}
-          </Typography>
+          <Typography>Payment for appointment: </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handlePaymentWallet}>Pay with Wallet</Button>
           <Button onClick={handleCloseWalletDialog}>Cancel</Button>
         </DialogActions>
       </Dialog>
+      <Link to="/Home" style={{ color: "white" }}>
+            <IconButton
+              size="large"
+              color="blue"
+              aria-label="open drawer"
+              sx={{ mr: 2 ,pisition:"fixed",top:"0px"}}
+            >
+              <HomeIcon />
+            </IconButton>
+          </Link>
     </>
   );
 }

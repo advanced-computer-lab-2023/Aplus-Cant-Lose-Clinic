@@ -67,7 +67,7 @@ router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
-router.patch("/successCreditCardPayment/:patientId/:appointmentID",successCreditCardPayment);
+router.patch("/successCreditCardPayment/:patientID/:appointmentID",successCreditCardPayment);
 
 
 const fs = require('fs').promises; // Import the 'fs' module for file deletion
@@ -83,7 +83,9 @@ router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
 router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
-router.post("/createAppointmentCheckoutSession/:appointmentId",createAppointmentCheckoutSession);
+
+router.post("/createAppointmentCheckoutSession/:amount/:appointmentId/:patientId",createAppointmentCheckoutSession);
+
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {
@@ -132,12 +134,12 @@ router.post('/scheduleAppointment', async (req, res) => {
 
 
 
-router.get('/calculateAmount', async (drId, patientId) => {
+router.get('/calculateAmount/:drId/:patientId', async (req, res) => {
   try {
 
     // Check if the doctor and patient exist
-    const doctor = await Doctor.findById(drId);
-    const patient = await Patient.findById(patientId).populate('hPackage');
+    const doctor = await Doctor.findById(req.params.drId);
+    const patient = await Patient.findById(req.params.patientId).populate('hPackage');
 
     if (!doctor || !patient) {
       return res.status(404).json({ message: 'Doctor or Patient not found' });
@@ -181,7 +183,7 @@ router.post('/payAppWithWallet', async (req, res) => {
 
     // Update the appointment details
     appointment.pID = patientID;
-    appointment.status = 'completed';  // Adjust the status accordingly
+    appointment.status = 'upcoming';  // Adjust the status accordingly
 
     // Save changes to the patient and appointment
     await Promise.all([patient.save(), appointment.save()]);

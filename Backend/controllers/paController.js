@@ -326,7 +326,7 @@ const freeAppiontmentSlot = async (req, res) => {
     }
 
     // Fetch details about each free Appointment
-    const Appointments = await Appointment.find({ drID: doctorId }).populate(
+    const Appointments = await Appointment.find({ drID: doctorId ,status:"Not_Reserved"}).populate(
       "drID"
     );
     return res.status(200).json({
@@ -1153,10 +1153,8 @@ const viewPatientHealthRecords = async (req, res) => {
 
 const createAppointmentCheckoutSession = async (req, res) => {
   try {
-    const { appointmentId } = req.params;
-    const  drID  = await Appointment.findOne({ _id: appointmentId}, {drID:1});
-    const  rate  = await doctor.findOne({ _id: drID}, {rate:1});
-    const newRate = rate * 100;
+    const { amount,appointmentId,patientId } = req.params;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -1167,12 +1165,12 @@ const createAppointmentCheckoutSession = async (req, res) => {
             product_data: {
               name: "Appointment",
             },
-            unit_amount: newRate,
+            unit_amount: amount,
           },
           quantity: 1,
         },
       ],
-     success_url: `http://localhost:3000/SuccessAppoint/${appointmentId}`,
+     success_url: `http://localhost:3000/SuccessAppoint/${appointmentId}/${patientId}`,
      cancel_url: `http://localhost:3000/ViewAppointments`,
     });
 
@@ -1187,15 +1185,18 @@ const successCreditCardPayment = async (req, res) => {
     const { patientID, appointmentID } = req.params;
 
     // Check if the patient and appointment exist
-    const patient = await patient.findById(patientID);
+    const patient = await Patient.findById(patientID);
     const appointment = await Appointment.findById(appointmentID);
+console.log(patientID);
+console.log(appointmentID);
 
     if (!patient || !appointment) {
       return res.status(404).json({ message: 'Patient or Appointment not found' });
     }
 
     // Update the appointment status to 'completed' (or any other desired status)
-    appointment.status = 'completed';
+    appointment.status = 'upcoming';
+    appointment.pID = patientID;
 
     // Save changes to the appointment
     await appointment.save();
