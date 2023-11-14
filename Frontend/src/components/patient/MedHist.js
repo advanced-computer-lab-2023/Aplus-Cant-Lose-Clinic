@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 const MedHist = (props) => {
   const { id ,role} = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -168,7 +170,18 @@ role==='patient' ?
           Submit
         </Button>
       </Form>
-    </React.Fragment>:navigate("/Login")
+    </React.Fragment>:(<>       
+    <Link to="/Login" sx={{left:'100%'}}>
+    <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } ,fontSize:"20px",maragin:"auto"}}
+            >
+          Login
+          </Typography>
+          </Link>   
+ </>)
   );
 };
 

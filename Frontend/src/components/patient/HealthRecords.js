@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_URL } from "../../Consts.js";
-
+import { Link } from 'react-router-dom';
 const styles = {
   paper: {
     padding: '20px',
@@ -59,7 +59,7 @@ function HealthRecords() {
   };
 
   return (
-    role==="patient" ?
+    role==="patient" ?(
     <div>
       <div style={{ paddingBottom: '1.5%', backgroundColor: '#1769aa' }}>
         <IconButton
@@ -115,8 +115,26 @@ function HealthRecords() {
           </Accordion>
         ))}
       </Paper>
-    </div>:navigate("/Login")
-  );
+    </div>):(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 }
 
 export default HealthRecords;

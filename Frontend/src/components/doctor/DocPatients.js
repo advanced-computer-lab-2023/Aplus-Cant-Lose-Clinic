@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+
 import {
   Select,
   MenuItem,
@@ -217,6 +218,22 @@ export default function DocPatients() {
             })}
         </div>
       </div>
-    ):(navigate("/Login"))
+    ):<>
+    <Link to="/Login" sx={{ left: "100%" }}>
+      <Typography
+        variant="h6"
+        noWrap
+        component="div"
+        sx={{
+          flexGrow: 1,
+          display: { xs: "none", sm: "flex" },
+          fontSize: "20px",
+          maragin: "auto",
+        }}
+      >
+        Login
+      </Typography>
+    </Link>
+  </>
   );
 }

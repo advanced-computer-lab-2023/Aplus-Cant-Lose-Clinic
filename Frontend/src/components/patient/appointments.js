@@ -225,7 +225,7 @@ export default function SearchAppBar() {
   }
 const navigate = useNavigate();
   return (
-    role==="patient"?
+    role==="patient"?(
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -355,6 +355,24 @@ const navigate = useNavigate();
 
      
 
-    </Box>:navigate("/Login")
-  );
+    </Box>):(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 }

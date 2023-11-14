@@ -85,7 +85,7 @@ const MedHistList = () => {
   const navigate=useNavigate();
 
   return (
-    role==="patient" ?
+    role==="patient" ?(
     <div className="files-container">
                     <Typography variant="h5">Medical History</Typography>
 
@@ -152,7 +152,25 @@ const MedHistList = () => {
           </Fab>
         </Link>
       </Box>
-    </div>:navigate("/Login")
-  );
+    </div>):(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 };
 export default MedHistList;

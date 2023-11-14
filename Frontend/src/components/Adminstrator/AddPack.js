@@ -7,6 +7,8 @@ import {addHpackages } from '../../features/adminSlice';
 import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../App";
 import { AutoFixNormal } from '@mui/icons-material';
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 
   //<------------------------------------------------------------------------------------
   const AddPack = () => {
@@ -129,8 +131,26 @@ import { AutoFixNormal } from '@mui/icons-material';
                     <button type="button" onClick={handleGoBack }>Cancel</button>
                 </div>
             </form>
-        </div>:navigate("/Login")
-    );
+        </div>:(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+    
 };
 
 export default AddPack;

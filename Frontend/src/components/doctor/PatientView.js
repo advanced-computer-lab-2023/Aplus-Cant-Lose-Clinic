@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import {Box } from '@mui/material';
 import { addHealthRecord } from "../../features/doctorSlice";
-import useNavigate from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
 
   Dialog,
@@ -397,7 +398,23 @@ const handleSubmitHealthRecord = async(event)=>{
 
 
 
-    </div>:navigate("/Login")
+    </div>:<>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
 
 
 

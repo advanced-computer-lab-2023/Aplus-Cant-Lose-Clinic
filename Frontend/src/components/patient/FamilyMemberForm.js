@@ -8,6 +8,8 @@ import { SnackbarContext } from "../../App";
 import {useContext} from 'react';
 import HomeIcon from "@mui/icons-material/Home";
 import IconButton from '@mui/material/IconButton';
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 import {useNavigate} from 'react-router-dom';
 const FamilyMemberForm = () => {
   const snackbarMessage = useContext(SnackbarContext);
@@ -46,7 +48,7 @@ const navigate = useNavigate();
   };
 
   return (
-    role==="patient"?
+    role==="patient"?(
     <div
       style={{
         width: "80%",
@@ -125,8 +127,26 @@ const navigate = useNavigate();
           >
             <HomeIcon />
           </IconButton>
-    </div>:navigate("/Home")
-  );
+    </div>): (
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+
 };
 
 export default FamilyMemberForm;

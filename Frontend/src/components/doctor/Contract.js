@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import download from "downloadjs"; // Import download function
 import Card from "@mui/material/Card";
+import { Link } from "react-router-dom";
+
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -12,7 +14,6 @@ import HomeIcon from "@mui/icons-material/Home";
 import SearchIcon from "@mui/icons-material/Search";
 import { IconButton,Box } from "@mui/material";
 const { useNavigate } = require("react-router-dom");
-
 const ContractDetails = () => {
   const iconStyle = {
     color: "blue", // Set the icon color to blue
@@ -143,7 +144,23 @@ const ContractDetails = () => {
           <HomeIcon style={iconStyle} />
         </IconButton>
       </Button></Box>
-    </div>:navigate("/Login")
+    </div>:<>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
   );
 };
 

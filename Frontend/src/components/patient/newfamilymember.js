@@ -4,6 +4,8 @@ import { SnackbarContext } from "../../App";
 import { useNavigate } from "react-router-dom";
 import { useState, useContext } from "react";
 import { addFamilyMember } from "../../features/patientSlice";
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 const NewFamilyMemberForm = () => {
   const snackbarMessage = useContext(SnackbarContext);
   const role = useSelector((state) => state.user.role);
@@ -133,8 +135,26 @@ const NewFamilyMemberForm = () => {
         </select>
       </div>
       <input type="submit" value="Add Family Member" style={buttonStyle} />
-    </form>:navigate("/Login")
-  );
+    </form>:(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+
 };
 
 export default NewFamilyMemberForm;

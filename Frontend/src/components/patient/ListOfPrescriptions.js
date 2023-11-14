@@ -91,7 +91,7 @@ const App = () => {
   };
 
   return (
-    role==="patient" ?
+    role==="patient" ?(
     <Box sx={{ flexGrow: 1 }}>
       <Dialog
         open={Boolean(prescriptionid)}
@@ -355,8 +355,26 @@ const App = () => {
           </Table>
         </TableContainer>
       </Paper>
-    </Box>:navigate("/Login")
-  );
+    </Box>): (
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 };
 
 export default App;
