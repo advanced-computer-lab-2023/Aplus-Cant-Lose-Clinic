@@ -32,12 +32,12 @@ const paSchema = new mongoose.Schema(
       mobile: Number,
       relation: String,
     },
+  
     family: [
       {
         fullName: String,
         NID: {
           type: Number,
-          
         },
         age: Number,
         gender:{
@@ -48,6 +48,10 @@ const paSchema = new mongoose.Schema(
         relation: {
           type: String,
           enum: ["spouse", "child"] // Define allowed values for the 'role' field
+        },
+        pid: {
+          type: mongoose.Schema.Types.ObjectId, // Reference to the related patient
+          ref: "Patient",
         },
       }
     ],

@@ -68,7 +68,76 @@ router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
 router.patch("/successCreditCardPayment/:patientID/:appointmentID",successCreditCardPayment);
+const calculateAge = (birthDate) => {
+  const today = new Date();
+  const dob = new Date(birthDate);
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
 
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+
+// Assuming your existing Express route
+router.post("/addFamilyLink/:email/:patientId", async (req, res) => {
+  const { email, patientId } = req.params;
+  const { relation } = req.body; // Get relation from req.body
+
+  try {
+    const updatedPatient = await addFamilyMemberByEmailAndId(email, patientId, relation);
+    res.json({ success: true, updatedPatient });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+// Updated addFamilyMemberByEmailAndId function
+async function addFamilyMemberByEmailAndId(email, patientId, relation) {
+  try {
+    // Find the patient with the provided email
+    const familyMember = await Patient.findOne({ email });
+
+    if (!familyMember) {
+      throw new Error("Family member not found with the provided email.");
+    }
+
+    // Find the patient with the provided ID
+    const patientToUpdate = await Patient.findById(patientId);
+
+    if (!patientToUpdate) {
+      throw new Error("Patient not found with the provided ID.");
+    }
+
+    // Check if the family member is already in the family array
+    const isAlreadyFamily = patientToUpdate.family.some(
+      (member) => member.email === email
+    );
+
+    if (isAlreadyFamily) {
+      throw new Error("Family member is already added to the patient.");
+    }
+  const ag=  calculateAge(familyMember.dBirth);
+    // Add the family member to the patient's family array with the provided relation
+    patientToUpdate.family.push({
+      fullName: familyMember.name,
+      NID: 12345678912,
+      age: ag,
+      gender: familyMember.gender,
+      relation,
+      pid: familyMember._id, // Assign the related patient's ID to pid
+    });
+
+    // Save the updated patient
+    await patientToUpdate.save();
+
+    return patientToUpdate;
+  } catch (error) {
+    throw error;
+  }
+}
 
 const fs = require('fs').promises; // Import the 'fs' module for file deletion
 
@@ -260,10 +329,11 @@ router.get('/getAllFiles/:id', async (req, res) => {
     if (!patient) {
       return res.status(404).send('Patient not found');
     }
+    console.log(patient)
 
     // Extract files from the medHist attribute
     const files = patient.medHist;
-
+console.log(files)
     // Sort files by creation date if they have a createdAt property
     const sortedByCreationDate = files.sort(
       (a, b) => (b.createdAt || 0) - (a.createdAt || 0)

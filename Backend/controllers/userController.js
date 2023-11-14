@@ -1,7 +1,6 @@
 const User = require("../Models/user.js");
 const Doctor = require("../Models/doctor.js");
 const Patient = require("../Models/patient.js");
-const Pharmacist = require("../Models/pharmacist.js");
 const Admin = require("../Models/admin.js");
 
 const nodemailer = require("nodemailer");

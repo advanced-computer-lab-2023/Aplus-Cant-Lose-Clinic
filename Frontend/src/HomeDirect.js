@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Admin from "./components/Adminstrator/Admin";
+import Error from "./components/Error";
 
 import PaHomePage from "./components/patient/Home";
 import { Outlet } from "react-router-dom";
@@ -16,9 +17,17 @@ const containerStyles = {
   paddingBottom: "2px",
   paddingTop: "2px", // Center items vertically
 };
+
 const HomeDirect = () => {
   const { role } = useSelector((state) => state.user);
   console.log(role);
+
+  // Check if role is not one of the specified cases
+  if (role !== "admin" && role !== "doctor" && role !== "patient") {
+    return <Error />; // Render the ErrorPage component for unknown roles
+  }
+
+  // Render components based on the role
   return (
     <div>
       {role === "admin" && (
@@ -28,7 +37,6 @@ const HomeDirect = () => {
       )}
       {role === "doctor" && (
         <>
-          {" "}
           <AccountAvatar sx={containerStyles} />
           <DocHome />
         </>
@@ -42,5 +50,6 @@ const HomeDirect = () => {
     </div>
   );
 };
+
 
 export default HomeDirect;
