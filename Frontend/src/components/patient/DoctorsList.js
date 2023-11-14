@@ -23,7 +23,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
-
+import { useNavigate } from "react-router-dom";
 export default function ButtonAppBar() {
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
@@ -32,6 +32,8 @@ export default function ButtonAppBar() {
 
   const dispatch = useDispatch();
   const id = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getAlldoctors());
@@ -79,6 +81,7 @@ export default function ButtonAppBar() {
   }));
 
   return (
+    role==="patient"?
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -159,7 +162,7 @@ export default function ButtonAppBar() {
         </Toolbar>
       </AppBar>
       <BasicTable nameFilter={nameFilter} specialityFilter={specialityFilter} />
-    </Box>
+    </Box>:navigate("/Login")
   );
 }
 

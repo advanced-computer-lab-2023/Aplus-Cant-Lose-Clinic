@@ -36,7 +36,7 @@ export default function DocPatients() {
   console.log(appointments);
   const navigate = useNavigate(-1);
   return (
-    (role === "doctor") && (
+    (role === "doctor") ? (
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
         <i>
           <IconButton
@@ -217,6 +217,6 @@ export default function DocPatients() {
             })}
         </div>
       </div>
-    )
+    ):(navigate("/Login"))
   );
 }

@@ -6,6 +6,8 @@ import { useState, useContext } from "react";
 import { addFamilyMember } from "../../features/patientSlice";
 const NewFamilyMemberForm = () => {
   const snackbarMessage = useContext(SnackbarContext);
+  const role = useSelector((state) => state.user.role);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const formStyle = {
@@ -68,6 +70,7 @@ const NewFamilyMemberForm = () => {
     });
   };
   return (
+    role==="patient"?
     <form onSubmit={handleSubmit} method="post" style={formStyle}>
       <h3
         style={{ textAlign: "center", fontSize: "20px", marginBottom: "10px" }}
@@ -130,7 +133,7 @@ const NewFamilyMemberForm = () => {
         </select>
       </div>
       <input type="submit" value="Add Family Member" style={buttonStyle} />
-    </form>
+    </form>:navigate("/Login")
   );
 };
 

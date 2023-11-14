@@ -29,7 +29,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
-
+import {useNavigate}  from "react-router-dom";
 // ...
 import {
   viewPrescriptions,
@@ -40,6 +40,7 @@ import Dialog from "@mui/material/Dialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const App = () => {
+  const navigate=useNavigate();
   const dispatch = useDispatch();
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
@@ -47,6 +48,8 @@ const App = () => {
   const [isFilled, setIsFilled] = useState(false);
 
   const patientId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const rows = useSelector((state) => state.patient.presc);
 
   const iconStyle = {
@@ -88,6 +91,7 @@ const App = () => {
   };
 
   return (
+    role==="patient" ?
     <Box sx={{ flexGrow: 1 }}>
       <Dialog
         open={Boolean(prescriptionid)}
@@ -351,7 +355,7 @@ const App = () => {
           </Table>
         </TableContainer>
       </Paper>
-    </Box>
+    </Box>:navigate("/Login")
   );
 };
 

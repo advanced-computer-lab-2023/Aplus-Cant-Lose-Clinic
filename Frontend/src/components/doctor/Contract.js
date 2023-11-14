@@ -23,7 +23,7 @@ const ContractDetails = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSuccess, setSnackbarSuccess] = useState(false); // New state for success color
-  const { id } = useSelector((state) => state.user);
+  const { id,role } = useSelector((state) => state.user);
   useEffect(() => {
     // Load contract details when the component mounts
     axios
@@ -75,6 +75,7 @@ const ContractDetails = () => {
   };
 
   return (
+    role==="doctor"?
     <div
       style={{
         display: "flex",
@@ -142,7 +143,7 @@ const ContractDetails = () => {
           <HomeIcon style={iconStyle} />
         </IconButton>
       </Button></Box>
-    </div>
+    </div>:navigate("/Login")
   );
 };
 

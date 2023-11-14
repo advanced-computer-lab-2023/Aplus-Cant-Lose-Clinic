@@ -15,6 +15,7 @@ const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [relation, setRelation] = useState("spouse"); // Default to "spouse"
   const user = useSelector((state) => state.user);
+  const role = useSelector((state) => state.user.role);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,6 +46,7 @@ const navigate = useNavigate();
   };
 
   return (
+    role==="patient"?
     <div
       style={{
         width: "80%",
@@ -123,7 +125,7 @@ const navigate = useNavigate();
           >
             <HomeIcon />
           </IconButton>
-    </div>
+    </div>:navigate("/Home")
   );
 };
 
