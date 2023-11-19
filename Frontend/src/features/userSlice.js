@@ -13,6 +13,8 @@ const userInitial = {
   id: "",
   error: false,
   token: "",
+  logId: 0,
+
 };
 export const loginGuest = createAsyncThunk(
   "user/loginGuest",
@@ -130,10 +132,13 @@ const user = createSlice({
         state.id = action.payload.data.userData.fUser._id;
         console.log(action.payload.data.userData.fUser._id);
         state.token = action.payload.data.token;
+        state.logId = action.payload.data.userData.logId;
+
         localStorage.setItem("user", JSON.stringify({
           username: state.username,
           role: state.role,
           id: state.id,
+          logId: state.logId,
           token:state.token
         }));
         console.log(state.token);

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
+const Appointment = require("../Models/appointments");
 
 const { getUser } = require("../controllers/userController");
 const { addPrescription } = require("../controllers/drController");
@@ -183,6 +184,23 @@ router.get("/getPatients/:id", getPatients);
 router.get("/getDr/:id", getDr);
 router.post("/addAppointmentSlot/:doctorId", addAppointmentTimeSlot);
 router.get("/searchPatientByName", searchPatientByName);
+router.get('/Mypatients/:doctorId', async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId;
+
+    // Find appointments with the given doctorId and populate the 'pID' field to get patient details
+    const appointments = await Appointment.find({ drID: doctorId }).populate('pID', 'name');
+
+    // Extract patient names from the appointments
+    const patientNames = appointments
+      .filter(appointment => appointment.pID) // Filter out appointments without patients
+      .map(appointment => appointment.pID.name); // Extract patient names
+
+    res.status(200).json({ patients: patientNames });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 router.post("/createFollowUpAppointment/:drID", createFollowUpAppointment);
 router.get(
   "/patientsInUpcomingApointments/:doctorId",

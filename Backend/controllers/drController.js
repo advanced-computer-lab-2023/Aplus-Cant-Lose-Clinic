@@ -103,6 +103,7 @@ const addDoctor = async (req, res) => {
       username,
       password: hashedPassword,
       role: "doctor",
+      email,name
     });
     const data = {
       _id: doctor._id,
@@ -601,6 +602,10 @@ const getDoctor = async (req, res) => {
   }
 };
 
+
+
+
+// Function to get patients by doctor's ID
 
 
 
