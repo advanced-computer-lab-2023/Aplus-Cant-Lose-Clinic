@@ -17,6 +17,7 @@ const {
   addHealthRecord,
   viewWallet,
   acceptContract,
+  rescheduleAppointment,
   getDoctor
 } = require("../controllers/drController");
 const path = require('path');
@@ -137,6 +138,9 @@ console.log(doctor);
   }
 });
 
+
+
+
 // Function to get MIME type based on file extension
 function getMimeType(fileExtension) {
   switch (fileExtension.toLowerCase()) {
@@ -191,7 +195,7 @@ router.get(
 router.put("/editDoctor/:id", editDoctor);
 router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
-
+router.put("/rescheduleAppointment/:appointmentId", rescheduleAppointment);
 
 router.get("/getDoctor/:doctorId", getDoctor);
 

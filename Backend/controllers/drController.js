@@ -602,6 +602,32 @@ const getDoctor = async (req, res) => {
 };
 
 
+async function rescheduleAppointment(req, res) {
+  const appointmentId = req.params.appointmentId;
+  const { startDate, endDate } = req.body;
+
+  try {
+    // Find the appointment by ID
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ error: 'Appointment not found' });
+    }
+
+    // Update the appointment with the new dates
+    appointment.startDate = startDate;
+    appointment.endDate = endDate;
+
+    // Save the updated appointment
+    await appointment.save();
+
+    // Return a success message or the updated appointment
+    res.json({ message: 'Appointment rescheduled successfully', appointment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Server error' });
+  }
+}
 
 
 
@@ -621,5 +647,6 @@ module.exports = {
   addHealthRecord,
   viewWallet,
   acceptContract,
+  rescheduleAppointment,
   getDoctor
 };

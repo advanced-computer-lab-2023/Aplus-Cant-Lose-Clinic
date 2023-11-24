@@ -19,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import FreeAppointment from './FreeAppointment';
 import FollowUp from "./FollowUp";
+import RescheduleAppointment from "./DocRescheduleAppointment";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -137,6 +138,8 @@ export default function DocPatients() {
           </div>
           <FreeAppointment />
           <FollowUp />
+          <RescheduleAppointment /> 
+        
 
         </div>
         <div
