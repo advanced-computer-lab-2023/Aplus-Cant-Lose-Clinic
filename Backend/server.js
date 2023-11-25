@@ -93,7 +93,23 @@ io.on("connection", (socket) => {
     socket.join(userData);
     socket.emit("connected");
   });
+  socket.emit("me", socket.id)
 
+	socket.on("disconnect", () => {
+		socket.broadcast.emit("callEnded")
+	})
+  socket.on("endCall", (data) => {
+    io.to(data.to).emit("callEnded");
+  });
+  
+
+	socket.on("callUser", (data) => {
+		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+	})
+
+	socket.on("answerCall", (data) => {
+		io.to(data.to).emit("callAccepted", data.signal)
+	})
   socket.on("join chat", (room) => {
     socket.join(room);
     console.log("User Joined Room: " + room);
@@ -118,4 +134,3 @@ io.on("connection", (socket) => {
     socket.leave(userData._id);
   });
 });
-

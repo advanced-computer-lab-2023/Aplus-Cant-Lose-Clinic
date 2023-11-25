@@ -93,6 +93,16 @@ function Home() {
                             </NavLink>
                         </Box>
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <NavLink to='/vidcall'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <FamilyRestroomIcon style={styles}></FamilyRestroomIcon>
+                                    </IconButton>
+                                    <Typography >Video Call with doctors</Typography>
+                                </Button>
+                            </NavLink>
+                        </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/FamilyMemberForm'>
                                 <Button sx={{ color: 'white' }}>
                                     <IconButton>

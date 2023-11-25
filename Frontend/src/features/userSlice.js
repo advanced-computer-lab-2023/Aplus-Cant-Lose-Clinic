@@ -14,6 +14,7 @@ const userInitial = {
   error: false,
   token: "",
   logId: 0,
+  socket:[]
 
 };
 export const loginGuest = createAsyncThunk(
@@ -87,7 +88,15 @@ export const changePass = createAsyncThunk("user/changePass", async (data) => {
     console.error("Error:", error.response.data);
   }
 });
-
+export const socketset = createAsyncThunk("user/socket", async (data) => {
+  try {
+    console.log(data);
+  
+    return data;
+  } catch (error) {
+    console.error("Error:", error.response.data);
+  }
+});
 export const logout = createAsyncThunk(
   "user/logout",
   async (data, { rejectWithValue }) => {
@@ -168,6 +177,8 @@ const user = createSlice({
     });
     builder.addCase(sendResetEmail.fulfilled, (state, action) => {});
     builder.addCase(changePassword.fulfilled, (state, action) => {});
+    builder.addCase(socketset.fulfilled, (state, action) => {state.socket=action.payload});
+
   },
 });
 

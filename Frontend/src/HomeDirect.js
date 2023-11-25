@@ -7,6 +7,8 @@ import PaHomePage from "./components/patient/Home";
 import { Outlet } from "react-router-dom";
 import DocHome from "./components/doctor/DocHome";
 import Navbar from "./components/Navbar";
+import io from 'socket.io-client';
+import {socketset} from "./features/userSlice";
 import AccountAvatar from "./components/Authentication/AccountAvatar"; // Import the AccountAvatar component
 const containerStyles = {
   height: "fit-content",
@@ -17,9 +19,15 @@ const containerStyles = {
   paddingBottom: "2px",
   paddingTop: "2px", // Center items vertically
 };
+const ENDPOINT = 'http://localhost:5000'; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const socket = io(ENDPOINT);
+
 
 const HomeDirect = () => {
-  const { role } = useSelector((state) => state.user);
+const dispatch = useDispatch();
+  const { role, logId } = useSelector((state) => state.user);
+  socket.emit("login", logId);
+dispatch(socketset(socket));
   console.log(role);
 
   // Check if role is not one of the specified cases
@@ -50,6 +58,5 @@ const HomeDirect = () => {
     </div>
   );
 };
-
 
 export default HomeDirect;
