@@ -54,11 +54,12 @@ function BasicTable({ status, date, onPayButtonClick }) {
   };
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
-  const rows = useSelector((state) => state.patient.appoints);
 
   useEffect(() => {
     dispatch(viewAppoints(pId));
   }, [dispatch]);
+  const rows = useSelector((state) => state.patient.appoints);
+  console.log(rows);
 
   return (
     <>
@@ -82,9 +83,10 @@ function BasicTable({ status, date, onPayButtonClick }) {
               .map((row, index) => (
                 <TableRow key={index}>
                   <TableCell component="th" scope="row">
-                    {row.drID.name}
+
+                    {row.drID?.name}
                   </TableCell>
-                  <TableCell align="left">{row.drID.speciality}</TableCell>
+                  <TableCell align="left">{row.drID?.speciality}</TableCell>
                   <TableCell align="left">
                     {row.startDate &&
                       new Date(row.startDate).toLocaleDateString()}
@@ -119,6 +121,8 @@ export default function SearchAppBar() {
 
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const rows = useSelector((state) => state.patient.appoints);
   var noappoints = false;
 
@@ -219,8 +223,9 @@ export default function SearchAppBar() {
     const dateFormatter = new Intl.DateTimeFormat("en-US", options);
     return dateFormatter.format(date);
   }
-
+const navigate = useNavigate();
   return (
+    role==="patient"?(
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
@@ -350,6 +355,24 @@ export default function SearchAppBar() {
 
      
 
-    </Box>
-  );
+    </Box>):(
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 }

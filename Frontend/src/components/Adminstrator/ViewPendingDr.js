@@ -1,4 +1,9 @@
 import React from "react";
+import download from "downloadjs"; // Import download function
+import axios from "axios";
+import { API_URL } from "../../Consts.js";
+import { SnackbarContext } from "../../App";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -10,20 +15,32 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { viewPendDr, acceptDr, rejectDr } from "../../features/adminSlice";
-import { useEffect } from "react";
+import { useEffect,useContext } from "react";
 import { AutoFixNormal } from "@mui/icons-material";
 
 export default function ViewPendingDr() {
+  const snackbarMessage = useContext(SnackbarContext);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(viewPendDr());
   }, [dispatch]);
   const dummyData = useSelector((state) => state.admin.pdoctors);
   const handleAccept = (id) => {
-    dispatch(acceptDr(id));
+  const responseData=dispatch(acceptDr(id));
+    if (responseData === undefined) {
+      snackbarMessage(`error: error in sending an email`, "error");
+    } else {
+      snackbarMessage("Email sent to accepted Pahrmacist", "success");
+    }
   };
   const handleReject = (id) => {
-    dispatch(rejectDr(id));
+    const responseData=dispatch(rejectDr(id));
+    if (responseData === undefined) {
+      snackbarMessage(`error: error in sending an email`, "error");
+    } else {
+      snackbarMessage("Email sent to rejected doctor", "success");
+    }
   };
 
   const tableStyle = {
@@ -35,9 +52,46 @@ export default function ViewPendingDr() {
   };
 
   const cellStyle = {
-    fontSize: "14px",
+    fontSize: "18px",
   };
 
+  const buttonStyle = {
+    backgroundColor: "#1776d1",
+    color: "black",
+    marginRight: "10px",
+    marginBottom: "10px",
+    width: "75px", // Set minWidth to "auto" to make the button fit the content
+  };
+
+  const redButtonStyle = {
+    backgroundColor: "#f44336",
+    color: "black",
+    marginRight: "10px",
+    marginButtom: "10px",
+    width: "75px", // Set minWidth to "auto" to make the button fit the content
+
+    minWidth: "auto", // Set minWidth to "auto" to make the button fit the content
+  };
+
+
+  const handleDownload = async (drId) => {
+    try {
+      const response = await axios.get(`${API_URL}/doctor/downloadf/${drId}`, {
+        responseType: 'blob',
+      });
+
+      // Extract filename from the Content-Disposition header
+      const contentDisposition = response.headers['content-disposition'];
+      const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+      const filename = filenameMatch ? filenameMatch[1] : 'files.zip';
+
+      // Download the file using the downloadjs library
+      download(response.data, filename, response.headers['content-type']);
+    } catch (error) {
+      console.error('Error downloading files:', error);
+      // Handle error, e.g., show an error message to the user
+    }
+  };
   return (
     <TableContainer component={Paper} style={tableStyle}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -66,8 +120,7 @@ export default function ViewPendingDr() {
               background
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-              docs
-            </TableCell>
+documents            </TableCell>
             <TableCell align="left" style={cellStyle}>
               status
             </TableCell>
@@ -106,37 +159,35 @@ export default function ViewPendingDr() {
               <TableCell align="left" style={cellStyle}>
                 {row.background}
               </TableCell>
-              <TableCell align="left" style={cellStyle}>
-                {row.docs
-                  .map((doc) => {
-                    return `${doc.url},${doc.desc}`;
-                  })
-                  .join("\n")}
-              </TableCell>
+              <Button
+                sx={ { backgroundColor: "#1776d1",
+                color: "black",
+                marginRight: "10px",
+                marginTop: "45px",
+
+                width: "100px"}}
+                onClick={() => handleDownload(row._id)}
+              >
+                <Typography>download</Typography>
+              </Button>
+    
               <TableCell align="left" style={cellStyle}>
                 {row.status}
               </TableCell>
               <TableCell>
               <Button
-                  sx={{
-                    backgroundColor: "#004E98",
-                    color: "white",
-                    marginLeft: "10px",
-                  }}
-                  onClick={() => handleReject(row._id)} // Use handleReject for rejection
-                >
-                  <Typography>Reject</Typography>
-                </Button>
-                <Button
-                  sx={{
-                    backgroundColor: "#004E98",
-                    color: "white",
-                    marginRight: "10px",
-                  }}
-                  onClick={() => handleAccept(row._id)} // Use handleAccept for acceptance
+                  sx={buttonStyle}
+                  onClick={() => handleAccept(row._id)}
                 >
                   <Typography>Accept</Typography>
                 </Button>
+              <Button
+                  sx={redButtonStyle}
+                  onClick={() => handleReject(row._id)}
+                >
+                  <Typography>Reject</Typography>
+                </Button>
+            
               </TableCell>
             </TableRow>
           ))}

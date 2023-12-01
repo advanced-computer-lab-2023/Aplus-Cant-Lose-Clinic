@@ -44,6 +44,8 @@ function a11yProps(index) {
   };
 }
 
+// ... other imports ...
+
 export default function BasicTabs() {
   const [value, setValue] = React.useState(0);
 
@@ -59,17 +61,17 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Add administrator" {...a11yProps(0)}  sx={{width:"220px"}}/>
-          <Tab label="Administrator" {...a11yProps(1)}  sx={{width:"220px"}}/>
-          <Tab label=" Doctors Join Requests" {...a11yProps(2)}  sx={{width:"220px"}} />
-          <Tab label="Joined Doctors" {...a11yProps(3)}  sx={{width:"220px"}} />
-          <Tab label="Patients List" {...a11yProps(4)}  sx={{width:"220px"}} />
-          <Tab label="Medicines" {...a11yProps(5)}  sx={{width:"220px"}} />
-          <Tab label="Health Packages" {...a11yProps(6)}  sx={{width:"220px"}} />
+          <Tab label="Add administrator" {...a11yProps(0)} sx={{ width: "220px" }} />
+          <Tab label="Administrator" {...a11yProps(1)} sx={{ width: "220px" }} />
+          <Tab label=" Doctors Join Requests" {...a11yProps(2)} sx={{ width: "220px" }} />
+          <Tab label="Joined Doctors" {...a11yProps(3)} sx={{ width: "220px" }} />
+          <Tab label="Patients List" {...a11yProps(4)} sx={{ width: "220px" }} />
+          {/* Fix the index for "Health Packages" */}
+          <Tab label="Health Packages" {...a11yProps(5)} sx={{ width: "220px" }} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <AddAdmin/>
+        <AddAdmin />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <ViewAdmins />
@@ -83,10 +85,8 @@ export default function BasicTabs() {
       <CustomTabPanel value={value} index={4}>
         <ViewPatients />
       </CustomTabPanel>
+      {/* Fix the index for "Health Packages" */}
       <CustomTabPanel value={value} index={5}>
-        <ViewMedicines />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={6}>
         <Hpackages />
       </CustomTabPanel>
     </Box>

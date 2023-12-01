@@ -20,7 +20,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { API_URL } from "../../Consts.js";
-function FollowUp() {
+function RescheduleAppointment() {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -39,17 +39,21 @@ function FollowUp() {
         }
     }
     //that is the function that addes the follow up slot for selected patient
-    async function addFollowUp() {
+    async function rescheduleAppointment() {
         try {
             console.log(currentpatient);
 
-            const response = await axios.post( `${API_URL}/doctor/createFollowUpAppointment/${id}?patientID=${currentpatient}`, {
-                startDate,
-                endDate
-            });
+            // Change the API endpoint to handle rescheduling
+            const response = await axios.put(
+                `${API_URL}/doctor/rescheduleAppointment/${id}?patientID=${currentpatient}`,
+                {
+                    startDate,
+                    endDate
+                }
+            );
             console.log(response);
         } catch (error) {
-            console.error("Error posting free slots", error);
+            console.error("Error rescheduling appointment", error);
         }
     }
     const handleClickOpen = async () => {
@@ -61,23 +65,23 @@ function FollowUp() {
         if (closes) {
             closes = false;
             setOpen(false);
-            addFollowUp();
+            rescheduleAppointment(); // Change the function call to rescheduleAppointment
         } else {
             if (endDate === "" || startDate === "") {
                 alert("Choose dates");
             } else {
                 setOpen(false);
-                addFollowUp();
+                rescheduleAppointment(); // Change the function call to rescheduleAppointment
             }
         }
     };
     return (
         <>
             <Button variant="outlined" onClick={handleClickOpen}>
-                Create a Follow up appointment
+            Reschedule Appointment
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create Follow up Appointment</DialogTitle>
+                <DialogTitle>Reschedule Appointment</DialogTitle>
                 <DialogContent>
                     <Typography>Start Date</Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -133,11 +137,11 @@ function FollowUp() {
                     ))}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Create</Button>
+                    <Button onClick={handleClose}>Reschedule</Button>
                 </DialogActions>
             </Dialog>
         </>
     );
 }
 
-export default FollowUp;
+export default RescheduleAppointment;

@@ -1,3 +1,8 @@
+const Appointment = require("../Models/appointments");
+const Doctor = require("../Models/doctor");
+
+
+
 const express = require("express");
 const router = express.Router(); // Create an instance of the Express router
 const multer = require('multer');
@@ -30,7 +35,9 @@ const {
   ccSubscriptionPayment,
   healthPackageInfo,
   createCheckoutSession,
-  viewPatientHealthRecords
+  viewPatientHealthRecords,
+  successCreditCardPayment,
+  createAppointmentCheckoutSession
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -62,7 +69,77 @@ router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId",payWithWallet);
 router.patch("/CCSubscriptionPayment/:patientId/:healthPackageId",ccSubscriptionPayment);
+router.patch("/successCreditCardPayment/:patientID/:appointmentID",successCreditCardPayment);
+const calculateAge = (birthDate) => {
+  const today = new Date();
+  const dob = new Date(birthDate);
+  let age = today.getFullYear() - dob.getFullYear();
+  const monthDiff = today.getMonth() - dob.getMonth();
 
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+
+// Assuming your existing Express route
+router.post("/addFamilyLink/:email/:patientId", async (req, res) => {
+  const { email, patientId } = req.params;
+  const { relation } = req.body; // Get relation from req.body
+
+  try {
+    const updatedPatient = await addFamilyMemberByEmailAndId(email, patientId, relation);
+    res.json({ success: true, updatedPatient });
+  } catch (error) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+// Updated addFamilyMemberByEmailAndId function
+async function addFamilyMemberByEmailAndId(email, patientId, relation) {
+  try {
+    // Find the patient with the provided email
+    const familyMember = await Patient.findOne({ email });
+
+    if (!familyMember) {
+      throw new Error("Family member not found with the provided email.");
+    }
+
+    // Find the patient with the provided ID
+    const patientToUpdate = await Patient.findById(patientId);
+
+    if (!patientToUpdate) {
+      throw new Error("Patient not found with the provided ID.");
+    }
+
+    // Check if the family member is already in the family array
+    const isAlreadyFamily = patientToUpdate.family.some(
+      (member) => member.email === email
+    );
+
+    if (isAlreadyFamily) {
+      throw new Error("Family member is already added to the patient.");
+    }
+  const ag=  calculateAge(familyMember.dBirth);
+    // Add the family member to the patient's family array with the provided relation
+    patientToUpdate.family.push({
+      fullName: familyMember.name,
+      NID: 12345678912,
+      age: ag,
+      gender: familyMember.gender,
+      relation,
+      pid: familyMember._id, // Assign the related patient's ID to pid
+    });
+
+    // Save the updated patient
+    await patientToUpdate.save();
+
+    return patientToUpdate;
+  } catch (error) {
+    throw error;
+  }
+}
 
 const fs = require('fs').promises; // Import the 'fs' module for file deletion
 
@@ -76,7 +153,8 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
-router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
+router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
+router.post("/createAppointmentCheckoutSession/:amount/:appointmentId/:patientId",createAppointmentCheckoutSession);
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {
@@ -89,29 +167,30 @@ router.post('/scheduleAppointment', async (req, res) => {
     if (!doctor || !patient) {
       return res.status(404).json({ message: 'Doctor or Patient not found' });
     }
-
+    console.log(req.body);
     // Check if the appointment exists
     const appointment = await Appointment.findOne({
       _id: appointmentId,
       drID: doctorId,
        // Appointment not associated with any patient initially
+      
     });
-
-    if (!appointment) {
+    
+   if (!appointment) {
       return res.status(404).json({ message: 'Appointment not found or already scheduled' });
-    }
+    } 
 
     // Associate the appointment with the patient
     appointment.pID = patientId;
-    
+    console.log(doctor.rate);
     // Calculate appointment price based on doctor's rate and patient's health package
     let appointmentPrice = doctor.rate*100;
-
-    if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
-      // Assuming hPackage has a price field
-      appointmentPrice -= patient.hPackage.price;
-    }
-
+     console.log(patient.populate('hPackage'));
+    //  if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
+    //   // Assuming hPackage has a price field
+    //    appointmentPrice -= patient.populate('hPackage').rate;
+    //  }
+    
     // Save changes to the appointment
     await appointment.save();
 
@@ -121,6 +200,72 @@ router.post('/scheduleAppointment', async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 });
+
+
+
+router.get('/calculateAmount/:drId/:patientId', async (req, res) => {
+  try {
+
+    // Check if the doctor and patient exist
+    const doctor = await Doctor.findById(req.params.drId);
+    const patient = await Patient.findById(req.params.patientId).populate('hPackage');
+
+    if (!doctor || !patient) {
+      return res.status(404).json({ message: 'Doctor or Patient not found' });
+    }
+
+    // Calculate amount based on doctor's rate and patient's health package
+    let amount = doctor.rate*100;
+
+    if (patient.hPStatus === 'Subscribed' && patient.hPackage) {
+      // Assuming hPackage has a rate field
+      amount -= patient.hPackage.rate;
+    }
+
+    res.json({ amount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+router.post('/payAppWithWallet', async (req, res) => {
+  try {
+    const { patientID, amount, drID, appointmentID } = req.body;
+
+    // Check if the patient, doctor, and appointment exist
+    const patient = await Patient.findById(patientID);
+    const doctor = await Doctor.findById(drID);
+    const appointment = await Appointment.findById(appointmentID);
+
+    if (!patient || !doctor || !appointment) {
+      return res.status(404).json({ message: 'Patient, Doctor, or Appointment not found' });
+    }
+
+    // Check if the patient has enough balance in the wallet
+    if (patient.wallet < amount) {
+      return res.status(400).json({ message: 'Insufficient funds in the wallet' });
+    }
+
+    // Deduct the amount from the patient's wallet
+    patient.wallet -= amount;
+
+    // Update the appointment details
+    appointment.pID = patientID;
+    appointment.status = 'upcoming';  // Adjust the status accordingly
+
+    // Save changes to the patient and appointment
+    await Promise.all([patient.save(), appointment.save()]);
+
+    res.json({ message: 'Payment successful', newBalance: patient.wallet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
+
+
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -184,10 +329,11 @@ router.get('/getAllFiles/:id', async (req, res) => {
     if (!patient) {
       return res.status(404).send('Patient not found');
     }
+    console.log(patient)
 
     // Extract files from the medHist attribute
     const files = patient.medHist;
-
+console.log(files)
     // Sort files by creation date if they have a createdAt property
     const sortedByCreationDate = files.sort(
       (a, b) => (b.createdAt || 0) - (a.createdAt || 0)

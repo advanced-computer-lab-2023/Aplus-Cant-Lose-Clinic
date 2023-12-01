@@ -116,12 +116,22 @@ const handleCloseDialog = () => {
                     </div>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to={`/Contract/${user.id}`}>
+                    <NavLink to={`/Contract`}>
                         <Button sx={{ color: 'white' }}>
                             <IconButton>
                                 <GroupIcon style={styles} ></GroupIcon>
                             </IconButton>
                             <Typography >Contract</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to={`/Profile`}>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography > job credentials</Typography>
                         </Button>
                     </NavLink>
                 </Box>

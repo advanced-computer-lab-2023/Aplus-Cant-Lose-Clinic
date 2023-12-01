@@ -6,6 +6,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
@@ -18,28 +19,29 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Link } from "react-router-dom";
 
+import { useNavigate } from "react-router-dom";
 export default function ButtonAppBar() {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(viewFamilyMembers({patientId}));
+    dispatch(viewFamilyMembers({ patientId }));
   }, [dispatch]);
   const patientId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
 
-
+  const navigate = useNavigate();
   const iconStyle = {
     color: "white",
     fontSize: "30px",
     marginLeft: "-40px",
     paddingLeft: "0px",
   };
-  
-  return (
+
+  return role === "patient" ? (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
-        <Link to="/Home" style={{ color: "white" }}>
+          <Link to="/Home" style={{ color: "white" }}>
             <IconButton
               size="large"
               edge="start"
@@ -55,18 +57,36 @@ export default function ButtonAppBar() {
             noWrap
             component="div"
             sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } }}
-            >
+          >
             My Family Members
           </Typography>
-          <Link to="/viewfamilymembers/newfamilymembers" sx={{left:'100%'}}>
+          <Link to="/viewfamilymembers/newfamilymembers" sx={{ left: "100%" }}>
             <Fab color="primary" aria-label="add">
               <AddIcon />
             </Fab>
           </Link>
         </Toolbar>
       </AppBar>
-      <BasicTable  />
+      <BasicTable />
     </Box>
+  ) : (
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
   );
 }
 

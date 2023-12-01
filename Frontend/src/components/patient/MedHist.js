@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import Typography from "@mui/material/Typography";
+import { Link } from "react-router-dom";
 const MedHist = (props) => {
-  const { id } = useSelector((state) => state.user);
+  const { id ,role} = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
@@ -100,6 +102,7 @@ const MedHist = (props) => {
     }
   };
   return (
+role==='patient' ?
     <React.Fragment>
       <Form className="search-form" onSubmit={handleOnSubmit}>
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
@@ -167,7 +170,18 @@ const MedHist = (props) => {
           Submit
         </Button>
       </Form>
-    </React.Fragment>
+    </React.Fragment>:(<>       
+    <Link to="/Login" sx={{left:'100%'}}>
+    <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "flex" } ,fontSize:"20px",maragin:"auto"}}
+            >
+          Login
+          </Typography>
+          </Link>   
+ </>)
   );
 };
 

@@ -4,6 +4,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import {Box } from '@mui/material';
 import { addHealthRecord } from "../../features/doctorSlice";
+import {useNavigate} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
 
   Dialog,
@@ -21,7 +23,6 @@ import HomeIcon from '@mui/icons-material/Home'; // Import the Home icon
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getPatients } from "../../features/doctorSlice";
-import { useNavigate } from 'react-router-dom';
 
 const styles = {
   paper: {
@@ -62,6 +63,8 @@ const styles = {
 function PatientDetails() {
   // Dummy patient data (you can replace this with actual data)
   const drId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const dispatch= useDispatch();
   useEffect(() => {
     console.log(drId);
@@ -133,9 +136,9 @@ const handleSubmitHealthRecord = async(event)=>{
 
 
   const navigate = useNavigate();
-  return (
-    <div>
+  return (role==="doctor" ?
 
+    <div>
      <div style={{ paddingBottom: '4%', backgroundColor: "#004E98" ,marginBottom:"0.5%"}}>
           <IconButton
             color="#FFFFFF"
@@ -395,7 +398,23 @@ const handleSubmitHealthRecord = async(event)=>{
 
 
 
-    </div>
+    </div>:<>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
 
 
 

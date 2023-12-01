@@ -6,6 +6,8 @@ const Prescription = require("../Models/prescription")
 const HPackages = require("../Models/hpackages");
 const validator = require('validator');
 const bcrypt = require("bcrypt");
+const path = require('path');
+
 const jwt = require("jsonwebtoken");
 const Medicine = require("../Models/medicine");
 const nodemailer = require('nodemailer');
@@ -66,15 +68,21 @@ const viewPendDr = async (req, res) => {
 };
 const viewJoinedDr = async (req, res) => {
   try {
-    const joinDoctors = await Doctor.find({ status: "accepted" });
-    res
-      .status(201)
-      .json({ message: "accepted doctor r got successfully", joinDoctors });
+    // Find doctors with status "accepted" and those with an accepted contract
+    const joinDoctors = await Doctor.find({
+      $and: [
+        { status: "accepted" },
+        { "contract.accepted": { $exists: true, $eq: true } }, // Include doctors with an existing and accepted contract
+      ],
+    });
+    
+    res.status(201).json({ message: "Accepted doctors retrieved successfully", joinDoctors });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error retrieving accepted doctors:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const viewPatients = async (req, res) => {
   try {
@@ -280,16 +288,27 @@ const sendAcceptEmail = async (req, res) => {
   const { id } = req.body;
 
   try {
-    // Find the user by ID
-    const user = await Doctor.findById(id);
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(id);
 
-    if (!user) {
-      return res.status(404).send({ Status: "User not found" });
+    if (!doctor) {
+      return res.status(404).send({ Status: "Doctor not found" });
     }
 
-    // Update the user's status to "accepted"
-    user.status = "accepted";
-    await user.save();
+    // Update the doctor's status to "accepted"
+    doctor.status = "accepted";
+
+    // Assuming you have the file path of the contract image
+    const contractImagePath = 'contract.png';  // Replace with the actual path
+
+    // Update the doctor's contract attribute with the image path
+    doctor.contract = {
+      file: contractImagePath,
+      accepted: false,
+    };
+
+    // Save the changes to the doctor
+    await doctor.save();
 
     // Create a transporter for sending email
     const transporter = nodemailer.createTransport({
@@ -303,9 +322,20 @@ const sendAcceptEmail = async (req, res) => {
     // Define email options
     const mailOptions = {
       from: "sohailahakeem17@gmail.com",
-      to: user.email, // Assuming the user has an 'email' field, adjust as needed
+      to: doctor.email, // Assuming the doctor has an 'email' field, adjust as needed
       subject: "Acceptance Confirmation",
       text: `Congratulations! You have been accepted to join El7a2ni Clinic as a Doctor.`,
+      attachments: [
+        {
+          filename: 'contract.png', // Change the filename as needed
+          path: contractImagePath,
+          cid: 'unique@cid', // use unique cid for image embedding
+        },
+      ],
+      html: `
+        <p>Congratulations! You have been accepted to join El7a2ni Clinic as a Doctor.</p>
+        <p><img src="cid:unique@cid" alt="Contract Image"/></p>
+      `,
     };
 
     // Send the email
@@ -322,6 +352,7 @@ const sendAcceptEmail = async (req, res) => {
     return res.status(500).send({ Status: "Server Error" });
   }
 };
+
 const sendRejectEmail = async (req, res) => {
   const { id } = req.body;
 
@@ -350,7 +381,7 @@ const sendRejectEmail = async (req, res) => {
     const mailOptions = {
       from:"sohailahakeem17@gmail.com",
       to: user.email, // Assuming the user has an 'email' field, adjust as needed
-      subject: "Acceptance Confirmation",
+      subject: "Rejection Confirmation",
       text: `Unfortunately! You did not get accepted  to join El7a2ni Clinic as a Doctor.`,
     };
 

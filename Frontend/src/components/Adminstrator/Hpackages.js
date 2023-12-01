@@ -19,7 +19,6 @@ import Dialog from "@mui/material/Dialog";
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
-
   const [editRow, setEditRow] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState(-1);
@@ -31,6 +30,7 @@ export default function Hpackages() {
   }, [dispatch]);
 
   const dummyData = useSelector((state) => state.admin.hpackages);
+  console.log(dummyData);
   const handleDelete = (id) => {
     dispatch(deleteHpackages(id));
   };
@@ -88,6 +88,7 @@ export default function Hpackages() {
   };
   return (
     <>
+
       <Dialog open={isOpen}>
         <form onSubmit={handleSave}>
           <div className="form-group">

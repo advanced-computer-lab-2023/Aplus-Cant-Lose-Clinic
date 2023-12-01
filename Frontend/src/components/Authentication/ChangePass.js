@@ -16,6 +16,7 @@ const ChangePass = () => {
   const snackbarMessage = useContext(SnackbarContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
 

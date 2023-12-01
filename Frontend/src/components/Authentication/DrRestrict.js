@@ -1,11 +1,9 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import Error from "./components/Error";
-
-const PatientDirect = () => {
+const DrDirect = () => {
   const { role } = useSelector((state) => state.user);
-  return <div>{role !== "patient" && <Error />}</div>;
+  return <div>{(role==="doctor" )&& <Outlet />}</div>;
 };
 
-export default PatientDirect;
+export default DrDirect;

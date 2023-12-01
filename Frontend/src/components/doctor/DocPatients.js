@@ -1,5 +1,6 @@
 import React from "react";
 import { useState } from "react";
+
 import {
   Select,
   MenuItem,
@@ -18,6 +19,7 @@ import { Link, useNavigate } from "react-router-dom";
 import TextField from '@mui/material/TextField';
 import FreeAppointment from './FreeAppointment';
 import FollowUp from "./FollowUp";
+import RescheduleAppointment from "./DocRescheduleAppointment";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -36,7 +38,7 @@ export default function DocPatients() {
   console.log(appointments);
   const navigate = useNavigate(-1);
   return (
-    (role === "doctor") && (
+    (role === "doctor") ? (
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
         <i>
           <IconButton
@@ -136,6 +138,8 @@ export default function DocPatients() {
           </div>
           <FreeAppointment />
           <FollowUp />
+          <RescheduleAppointment /> 
+        
 
         </div>
         <div
@@ -176,7 +180,7 @@ export default function DocPatients() {
                     aria-controls="panel1a-content"
                     id="panel1a-header"
                   >
-                    <Typography>{res.pID.name}</Typography>
+                    <Typography>{res.pID?.name}</Typography>
                     <div style={{ marginLeft: "auto" }}></div>
                     <Typography>{res.status}</Typography>
                     <Typography sx={{ marginLeft: "10px" }}>
@@ -194,7 +198,7 @@ export default function DocPatients() {
                       <Typography sx={{ width: "300px" }}>
                         res Name:{" "}
                       </Typography>
-                      <Typography>{res.pID.name} </Typography>
+                      <Typography>{res.pID?.name} </Typography>
                     </div>
                     <Divider />
                     <div style={{ display: "flex", flexDirection: "row" }}>
@@ -217,6 +221,22 @@ export default function DocPatients() {
             })}
         </div>
       </div>
-    )
+    ):<>
+    <Link to="/Login" sx={{ left: "100%" }}>
+      <Typography
+        variant="h6"
+        noWrap
+        component="div"
+        sx={{
+          flexGrow: 1,
+          display: { xs: "none", sm: "flex" },
+          fontSize: "20px",
+          maragin: "auto",
+        }}
+      >
+        Login
+      </Typography>
+    </Link>
+  </>
   );
 }

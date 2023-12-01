@@ -35,11 +35,13 @@ function RegisterAsDoctor() {
     const response = dispatch(registerDoctor(sampleData));
     response.then((responseData) => {
       console.log(responseData);
-      if (responseData.payload=== undefined) {
+      if (responseData.payload === undefined) {
         snackbarMessage(`error: ${responseData} has occurred`, "error");
-
       } else {
-        snackbarMessage("You have successfully registered but needed to upload more documents", "success");
+        snackbarMessage(
+          "You have successfully registered but needed to upload more documents",
+          "success"
+        );
         navigate("/upload");
       }
     });
@@ -56,9 +58,7 @@ function RegisterAsDoctor() {
           required
         />
 
-        <label for="name">
-          Name
-        </label>
+        <label for="name">Name</label>
         <input
           type="text"
           id="name"
@@ -82,7 +82,8 @@ function RegisterAsDoctor() {
           style={{ width: "92%" }}
           type="password"
           id="password"
-          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
+          pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+          title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
           placeholder="Enter your password here..."
           required
         />
@@ -93,12 +94,14 @@ function RegisterAsDoctor() {
           <option value="female">Female</option>
           <option value="none">None</option>
         </select>
-
-        <label className="form__label" for="dBirth">
-          Date of Birth
-        </label>
-        <input type="date" id="dBirth" max="2002-10-15" required />
-
+        <div>
+          <label className="form__label" for="dBirth">
+            Date of Birth
+          </label>
+          <div>
+            <input type="date" id="dBirth" max="2002-10-15" required />
+          </div>
+        </div>
         <label for="rate">Hourly Rate</label>
         <input
           style={{ width: "92%" }}
@@ -136,7 +139,22 @@ function RegisterAsDoctor() {
         />
       </div>
       <div className="footer">
-        <button type="submit" class="btn">
+        <button
+          type="submit"
+          className="btn"
+          style={{
+            backgroundColor: "#4CAF50",
+            color: "white",
+            width:"30%",
+            fontSize: "22px",
+            padding: "10px 15px",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginTop: "10px",
+         // Adjust the width as needed
+          }}
+        >
+          {" "}
           Register
         </button>
       </div>

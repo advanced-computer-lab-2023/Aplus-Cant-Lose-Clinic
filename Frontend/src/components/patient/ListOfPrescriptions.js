@@ -29,7 +29,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
-
+import {useNavigate}  from "react-router-dom";
 // ...
 import {
   viewPrescriptions,
@@ -40,6 +40,7 @@ import Dialog from "@mui/material/Dialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const App = () => {
+  const navigate=useNavigate();
   const dispatch = useDispatch();
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
@@ -47,6 +48,8 @@ const App = () => {
   const [isFilled, setIsFilled] = useState(false);
 
   const patientId = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
+
   const rows = useSelector((state) => state.patient.presc);
 
   const iconStyle = {
@@ -88,6 +91,7 @@ const App = () => {
   };
 
   return (
+    role==="patient" ?(
     <Box sx={{ flexGrow: 1 }}>
       <Dialog
         open={Boolean(prescriptionid)}
@@ -107,7 +111,7 @@ const App = () => {
                 <Box style={Info}>
                   <Typography sx={{ fontSize: "16px" }}>
                     <strong>Date : </strong>
-                    {prescriptionid.datePrescribed}
+                    {prescriptionid?.datePrescribed}
                   </Typography>
                 </Box>
               </Grid>
@@ -122,10 +126,10 @@ const App = () => {
               <Grid item xs={12} md={4}>
                 <Box sx={{ margin: "20px 20px 0px 80px" }}>
                   <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID.name}
+                    {prescriptionid.doctorID?.name}
                   </Typography>
                   <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID.speciality}
+                    {prescriptionid.doctorID?.speciality}
                   </Typography>
                 </Box>
               </Grid>
@@ -133,17 +137,17 @@ const App = () => {
             <Grid item xs={12} md={4}>
               <Box sx={{ margin: "20px 20px 0px 80px" }}>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Name :{prescriptionid.medID.name}
+                  Medicine Name :{prescriptionid.medID?.name}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
                   Medicine Active elements:
-                  {prescriptionid.medID.activeElement}
+                  {prescriptionid.medID?.activeElement}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Used for :{prescriptionid.medID.use}
+                  Medicine Used for :{prescriptionid.medID?.use}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Frequency :{prescriptionid.medID.amount}
+                  Medicine Frequency :{prescriptionid.medID?.amount}
                 </Typography>
               </Box>
             </Grid>
@@ -300,7 +304,7 @@ const App = () => {
                 .filter((row) => {
                   return (
                     nameFilter === "" ||
-                    row.doctorID.name
+                    row.doctorID?.name
                       .toLowerCase()
                       .includes(nameFilter.toLowerCase())
 
@@ -336,9 +340,9 @@ const App = () => {
                       />
                     </TableCell>
                     <TableCell align="left">{row.datePrescribed}</TableCell>
-                    <TableCell align="left">{row.doctorID.name}</TableCell>
+                    <TableCell align="left">{row.doctorID?.name}</TableCell>
                     <TableCell align="left">
-                      {row.doctorID.speciality}
+                      {row.doctorID?.speciality}
                     </TableCell>
                     <TableCell align="left">
                       <IconButton onClick={() => handleView(row._id)}>
@@ -351,8 +355,26 @@ const App = () => {
           </Table>
         </TableContainer>
       </Paper>
-    </Box>
-  );
+    </Box>): (
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
+  ));
+  
 };
 
 export default App;
