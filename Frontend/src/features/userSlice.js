@@ -13,6 +13,9 @@ const userInitial = {
   id: "",
   error: false,
   token: "",
+  logId: 0,
+  socket:[]
+
 };
 export const loginGuest = createAsyncThunk(
   "user/loginGuest",
@@ -85,7 +88,15 @@ export const changePass = createAsyncThunk("user/changePass", async (data) => {
     console.error("Error:", error.response.data);
   }
 });
-
+export const socketset = createAsyncThunk("user/socket", async (data) => {
+  try {
+    console.log(data);
+  
+    return data;
+  } catch (error) {
+    console.error("Error:", error.response.data);
+  }
+});
 export const logout = createAsyncThunk(
   "user/logout",
   async (data, { rejectWithValue }) => {
@@ -130,10 +141,13 @@ const user = createSlice({
         state.id = action.payload.data.userData.fUser._id;
         console.log(action.payload.data.userData.fUser._id);
         state.token = action.payload.data.token;
+        state.logId = action.payload.data.userData.logId;
+
         localStorage.setItem("user", JSON.stringify({
           username: state.username,
           role: state.role,
           id: state.id,
+          logId: state.logId,
           token:state.token
         }));
         console.log(state.token);
@@ -163,6 +177,8 @@ const user = createSlice({
     });
     builder.addCase(sendResetEmail.fulfilled, (state, action) => {});
     builder.addCase(changePassword.fulfilled, (state, action) => {});
+    builder.addCase(socketset.fulfilled, (state, action) => {state.socket=action.payload});
+
   },
 });
 

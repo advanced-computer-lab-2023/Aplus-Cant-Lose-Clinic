@@ -154,6 +154,23 @@ router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 router.post("/createCheckoutSession/:id/:h_id",createCheckoutSession);
 
 router.post("/createAppointmentCheckoutSession/:amount/:appointmentId/:patientId",createAppointmentCheckoutSession);
+router.get('/MyDoctors/:patientId', async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+
+    // Find appointments with the given patientId and populate the 'drID' field to get doctor details
+    const appointments = await Appointment.find({ pID: patientId }).populate('drID', 'name');
+
+    // Extract doctor names from the appointments
+    const doctorNames = appointments
+      .filter(appointment => appointment.drID) // Filter out appointments without doctors
+      .map(appointment => appointment.drID.name); // Extract doctor names
+
+    res.status(200).json({ doctors: doctorNames });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 router.post('/scheduleAppointment', async (req, res) => {

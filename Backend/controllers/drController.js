@@ -103,6 +103,7 @@ const addDoctor = async (req, res) => {
       username,
       password: hashedPassword,
       role: "doctor",
+      email,name
     });
     const data = {
       _id: doctor._id,
@@ -628,6 +629,10 @@ async function rescheduleAppointment(req, res) {
     res.status(500).json({ error: 'Server error' });
   }
 }
+
+
+// Function to get patients by doctor's ID
+
 
 
 
