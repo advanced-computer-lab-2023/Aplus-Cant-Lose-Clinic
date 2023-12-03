@@ -20,65 +20,86 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { API_URL } from "../../Consts.js";
-function FollowUp() {
+//import Appointment from '../../../Backend/Models/appointments';
+
+
+
+function RescheduleAppointment({ appointment }) {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
     const { id, role } = useSelector((state) => state.user);
     const [patients, setPatients] = useState([]);
     const [currentpatient, setCurrentPatient] = useState("");
-    var closes = false;
-       //to get list of doctors patients so he can choose the name of the patient he want to schedule follow up with
-    const getPatientList = async () => {
-        try {
-            const response = await axios.get(`${API_URL}/doctor/patientsInUpcomingApointments/${id}`);
-            const patientsdata = response.data.patients;
-            setPatients(patientsdata);
-        } catch (error) {
-            console.error("Error fetching patientlist", error);
-        }
-    }
-    //that is the function that addes the follow up slot for selected patient
-    async function addFollowUp() {
-        try {
-            console.log(currentpatient);
-
-            const response = await axios.post( `${API_URL}/doctor/createFollowUpAppointment/${id}?patientID=${currentpatient}`, {
-                startDate,
-                endDate
-            });
-            console.log(response);
-        } catch (error) {
-            console.error("Error posting free slots", error);
-        }
-    }
-    const handleClickOpen = async () => {
-        setOpen(true);
-        await getPatientList();
+    const [selectedUsername, setSelectedUsername] = useState("");
+  
+    // Function to fetch appointment data from the server
+    const fetchAppointmentData = async (appointmentId) => {
+      try {
+        const response = await axios.get(`${API_URL}/patient/getAppointment/${appointmentId}`);
+        const appointmentData = response.data; // Adjust this based on your API response
+        return appointmentData;
+      } catch (error) {
+        console.error("Error fetching appointment data", error);
+        return null;
+      }
     };
-
-    const handleClose = () => {
-        if (closes) {
-            closes = false;
-            setOpen(false);
-            addFollowUp();
-        } else {
-            if (endDate === "" || startDate === "") {
-                alert("Choose dates");
-            } else {
-                setOpen(false);
-                addFollowUp();
+  
+    // Function to handle rescheduling
+    const rescheduleAppointment = async () => {
+        try {
+          console.log("Rescheduling appointment...");
+          console.log("Appointment ID:", appointment._id); // Use appointment._id
+      
+          // Change the API endpoint to handle rescheduling
+          const response = await axios.put(
+            `${API_URL}/patient/rescheduleAppointment/${appointment._id}`,
+            {
+              startDate,
+              endDate
             }
+          );
+          console.log("Response:", response.data);
+      
+          // Check if the response indicates success
+          if (response.data.success) {
+            console.log("Appointment successfully rescheduled!");
+          } else {
+            console.error("Error rescheduling appointment:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error rescheduling appointment", error);
         }
+      };
+  
+    // Function to get the list of doctors' patients
+    const getPatientList = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/patient/getFamilyMembers/${id}`);
+        const familyMembers = response.data.familyMembers;
+        setPatients(familyMembers);
+      } catch (error) {
+        console.error("Error fetching family members", error);
+      }
     };
+  
+    const handleClickOpen = async () => {
+      setOpen(true);
+      await getPatientList();
+    };
+    const handleClose = () => {
+      setOpen(false);
+      rescheduleAppointment();
+    };
+    
     return (
         <>
             <Button variant="outlined" onClick={handleClickOpen}>
-                Create a Follow up appointment
+            Reschedule Appointment
             </Button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Create Follow up Appointment</DialogTitle>
-                <DialogContent>
+                <DialogTitle>Reschedule Appointment</DialogTitle>
+                <DialogContent>                  
                     <Typography>Start Date</Typography>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer
@@ -133,11 +154,11 @@ function FollowUp() {
                     ))}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Create</Button>
+                    <Button onClick={handleClose}>Reschedule</Button>
                 </DialogActions>
             </Dialog>
         </>
     );
 }
 
-export default FollowUp;
+export default RescheduleAppointment;

@@ -36,7 +36,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useHistory, useNavigate } from "react-router-dom"; // Add this import
 import CreditCardForm from './CreditCardForm';
 import { API_URL } from "../../Consts.js";
-
+import RescheduleAppointment from "./PatRescheduleAppointment";
 
 
 
@@ -65,37 +65,41 @@ function BasicTable({ status, date, onPayButtonClick }) {
     <>
       <TableContainer component={Paper} style={tableContainerStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Doctor Name </TableCell>
-              <TableCell align="left">Doctor Speciality</TableCell>
-              <TableCell align="left">Date</TableCell>
-              <TableCell align="left">Status </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows
-              .filter((row) => status === "Any" || status === row.status)
-              .filter(
-                (row) =>
-                  date === "" || new Date(row.startDate) >= new Date(date)
-              )
-              .map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell component="th" scope="row">
+        <TableHead>
+  <TableRow>
+    <TableCell>Doctor Name</TableCell>
+    <TableCell align="left">Doctor Speciality</TableCell>
+    <TableCell align="left">Date</TableCell>
+    <TableCell align="left">Status</TableCell>
+    <TableCell align="left">Reschedule Appointment</TableCell> {/* Add this line */}
+  </TableRow>
+</TableHead>
 
-                    {row.drID?.name}
-                  </TableCell>
-                  <TableCell align="left">{row.drID?.speciality}</TableCell>
-                  <TableCell align="left">
-                    {row.startDate &&
-                      new Date(row.startDate).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell align="left">{row.status}</TableCell>
-                
-                </TableRow>
-              ))}
-          </TableBody>
+<TableBody>
+  {rows
+    .filter((row) => status === "Any" || status === row.status)
+    .filter((row) => date === "" || new Date(row.startDate) >= new Date(date))
+    .map((row, index) => (
+      <TableRow key={index}>
+        <TableCell component="th" scope="row">
+          {row.drID?.name}
+        </TableCell>
+        <TableCell align="left">{row.drID?.speciality}</TableCell>
+        <TableCell align="left">
+          {row.startDate &&
+            new Date(row.startDate).toLocaleDateString()}
+        </TableCell>
+        <TableCell align="left">{row.status}</TableCell>
+        <TableCell align="left">
+          {row.status === "upcoming" && (
+            <RescheduleAppointment appointment={row} />
+          )}
+        </TableCell>
+      </TableRow>
+    ))}
+</TableBody>
+
+
         </Table>
       </TableContainer>
     </>

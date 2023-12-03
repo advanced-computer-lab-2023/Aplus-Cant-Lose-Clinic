@@ -33,7 +33,7 @@ import Doctordetails from "./components/patient/Doctordetails";
 import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
 import ViewHealthPackage from "./components/patient/ViewHealthPackage";
-import SubsciptionPayment from "./components/patient/SubscriptionPayment"
+import SubsciptionPayment from "./components/patient/SubscriptionPayment";
 import FamilyMemberForm from "./components/patient/FamilyMemberForm.js";
 import Chatpage from "./Pages/Chatpage";
 

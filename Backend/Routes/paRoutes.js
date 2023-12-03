@@ -19,6 +19,7 @@ const {
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
+  rescheduleAppointment,
   viewAppoints,
   viewSpecificPrescription,
   getAlldoctors, 
@@ -54,7 +55,8 @@ router.get(
   searchDoctorsByspecialityOrAvailability
 );
 router.get("/viewPrescriptions/:patientId", viewPrescriptions);
-
+//const { rescheduleAppointment } = require("../controllers/paController");
+router.put("/rescheduleAppointment/:appointmentId", rescheduleAppointment);
 router.get("/patientFilterAppointments", patientFilterAppointments);
 router.get("/viewAppoints/:patientId", viewAppoints);
 router.get("/freeAppiontmentSlot/:doctorId",freeAppiontmentSlot);//used to show all the free slots of specific doctor

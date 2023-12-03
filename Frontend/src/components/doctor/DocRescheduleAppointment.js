@@ -28,7 +28,7 @@ function RescheduleAppointment() {
     const [patients, setPatients] = useState([]);
     const [currentpatient, setCurrentPatient] = useState("");
     var closes = false;
-       //to get list of doctors patients so he can choose the name of the patient he want to schadule follow up with
+       //to get list of doctors patients so he can choose the name of the patient he want to schedule follow up with
     const getPatientList = async () => {
         try {
             const response = await axios.get(`${API_URL}/doctor/patientsInUpcomingApointments/${id}`);
@@ -38,7 +38,7 @@ function RescheduleAppointment() {
             console.error("Error fetching patientlist", error);
         }
     }
-    //that is the function that addes the follow up slot for selected patient
+    //that is the function that edits the Reschegule for selected patient
     async function rescheduleAppointment() {
         try {
             console.log(currentpatient);
