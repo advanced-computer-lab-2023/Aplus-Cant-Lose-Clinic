@@ -7,8 +7,10 @@ import React, { useEffect, useRef, useState } from "react"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import Peer from "simple-peer"
 import io from "socket.io-client"
+import { useSelector } from "react-redux"
 import "../App.css"
-
+import RateReviewIcon from '@mui/icons-material/RateReview';
+import { useNavigate } from "react-router-dom"
 
 const socket = io.connect('http://localhost:5000')
 function VideoChat() {
@@ -20,11 +22,12 @@ function VideoChat() {
 	const [ callAccepted, setCallAccepted ] = useState(false)
 	const [ idToCall, setIdToCall ] = useState("")
 	const [ callEnded, setCallEnded] = useState(false)
-	const [ name, setName ] = useState("")
+  const name2 =useSelector((state)=>state.user.username);
+	const [ name, setName ] = useState(name2);
 	const myVideo = useRef()
 	const userVideo = useRef()
 	const connectionRef= useRef()
-
+const navigate=useNavigate();
 useEffect(() => {
   socket.on("callEnded", () => {
     setCallEnded(true);
@@ -157,10 +160,15 @@ useEffect(() => {
 						<Button variant="contained" color="secondary" onClick={leaveCall}>
 							End Call
 						</Button>
-					) : (
+					) : (<div style={{display:"flex"}}>
 						<IconButton color="primary" aria-label="call" onClick={() => callUser(idToCall)}>
 							<PhoneIcon fontSize="large" />
 						</IconButton>
+                <IconButton color="primary" sx={{ fontSize: '40px' }} onClick={() => navigate("/chats")} >
+                <RateReviewIcon />
+              </IconButton>
+              
+              </div>
 					)}
 					{idToCall}
 				</div>
@@ -176,6 +184,9 @@ useEffect(() => {
 				) : null}
 			</div>
 		</div>
+
+
+      
 		</>
 	)
 }

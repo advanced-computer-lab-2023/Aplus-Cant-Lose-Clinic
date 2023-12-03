@@ -7,7 +7,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { WalletDialog } from '../WalletDialog.js';
 import {useState} from 'react'
-import VideoChat from '../VideoChat.js';
+
 export default function DocHome() {
 console.log('im hiiim ')
 const user = useSelector(state => state.user);
@@ -155,7 +155,7 @@ const handleCloseDialog = () => {
             </Toolbar>
         </Container>
     </AppBar>
-    <VideoChat/>
+    
     <h1>hi</h1>
   
 </>

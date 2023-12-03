@@ -11,6 +11,8 @@ import {
   Drawer,
   selectClasses,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import VideoChatIcon from '@mui/icons-material/VideoChat';
 import { API_URL } from "../../Consts";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { PhoneIcon, AddIcon, WarningIcon } from "@chakra-ui/icons";
@@ -28,10 +30,11 @@ import { Select, InputLabel } from "@mui/material";
 import UserListItem from "../userAvatar/UserListItem";
 import { ChatState } from "../../Context/ChatProvider";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 function SideDrawer() {
   const logId = useSelector((state) => state.user.logId);
   const id = useSelector((state) => state.user.id);
-
+const navigate=useNavigate();
   const user = useSelector((state) => state.user);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -124,13 +127,34 @@ function SideDrawer() {
           borderWidth: "5px",
         }}
       >
-        <Tooltip label="Search Users to chat" arrow placement="bottom-end">
+      <Tooltip
+          label="Search Users to chat"
+          arrow
+          placement="bottom-end"
+          sx={{ display: "flex" ,justifyContent: "space-between"}}
+        >
+          
           <Button variant="text" onClick={() => setIsOpen(true)}>
-            <i className="fas fa-search"></i>
-            <Typography sx={{ display: { xs: "none", md: "flex" }, pl: 1 }}>
-              Search User
-            </Typography>
+            {user.role === "patient" ? (
+              <Typography>Search Doctors</Typography>
+            ) : (
+              <Typography>Search Patients</Typography>
+            )}
+            <IconButton color="primary">
+              <SearchIcon />
+            </IconButton>
+      
+
           </Button>
+          <Button variant="text" onClick={() => navigate("/vidcall") } sx={{borderBottomStyle: "groove",
+    border: "2px solid", // Set the border size and style
+    borderRadius: "8px"}}>
+          Video Chat
+          <IconButton color="primary">
+              < VideoChatIcon />
+            </IconButton>
+          </Button>
+      
         </Tooltip>
         <Typography variant="h4" fontFamily="Work sans">
           Talk-A-Tive
