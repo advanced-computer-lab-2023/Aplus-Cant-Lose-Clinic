@@ -2,6 +2,7 @@ const User = require("../Models/user.js");
 const Doctor = require("../Models/doctor.js");
 const Patient = require("../Models/patient.js");
 const Admin = require("../Models/admin.js");
+const asyncHandler = require("express-async-handler");
 
 const nodemailer = require("nodemailer");
 
@@ -66,7 +67,7 @@ const login = async (req, res) => {
     const token = generateToken(data);
 
     // Fetch additional user data based on the user's role
-    let userData = { fUser: user }; // Initialize with the user data
+    let userData = { fUser: user,logId:user._id }; // Initialize with the user data
 
     switch (user.role) {
       case "admin":
@@ -275,7 +276,25 @@ const changePass = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+const allUsers = asyncHandler(async (req, res) => {
+  try {
+    const keyword = req.query.search
+      ? {
+          $or: [
+            { name: { $regex: req.query.search, $options: "i" } },
+            { email: { $regex: req.query.search, $options: "i" } },
+            { username: { $regex: req.query.search, $options: "i" } },
+          ],
+        }
+      : {};
 
+    const users = await User.find(keyword);
+    res.send(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 const logout = (req, res) => {
   // Clear the token cookie
   res.clearCookie("jwt");
@@ -331,6 +350,7 @@ const changePassword = async (req, res) => {
 };
 
 
+
 module.exports = {
   createUser,
   getUser,
@@ -340,5 +360,5 @@ module.exports = {
   login,
   logout,
   sendResetEmail,
-  changePassword,changePass
+  changePassword,changePass,allUsers
 };

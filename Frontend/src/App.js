@@ -33,8 +33,9 @@ import Doctordetails from "./components/patient/Doctordetails";
 import Admin from "./components/Adminstrator/Admin";
 import PaHome from "./components/patient/Home";
 import ViewHealthPackage from "./components/patient/ViewHealthPackage";
-import SubsciptionPayment from "./components/patient/SubscriptionPayment"
+import SubsciptionPayment from "./components/patient/SubscriptionPayment";
 import FamilyMemberForm from "./components/patient/FamilyMemberForm.js";
+import Chatpage from "./Pages/Chatpage";
 
 import {
   createBrowserRouter,
@@ -60,6 +61,7 @@ import PatientView from "./components/doctor/PatientView";
 import Upload from "./components/doctor/Upload";
 import MedHist from "./components/patient/MedHist";
 import ResetPassword from "./components/Authentication/ResetPassword";
+import VideoChat from "./components/VideoChat.js";
 import ChangePass from "./components/Authentication/ChangePass";
 import Contract from "./components/doctor/Contract.js";
 import Success from "./components/patient/Success.js";
@@ -116,13 +118,14 @@ const router = createBrowserRouter(
       <Route path="/Contract" element={<Contract />} />
       <Route path="/PatientsList" element={<PatientView />} />
 
-      
+      <Route path="/vidcall" element={<VideoChat />} />
+
       
       <Route path="AddHealthPackages" element={<AddPack />} />
 
       <Route path="/SuccessAppoint/:appointmentID/:patientId" element={<SuccessAppoint/>}/>
 
-      
+      <Route path="/chats" element={<Chatpage/>} />
     </Route>
   )
   );

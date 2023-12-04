@@ -6,6 +6,7 @@ import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
 import VaccinesIcon from '@mui/icons-material/Vaccines';
 import WalletIcon from '@mui/icons-material/Wallet';
 import { NavLink } from 'react-router-dom';
+import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import { WalletDialog } from '../WalletDialog.js';
 import {useState} from 'react'
 
@@ -88,10 +89,11 @@ function Home() {
                                     <IconButton>
                                         <FamilyRestroomIcon style={styles}></FamilyRestroomIcon>
                                     </IconButton>
-                                    <Typography >view Family Members</Typography>
+                                    <Typography >Family Members</Typography>
                                 </Button>
                             </NavLink>
                         </Box>
+                  
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/FamilyMemberForm'>
                                 <Button sx={{ color: 'white' }}>
@@ -112,6 +114,7 @@ function Home() {
                                 </Button>
                             </NavLink>
                         </Box>
+              
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/HealthRecords'>
                                 <Button sx={{ color: 'white' }}>
@@ -138,7 +141,7 @@ function Home() {
                                     <IconButton>
                                         <VaccinesIcon style={styles} ></VaccinesIcon>
                                     </IconButton>
-                                    <Typography >view health packages</Typography>
+                                    <Typography >health packages</Typography>
                                 </Button>
                             </NavLink>
                         </Box>
@@ -165,6 +168,16 @@ function Home() {
                                 </>
                             </div>
                         </Box>
+                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                            <NavLink to='/chats'>
+                                <Button sx={{ color: 'white' }}>
+                                    <IconButton>
+                                        <PermPhoneMsgIcon style={styles}  ></PermPhoneMsgIcon>
+                                    </IconButton>
+                                    <Typography >Chats/Calls</Typography>
+                                </Button>
+                            </NavLink>
+                        </Box>
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton sx={{ p: 0 }}>
@@ -172,6 +185,7 @@ function Home() {
                                 </IconButton>
                             </Tooltip>
                         </Box>
+                        
                     </Toolbar>
                 </Container>
             </AppBar>

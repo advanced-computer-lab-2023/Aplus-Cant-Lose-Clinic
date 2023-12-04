@@ -21,6 +21,7 @@ const {
   viewPrescriptions,
   patientFilterAppointments,
   createAppointment,
+  rescheduleAppointment,
   viewAppoints,
   viewSpecificPrescription,
   getAlldoctors, 
@@ -56,7 +57,8 @@ router.get(
   searchDoctorsByspecialityOrAvailability
 );
 router.get("/viewPrescriptions/:patientId", viewPrescriptions);
-
+//const { rescheduleAppointment } = require("../controllers/paController");
+router.put("/rescheduleAppointment/:appointmentId", rescheduleAppointment);
 router.get("/patientFilterAppointments", patientFilterAppointments);
 router.get("/viewAppoints/:patientId", viewAppoints);
 router.get("/freeAppiontmentSlot/:doctorId",freeAppiontmentSlot);//used to show all the free slots of specific doctor
@@ -155,6 +157,23 @@ router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
 router.post("/createCheckoutSession/:id/:pid",createCheckoutSession);
 router.post("/createAppointmentCheckoutSession/:amount/:appointmentId/:patientId",createAppointmentCheckoutSession);
+router.get('/MyDoctors/:patientId', async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+
+    // Find appointments with the given patientId and populate the 'drID' field to get doctor details
+    const appointments = await Appointment.find({ pID: patientId }).populate('drID', 'name');
+
+    // Extract doctor names from the appointments
+    const doctorNames = appointments
+      .filter(appointment => appointment.drID) // Filter out appointments without doctors
+      .map(appointment => appointment.drID.name); // Extract doctor names
+
+    res.status(200).json({ doctors: doctorNames });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 router.post('/scheduleAppointment', async (req, res) => {
   try {

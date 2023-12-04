@@ -1180,6 +1180,43 @@ const createAppointmentCheckoutSession = async (req, res) => {
   }
 };
 
+
+
+
+
+
+const rescheduleAppointment = async (req, res) => {
+  try {
+    const { appointmentId } = req.params;
+    const { startDate, endDate } = req.body;
+
+    // Assuming you have a model named 'Appointment' for your appointments
+    const appointment = await Appointment.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    // Update the start and end dates
+    appointment.startDate = startDate;
+    appointment.endDate = endDate;
+
+    // Save the updated appointment
+    await appointment.save();
+
+    res.json({ success: true, message: "Appointment successfully rescheduled" });
+  } catch (error) {
+    console.error("Error rescheduling appointment", error);
+    res.status(500).json({ success: false, message: "Error rescheduling appointment" });
+  }
+};
+
+
+
+
+
+
+
 const successCreditCardPayment = async (req, res) => {
   try {
     const { patientID, appointmentID } = req.params;
@@ -1237,5 +1274,6 @@ module.exports = {
   healthPackageInfo,
   viewPatientHealthRecords,
   createAppointmentCheckoutSession,
+  rescheduleAppointment,
   successCreditCardPayment
 };
