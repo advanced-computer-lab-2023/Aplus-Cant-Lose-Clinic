@@ -9,7 +9,7 @@ const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 
 // App variables
 const app = express(); // Move this line to the top
-const port = "5000";
+const port = "10000";
 app.use(cors());
 
 

@@ -8,6 +8,9 @@ import WalletIcon from '@mui/icons-material/Wallet';
 import { WalletDialog } from '../WalletDialog.js';
 import {useState} from 'react'
 
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 export default function DocHome() {
 console.log('im hiiim ')
 const user = useSelector(state => state.user);
@@ -157,6 +160,12 @@ const handleCloseDialog = () => {
     </AppBar>
     
     <h1>hi</h1>
+
+    <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+      <MuiAlert elevation={6} variant="filled" severity="info">
+        appointement is resuchudeled!!
+      </MuiAlert>
+    </Snackbar>
   
 </>
   )
