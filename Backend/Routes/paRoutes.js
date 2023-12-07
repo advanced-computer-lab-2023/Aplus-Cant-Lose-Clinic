@@ -1,5 +1,3 @@
-const Appointment = require("../Models/appointments");
-const Doctor = require("../Models/doctor");
 
 
 
@@ -38,7 +36,8 @@ const {
   createCheckoutSession,
   viewPatientHealthRecords,
   successCreditCardPayment,
-  createAppointmentCheckoutSession
+  createAppointmentCheckoutSession,
+  cancelAppointment
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -426,5 +425,8 @@ router.get('/delete/:id/:pid', async (req, res) => {
     res.status(400).send('Error while deleting file. Try again later.');
   }
 });
+
+router.delete("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
+
 
 module.exports = router;

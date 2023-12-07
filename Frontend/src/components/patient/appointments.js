@@ -60,6 +60,21 @@ function BasicTable({ status, date, onPayButtonClick }) {
   }, [dispatch]);
   const rows = useSelector((state) => state.patient.appoints);
   console.log(rows);
+  const handleCancelAppointment=async(appointment)=>
+  {
+    try {
+      const aid=appointment._id
+      const did=appointment.drID._id
+      const pid=appointment.pID._id
+      console.log("hhhhhhhhhhh",did)
+
+      const response = await axios.delete(
+         `${API_URL}/patient/CancelAppointment/${aid}/${did}/${pid}`
+      );
+    } catch (error) {
+      console.error("Error cancelling appointment", error);
+    }
+  }
 
   return (
     <>
@@ -72,6 +87,8 @@ function BasicTable({ status, date, onPayButtonClick }) {
     <TableCell align="left">Date</TableCell>
     <TableCell align="left">Status</TableCell>
     <TableCell align="left">Reschedule Appointment</TableCell> {/* Add this line */}
+    <TableCell align="left">Cancel Appointment </TableCell>
+
   </TableRow>
 </TableHead>
 
@@ -95,6 +112,18 @@ function BasicTable({ status, date, onPayButtonClick }) {
             <RescheduleAppointment appointment={row} />
           )}
         </TableCell>
+        <TableCell align="left">
+  {row.status === "upcoming" && (
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={() => {handleCancelAppointment(row)
+      }}
+    >
+      Cancel
+    </Button>
+  )}
+</TableCell>
       </TableRow>
     ))}
 </TableBody>
@@ -212,6 +241,7 @@ export default function SearchAppBar() {
     handleOpenWalletDialog(); // Close the credit card dialog after processing
 
   };
+ 
 
   function formatDateTimeToEnglish(dateTimeString) {
     const date = new Date(dateTimeString);

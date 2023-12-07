@@ -1245,6 +1245,49 @@ console.log(appointmentID);
   }
 };
 
+const cancelAppointment=async (req,res)=>
+{
+  try
+  {
+    const {aid,did,pid}=req.params
+    const appointment=await Appointment.findById({_id:aid})
+    const doctor=await Doctor.findById({_id:did})
+    const patient=await Patient.findById({_id:pid})
+    if(!appointment)
+    {
+      res.status(500).json({message:"Appointment not found!"})
+    }
+    if(!doctor)
+    {
+      res.status(500).json({message:"Doctor not found!"})
+    }
+    if(!patient)
+    {
+      res.status(500).json({message:"Patient not found!"})
+    }
+    const today=new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const timeDifference = Math.abs(today - appointment.startDate);
+   //const timeDifference = appointment.startDate-today;
+
+    if (timeDifference > oneDayInMilliseconds) {
+      console.log(timeDifference)
+      console.log(patient.wallet)
+      patient.wallet+=doctor.rate;
+      
+  }
+
+
+  }
+  catch(error)
+  {
+    console.error(error);
+    res.status(500).json({message:"Error Cancelling Appointment"})
+
+  }
+
+}
+
 
 
 
@@ -1275,5 +1318,6 @@ module.exports = {
   viewPatientHealthRecords,
   createAppointmentCheckoutSession,
   rescheduleAppointment,
-  successCreditCardPayment
+  successCreditCardPayment,
+  cancelAppointment
 };
