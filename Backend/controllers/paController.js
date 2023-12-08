@@ -1291,6 +1291,81 @@ const cancelAppointment=async (req,res)=>
 
 
 
+
+
+
+// Function to get notifications of a patient
+const getPatientNotifications = async (req, res) => {
+  const patientId = req.params.patientId;
+
+  try {
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ message: 'Patient not found.' });
+    }
+
+    const notifications = patient.notifications;
+    return res.status(200).json({ notifications });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+// Function to add a new notification for a patient
+const addPatientNotification = async (req, res) => {
+  const patientId = req.params.patientId;
+  const { message, type } = req.body;
+
+  try {
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ message: 'Patient not found.' });
+    }
+
+    patient.notifications.push({
+      message,
+      type: type || 'info',
+    });
+
+    await patient.save();
+
+    return res.status(201).json({ message: 'Notification added successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+// Function to update notifications for a specific patient
+const updatePatientNotifications = async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+    const updatedNotifications = req.body.notifications;
+
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ message: 'Patient not found.' });
+    }
+
+    patient.notifications = updatedNotifications;
+
+    await patient.save();
+
+    return res.status(201).json({ message: 'Notifications array updated successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+
+
+
+
 module.exports = {
   addPatient,
   addFamilyMember,
@@ -1319,5 +1394,8 @@ module.exports = {
   createAppointmentCheckoutSession,
   rescheduleAppointment,
   successCreditCardPayment,
-  cancelAppointment
+  cancelAppointment,
+  getPatientNotifications,
+  addPatientNotification,
+  updatePatientNotifications
 };

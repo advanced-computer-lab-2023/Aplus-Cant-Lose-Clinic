@@ -22,7 +22,7 @@ const {
   getDoctor,
   getDoctorNotifications,
   addDoctorNotification,
-  updateNotifications
+  updateDoctorNotifications
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -263,7 +263,7 @@ router.get('/:doctorId/notifications', getDoctorNotifications);
 router.post('/:doctorId/notifications', addDoctorNotification);
 
 // updated the notictaions array of a specific doctor
-router.patch('/:doctorId/notifications', updateNotifications);
+router.patch('/:doctorId/notifications', updateDoctorNotifications);
 
 
 

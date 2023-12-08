@@ -700,7 +700,7 @@ const addDoctorNotification = async (req, res) => {
 
 
 // Function to update notifications for a specific doctor
-const updateNotifications = async (req, res) => {
+const updateDoctorNotifications = async (req, res) => {
   try {
     
     const doctorId = req.params.doctorId;
@@ -753,5 +753,5 @@ module.exports = {
   getDoctor,
   getDoctorNotifications,
   addDoctorNotification,
-  updateNotifications
+  updateDoctorNotifications
 };

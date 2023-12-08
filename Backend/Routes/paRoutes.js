@@ -37,7 +37,10 @@ const {
   viewPatientHealthRecords,
   successCreditCardPayment,
   createAppointmentCheckoutSession,
-  cancelAppointment
+  cancelAppointment,
+  getPatientNotifications,
+  addPatientNotification,
+  updatePatientNotifications,
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -427,6 +430,18 @@ router.get('/delete/:id/:pid', async (req, res) => {
 });
 
 router.delete("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
+
+
+
+
+// Get patient notifications
+router.get('/:patientId/notifications', getPatientNotifications);
+
+// Add a new notification for a patient
+router.post('/:patientId/notifications', addPatientNotification);
+
+// updated the notictaions array of a specific patient
+router.patch('/:patientId/notifications', updatePatientNotifications);
 
 
 module.exports = router;
