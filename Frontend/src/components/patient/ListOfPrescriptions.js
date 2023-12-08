@@ -147,7 +147,7 @@ const App = () => {
                   Medicine Used for :{prescriptionid.medID?.use}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Frequency :{prescriptionid.medID?.amount}
+                  Medicine Frequency :{prescriptionid.dosage}
                 </Typography>
               </Box>
             </Grid>

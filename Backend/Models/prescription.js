@@ -25,6 +25,10 @@ const prescriptionSchema = new mongoose.Schema(
       enum: ["filled", "unfilled"], // Define allowed values for status
       default: "unfilled",
     },
+    dosage: {
+      type: String,
+      required: true,
+    }
   },
 );
 module.exports = mongoose.model("Prescription", prescriptionSchema);

@@ -72,7 +72,7 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
       console.log("Description:", description);
 
       const response = await axios.patch(
-         `${API_URL}/patient/reserveAppointmentSlot/${currentAppointment}`,
+        `${API_URL}/patient/reserveAppointmentSlot/${currentAppointment}`,
         {
           username: pname,
           Description: description,
@@ -110,9 +110,9 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   };
 
   useEffect(() => {
-      getAppointments(doctorId);
-}, [doctorId]);
-const navigate=useNavigate();
+    getAppointments(doctorId);
+  }, [doctorId]);
+  const navigate = useNavigate();
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
   const handleOpenPaymentDialog = async (appointment) => {
@@ -143,7 +143,7 @@ const navigate=useNavigate();
 
   const [walletBalance, setWalletBalance] = useState(1000);
 
-  const handlePaymentCreditCard = () => {};
+  const handlePaymentCreditCard = () => { };
 
   const handleCloseCreditCardDialog = () => {
     setOpenCreditCardDialog(false);
@@ -209,7 +209,7 @@ const navigate=useNavigate();
     }
   };
 
-///
+  ///
   const handleOpenCreditCardDialog = async () => {
     try {
       const response = await axios.post(
@@ -223,172 +223,172 @@ const navigate=useNavigate();
       console.error(error.response.data.error);
     }
   };
-///
+  ///
   return (
-    role ==="patient" ?
-(
-    <>
-      <TableContainer component={Paper} style={tableContainerStyle}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Doctor Name </TableCell>
-              <TableCell align="left">Doctor Speciality</TableCell>
-              <TableCell align="left">Date</TableCell>
-              <TableCell align="left">Status </TableCell>
-              <TableCell align="left">Payment </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell component="th" scope="row">
-                  {row.drID.name}
-                </TableCell>
-                <TableCell align="left">{row.drID.speciality}</TableCell>
-                <TableCell align="left">
-                  {row.startDate &&
-                    new Date(row.startDate).toLocaleDateString()}
-                </TableCell>
-                <TableCell align="left">{row.status}</TableCell>
-                <Dialog
-        open={open}
-        onClose={handleClose}
-        PaperProps={{
-          style: noappoints
-            ? { backgroundColor: "#004e98" }
-            : { backgroundColor: "white" },
-        }}
-      >
-        {rows.length === 0 ? (
-          (noappoints = true && (
-            <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
-              <h1>There is no Available free </h1>
-            </div>
-          ))
-        ) : (
-          <>
-            <DialogTitle>Add An Appointment</DialogTitle>
+    role === "patient" ?
+      (
+        <>
+          <TableContainer component={Paper} style={tableContainerStyle}>
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Doctor Name </TableCell>
+                  <TableCell align="left">Doctor Speciality</TableCell>
+                  <TableCell align="left">Date</TableCell>
+                  <TableCell align="left">Status </TableCell>
+                  <TableCell align="left">Payment </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {rows.map((row, index) => (
+                  <TableRow key={index}>
+                    <TableCell component="th" scope="row">
+                      {row.drID.name}
+                    </TableCell>
+                    <TableCell align="left">{row.drID.speciality}</TableCell>
+                    <TableCell align="left">
+                      {row.startDate &&
+                        new Date(row.startDate).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell align="left">{row.status}</TableCell>
+                    <Dialog
+                      open={open}
+                      onClose={handleClose}
+                      PaperProps={{
+                        style: noappoints
+                          ? { backgroundColor: "#004e98" }
+                          : { backgroundColor: "white" },
+                      }}
+                    >
+                      {rows.length === 0 ? (
+                        (noappoints = true && (
+                          <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
+                            <h1>There is no Available free </h1>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          <DialogTitle>Add An Appointment</DialogTitle>
+                          <DialogContent>
+                            <Typography>Date & Time</Typography>
+                            {rows.map((appointment) => (
+                              <ListItem disableGutters key={appointment._id}>
+                                <ListItemButton>
+                                  <ListItemText
+                                    primary={formatDateTimeToEnglish(appointment.startDate)}
+                                    onClick={() => setCurrentAppointment(appointment._id)}
+                                  />
+                                </ListItemButton>
+                              </ListItem>
+                            ))}
+                            <div style={{ padding: "10px" }}>
+                              <Typography>Patient User Name</Typography>
+                              <TextField onChange={(event) => setPname(event.target.value)} />
+                            </div>
+                            <div style={{ padding: "10px" }}>
+                              <Typography>Description</Typography>
+                              <TextField onChange={(event) => setDescription(event.target.value)} />
+                            </div>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={() => handleOpenPaymentDialog(row)}>
+                              Pay
+                            </Button>
+                            <Button onClick={(noappoints = true && handleClose)}>Cancel</Button>
+                          </DialogActions>
+                        </>
+                      )}
+                    </Dialog>
+                    <TableCell align="left">
+                      {row.payment}
+                      <Button onClick={() => handleClickOpen()}>
+                        Reserve
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <Dialog
+            open={openPaymentDialog}
+            onClose={handleClosePaymentDialog}
+            PaperProps={{
+              style: { backgroundColor: "white" },
+            }}
+          >
+            <DialogTitle>Payment</DialogTitle>
             <DialogContent>
-              <Typography>Date & Time</Typography>
-              {rows.map((appointment) => (
-                <ListItem disableGutters key={appointment._id}>
-                  <ListItemButton>
-                    <ListItemText
-                      primary={formatDateTimeToEnglish(appointment.startDate)}
-                      onClick={() => setCurrentAppointment(appointment._id)}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-              <div style={{ padding: "10px" }}>
-                <Typography>Patient User Name</Typography>
-                <TextField onChange={(event) => setPname(event.target.value)} />
-              </div>
-              <div style={{ padding: "10px" }}>
-                <Typography>Description</Typography>
-                <TextField onChange={(event) => setDescription(event.target.value)} />
-              </div>
+              <Typography>Payment for appointment: </Typography>
             </DialogContent>
             <DialogActions>
-            <Button onClick={() => handleOpenPaymentDialog(row)}>
-              Pay
-            </Button>             
-            <Button onClick={(noappoints = true && handleClose)}>Cancel</Button>
+              <Button onClick={handleOpenCreditCardDialog}>Credit Card</Button>
+              <Button onClick={handleOpenWalletDialog}>Wallet</Button>
+              <Button onClick={handleClosePaymentDialog}>Cancel</Button>
             </DialogActions>
-          </>
-        )}
-      </Dialog>
-                <TableCell align="left">
-                  {row.payment}
-                  <Button onClick={() => handleClickOpen()}>
-                    Reserve
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </Dialog>
 
-      <Dialog
-        open={openPaymentDialog}
-        onClose={handleClosePaymentDialog}
-        PaperProps={{
-          style: { backgroundColor: "white" },
-        }}
-      >
-        <DialogTitle>Payment</DialogTitle>
-        <DialogContent>
-          <Typography>Payment for appointment: </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleOpenCreditCardDialog}>Credit Card</Button>
-          <Button onClick={handleOpenWalletDialog}>Wallet</Button>
-          <Button onClick={handleClosePaymentDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
+          <Dialog
+            open={openCreditCardDialog}
+            onClose={handleCloseCreditCardDialog}
+            PaperProps={{
+              style: { backgroundColor: "white" },
+            }}
+          >
+            <DialogTitle>Credit Card Information</DialogTitle>
+            <DialogContent>
+              <CreditCardForm />
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseCreditCardDialog}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
 
-      <Dialog
-        open={openCreditCardDialog}
-        onClose={handleCloseCreditCardDialog}
-        PaperProps={{
-          style: { backgroundColor: "white" },
-        }}
-      >
-        <DialogTitle>Credit Card Information</DialogTitle>
-        <DialogContent>
-          <CreditCardForm />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseCreditCardDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-
-      <Dialog
-        open={openWalletDialog}
-        onClose={handleCloseWalletDialog}
-        PaperProps={{
-          style: { backgroundColor: "white" },
-        }}
-      >
-        <DialogTitle>Wallet Payment</DialogTitle>
-        <DialogContent>
-          <Typography>Payment for appointment: </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handlePaymentWallet}>Pay with Wallet</Button>
-          <Button onClick={handleCloseWalletDialog}>Cancel</Button>
-        </DialogActions>
-      </Dialog>
-      <Link to="/Home" style={{ color: "white" }}>
+          <Dialog
+            open={openWalletDialog}
+            onClose={handleCloseWalletDialog}
+            PaperProps={{
+              style: { backgroundColor: "white" },
+            }}
+          >
+            <DialogTitle>Wallet Payment</DialogTitle>
+            <DialogContent>
+              <Typography>Payment for appointment: </Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handlePaymentWallet}>Pay with Wallet</Button>
+              <Button onClick={handleCloseWalletDialog}>Cancel</Button>
+            </DialogActions>
+          </Dialog>
+          <Link to="/Home" style={{ color: "white" }}>
             <IconButton
               size="large"
               color="blue"
               aria-label="open drawer"
-              sx={{ mr: 2 ,pisition:"fixed",top:"0px"}}
+              sx={{ mr: 2, pisition: "fixed", top: "0px" }}
             >
               <HomeIcon />
             </IconButton>
           </Link>
-    </>):(
-    <>
-      <Link to="/Login" sx={{ left: "100%" }}>
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          sx={{
-            flexGrow: 1,
-            display: { xs: "none", sm: "flex" },
-            fontSize: "20px",
-            maragin: "auto",
-          }}
-        >
-          Login
-        </Typography>
-      </Link>
-    </>
-  ));
-  
+        </>) : (
+        <>
+          <Link to="/Login" sx={{ left: "100%" }}>
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", sm: "flex" },
+                fontSize: "20px",
+                maragin: "auto",
+              }}
+            >
+              Login
+            </Typography>
+          </Link>
+        </>
+      ));
+
 }
