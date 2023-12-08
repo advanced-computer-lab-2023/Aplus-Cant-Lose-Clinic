@@ -41,6 +41,7 @@ const {
   getPatientNotifications,
   addPatientNotification,
   updatePatientNotifications,
+  sendPatientEmail
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -443,5 +444,7 @@ router.post('/:patientId/notifications', addPatientNotification);
 // updated the notictaions array of a specific patient
 router.patch('/:patientId/notifications', updatePatientNotifications);
 
+// send email to a patient
+router.post('/:patientId/send-email', sendPatientEmail);
 
 module.exports = router;

@@ -727,6 +727,42 @@ const updateDoctorNotifications = async (req, res) => {
 
 
 
+const sendDoctorEmail = async (req, res) => {
+  const { doctorId } = req.params;
+  const { subject, message } = req.body;
+
+  try {
+    // Retrieve doctor's email from the database
+    const doctor = await Doctor.findById(doctorId);
+    if (!doctor || !doctor.email) {
+      return res.status(404).json({ message: 'Doctor not found or no email associated.' });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: doctor.email,
+      subject,
+      text: message,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 
 
@@ -753,5 +789,6 @@ module.exports = {
   getDoctor,
   getDoctorNotifications,
   addDoctorNotification,
-  updateDoctorNotifications
+  updateDoctorNotifications,
+  sendDoctorEmail
 };
