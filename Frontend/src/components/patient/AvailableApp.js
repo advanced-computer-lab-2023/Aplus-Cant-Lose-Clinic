@@ -51,13 +51,52 @@ export default function AvailableApp({ status, date, onPayButtonClick }) {
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
   const role = useSelector((state) => state.user.role);
-
+  var noappoints = false;
+  const [open, setOpen] = React.useState(false);
+  const [pname, setPname] = useState("");
+  const [description, setDescription] = useState("");
+  const [currentAppointment, setCurrentAppointment] = useState(null);
   const [calculatedAmount, setCalculatedAmount] = useState(0);
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const { doctorId } = useParams();
   const [rows, setRows] = useState([]);
   const [aid, setAid] = useState(0);
+  const handleClose = () => {
+    reserveAnAppointment();
+    setOpen(false);
+  };
+  async function reserveAnAppointment() {
+    try {
+      console.log("appointmentId:", currentAppointment);
+      console.log("username:", pname);
+      console.log("Description:", description);
 
+      const response = await axios.patch(
+         `${API_URL}/patient/reserveAppointmentSlot/${currentAppointment}`,
+        {
+          username: pname,
+          Description: description,
+        }
+      );
+      console.log(response);
+    } catch (error) {
+      console.error("Error adding the slot", error);
+    }
+  }
+  function formatDateTimeToEnglish(dateTimeString) {
+    const date = new Date(dateTimeString);
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    };
+    const dateFormatter = new Intl.DateTimeFormat("en-US", options);
+    return dateFormatter.format(date);
+  }
   const getAppointments = async (doctorId) => {
 
     try {
@@ -92,6 +131,7 @@ const navigate=useNavigate();
       console.error("Error calculating amount:", error);
     }
     setOpenPaymentDialog(true);
+    handleClose()
   };
 
   const handleClosePaymentDialog = () => {
@@ -116,7 +156,10 @@ const navigate=useNavigate();
   const handleCloseWalletDialog = () => {
     setOpenWalletDialog(false);
   };
-
+  const handleClickOpen = () => {
+    setOpen(true);
+    getAppointments();
+  };
   const handlePaymentWallet = async () => {
     try {
       // Check if an appointment is selected
@@ -208,10 +251,58 @@ const navigate=useNavigate();
                     new Date(row.startDate).toLocaleDateString()}
                 </TableCell>
                 <TableCell align="left">{row.status}</TableCell>
+                <Dialog
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          style: noappoints
+            ? { backgroundColor: "#004e98" }
+            : { backgroundColor: "white" },
+        }}
+      >
+        {rows.length === 0 ? (
+          (noappoints = true && (
+            <div style={{ padding: "10px", color: "white", background: "#004e98" }}>
+              <h1>There is no Available free </h1>
+            </div>
+          ))
+        ) : (
+          <>
+            <DialogTitle>Add An Appointment</DialogTitle>
+            <DialogContent>
+              <Typography>Date & Time</Typography>
+              {rows.map((appointment) => (
+                <ListItem disableGutters key={appointment._id}>
+                  <ListItemButton>
+                    <ListItemText
+                      primary={formatDateTimeToEnglish(appointment.startDate)}
+                      onClick={() => setCurrentAppointment(appointment._id)}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+              <div style={{ padding: "10px" }}>
+                <Typography>Patient User Name</Typography>
+                <TextField onChange={(event) => setPname(event.target.value)} />
+              </div>
+              <div style={{ padding: "10px" }}>
+                <Typography>Description</Typography>
+                <TextField onChange={(event) => setDescription(event.target.value)} />
+              </div>
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={() => handleOpenPaymentDialog(row)}>
+              Pay
+            </Button>             
+            <Button onClick={(noappoints = true && handleClose)}>Cancel</Button>
+            </DialogActions>
+          </>
+        )}
+      </Dialog>
                 <TableCell align="left">
                   {row.payment}
-                  <Button onClick={() => handleOpenPaymentDialog(row)}>
-                    Pay
+                  <Button onClick={() => handleClickOpen()}>
+                    Reserve
                   </Button>
                 </TableCell>
               </TableRow>
