@@ -19,7 +19,10 @@ const {
   viewWallet,
   acceptContract,
   rescheduleAppointment,
-  getDoctor
+  getDoctor,
+  getDoctorNotifications,
+  addDoctorNotification,
+  updateNotifications
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -247,5 +250,26 @@ router.get('/download/:drid', async (req, res) => {
     res.status(400).send('Error while downloading file. Try again later.');
   }
 });
+
+
+
+
+
+
+// Get doctor notifications
+router.get('/:doctorId/notifications', getDoctorNotifications);
+
+// Add a new notification for a doctor
+router.post('/:doctorId/notifications', addDoctorNotification);
+
+// updated the notictaions array of a specific doctor
+router.patch('/:doctorId/notifications', updateNotifications);
+
+
+
+
+
+
+
 
 module.exports = router;

@@ -636,7 +636,104 @@ async function rescheduleAppointment(req, res) {
 
 
 
+
+
+
 //pass appointment on check and doctor when opening doctor page and dates by date picker
+
+
+
+
+
+
+
+
+
+
+// Function to get notifications of a doctor
+const getDoctorNotifications = async (req, res) => {
+  const doctorId = req.params.doctorId;
+
+  try {
+    const doctor = await Doctor.findById(doctorId); //get the doctor
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    const notifications = doctor.notifications; //get the doctor's notifiacions
+    return res.status(200).json({ notifications }); //return the array of notictaions
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+
+
+// Function to add a new notification for a doctor
+const addDoctorNotification = async (req, res) => {
+  const doctorId = req.params.doctorId;
+  const { message, type } = req.body; //get the notifiaction shit from the body
+
+  try {
+    const doctor = await Doctor.findById(doctorId); //get the doctor
+
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found.' });
+    }
+
+    //add the notifation to the array of notifications array of this doctor
+    doctor.notifications.push({
+      message,
+      type: type || 'info', // Default to 'info' if type is not provided
+    });
+
+    await doctor.save();
+
+    return res.status(201).json({ message: 'Notification added successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+
+// Function to update notifications for a specific doctor
+const updateNotifications = async (req, res) => {
+  try {
+    
+    const doctorId = req.params.doctorId;
+    const updatedNotifications = req.body.notifications;
+
+    // Find the doctor by ID
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return { success: false, message: 'Doctor not found' };
+    }
+
+    // Update the notifications array
+    doctor.notifications = updatedNotifications;
+
+    // Save the updated doctor object to the database
+    await doctor.save();
+
+    return res.status(201).json({ message: 'Notifications array updated successfully.' });
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+
+
+
+
+
+
+
+
+
 module.exports = {
   addDoctor,
   getPatients,
@@ -653,5 +750,8 @@ module.exports = {
   viewWallet,
   acceptContract,
   rescheduleAppointment,
-  getDoctor
+  getDoctor,
+  getDoctorNotifications,
+  addDoctorNotification,
+  updateNotifications
 };
