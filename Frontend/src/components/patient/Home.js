@@ -9,6 +9,8 @@ import { NavLink } from 'react-router-dom';
 import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
 import { WalletDialog } from '../WalletDialog.js';
 import {useState} from 'react'
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function Home() {
     const styles = {
@@ -228,6 +230,13 @@ function Home() {
                     </Button>
                 </NavLink>
             </Paper>
+
+
+            <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+      <MuiAlert elevation={6} variant="filled" severity="info">
+        appointement is resuchudeled!!
+      </MuiAlert>
+    </Snackbar>
         </>
     );
 }
