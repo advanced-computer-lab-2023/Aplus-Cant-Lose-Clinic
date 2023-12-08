@@ -52,6 +52,9 @@ function BasicTable({ status, date, onPayButtonClick }) {
     marginTop: "20px",
     boxShadow: "5px 5px 5px 5px #8585854a",
   };
+  
+
+  const [followUpsRequests, setFollowUpsRequests] = useState([]);
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
 
@@ -60,13 +63,14 @@ function BasicTable({ status, date, onPayButtonClick }) {
   }, [dispatch]);
   const rows = useSelector((state) => state.patient.appoints);
   console.log(rows);
+
+
   const handleCancelAppointment=async(appointment)=>
   {
     try {
       const aid=appointment._id
       const did=appointment.drID._id
-      const pid=appointment.pID._id
-      console.log("hhhhhhhhhhh",did)
+      const pid=appointment.pID
 
       const response = await axios.delete(
          `${API_URL}/patient/CancelAppointment/${aid}/${did}/${pid}`
@@ -75,6 +79,22 @@ function BasicTable({ status, date, onPayButtonClick }) {
       console.error("Error cancelling appointment", error);
     }
   }
+  const handleFollowUpRequest = async (appointment) => {
+    if (!followUpsRequests.includes(appointment._id)) {
+      setFollowUpsRequests([...followUpsRequests, appointment._id]);
+      const did=appointment.drID._id
+      const pid=appointment.pID
+      try{
+      const response=await axios.post(`${API_URL}/patient/requestFollowUp/${pid}/${did}`)
+      console.log("Done")}
+      catch(error){
+        console.log("not okkkkk!!",error)}
+      
+   
+    } else {
+      console.log(`Button already clicked for appointment ${appointment._id}`);
+    }
+  };
 
   return (
     <>
@@ -88,6 +108,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
     <TableCell align="left">Status</TableCell>
     <TableCell align="left">Reschedule Appointment</TableCell> {/* Add this line */}
     <TableCell align="left">Cancel Appointment </TableCell>
+    <TableCell align="left">Request FollowUp </TableCell>
 
   </TableRow>
 </TableHead>
@@ -124,6 +145,19 @@ function BasicTable({ status, date, onPayButtonClick }) {
     </Button>
   )}
 </TableCell>
+<TableCell align="left">
+                {row.status === "completed" && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleFollowUpRequest(row)}
+                    disabled={followUpsRequests.includes(row._id)}
+                  >
+                    {followUpsRequests.includes(row._id) ? "Done" : "FollowUp"}
+                  </Button>
+                )}
+              </TableCell>
+
       </TableRow>
     ))}
 </TableBody>

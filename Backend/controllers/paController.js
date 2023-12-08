@@ -12,6 +12,7 @@ const Prescription = require("../Models/prescription");
 const mongoose = require('mongoose');
 const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
 const nodemailer = require("nodemailer");
+const FollowUp=require("../Models/followUps");
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
@@ -1251,9 +1252,13 @@ const cancelAppointment=async (req,res)=>
   try
   {
     const {aid,did,pid}=req.params
-    const appointment=await Appointment.findById({_id:aid})
-    const doctor=await Doctor.findById({_id:did})
-    const patient=await Patient.findById({_id:pid})
+    if (!aid || !did || !pid) {
+      return res.status(400).json({ message: "Invalid parameters" });
+    }
+    console.log("yyyyyyy",did)
+    const appointment=await Appointment.findByIdAndDelete(aid)
+    const doctor=await Doctor.findById(did)
+    const patient=await Patient.findById(pid)
     if(!appointment)
     {
       res.status(500).json({message:"Appointment not found!"})
@@ -1275,6 +1280,8 @@ const cancelAppointment=async (req,res)=>
       console.log(timeDifference)
       console.log(patient.wallet)
       patient.wallet+=doctor.rate;
+      await patient.save()
+      
       
   }
 
@@ -1400,6 +1407,21 @@ const sendPatientEmail = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+const requestFollowUp = async (req, res) => {
+  const { pid, did } = req.params;
+
+  if (!pid || !did) {
+    return res.status(400).json({ error: "Missing parameters" });
+  }
+
+  try {
+    const response = await FollowUp.create({ pID: pid, drID: did });
+    res.status(201).json({ message: "Follow-up requested successfully", data: response });
+  } catch (error) {
+    console.error('Error Requesting FollowUp:', error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 
 
@@ -1437,5 +1459,6 @@ module.exports = {
   getPatientNotifications,
   addPatientNotification,
   updatePatientNotifications,
-  sendPatientEmail
+  sendPatientEmail,
+  requestFollowUp
 };
