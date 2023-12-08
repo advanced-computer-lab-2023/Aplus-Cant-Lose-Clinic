@@ -20,6 +20,9 @@ import TextField from '@mui/material/TextField';
 import FreeAppointment from './FreeAppointment';
 import FollowUp from "./FollowUp";
 import RescheduleAppointment from "./DocRescheduleAppointment";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -220,6 +223,14 @@ export default function DocPatients() {
               );
             })}
         </div>
+
+        <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+      <MuiAlert elevation={6} variant="filled" severity="info">
+        appointement is resuchudeled!!
+      </MuiAlert>
+    </Snackbar>
+
+
       </div>
     ):<>
     <Link to="/Login" sx={{ left: "100%" }}>

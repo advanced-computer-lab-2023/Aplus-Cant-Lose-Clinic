@@ -37,7 +37,8 @@ import { useHistory, useNavigate } from "react-router-dom"; // Add this import
 import CreditCardForm from './CreditCardForm';
 import { API_URL } from "../../Consts.js";
 import RescheduleAppointment from "./PatRescheduleAppointment";
-
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 
 
@@ -418,9 +419,12 @@ const navigate = useNavigate();
       </Dialog>
 
      
-
+      <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+      <MuiAlert elevation={6} variant="filled" severity="info">
+        appointement is resuchudeled!!
+      </MuiAlert>
+    </Snackbar>
      
-
      
 
     </Box>):(
