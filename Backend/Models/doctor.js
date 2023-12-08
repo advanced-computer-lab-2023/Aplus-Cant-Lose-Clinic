@@ -60,6 +60,20 @@ const drSchema = new mongoose.Schema(
         default: false,
       },
     },
+    notifications: [
+      {
+        message: String,
+        type: {
+          type: String,
+          enum: ['AppointmentScheduled', 'AppointmentRescheduled', 'AppointmentCanceled',"info"],
+          default: 'info',
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   }
 );
 

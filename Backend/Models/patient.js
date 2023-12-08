@@ -119,6 +119,20 @@ const paSchema = new mongoose.Schema(
       type: Number,
       required: true, // wallet is required
     },
+    notifications: [
+      {
+        message: String,
+        type: {
+          type: String,
+          enum: ['AppointmentScheduled', 'AppointmentRescheduled', 'AppointmentCanceled',"info"],
+          default: 'info',
+        },
+        timestamp: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   }
 );
 
