@@ -351,6 +351,57 @@ const changePassword = async (req, res) => {
 
 
 
+
+const sendEmail = async (req, res) => {
+  const { userId } = req.params;
+  const { subject, message } = req.body;
+
+  try {
+    // Retrieve user's email from the database
+  
+    const user = await User.findById(userId);
+    if (!user || !user.email) {
+      return res.status(404).json({ message: 'User not found or no email associated.' });
+    }
+
+
+//the mail sender
+//why does this not work
+// const transporter = nodemailer.createTransport({
+//   service: 'gmail',
+//   auth: {
+//     user: "apluscantlose@gmail.com", // Replace with your Gmail email
+//     pass: "Daragat100", // Replace with your Gmail app password
+//   },
+// });
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "sohailahakeem17@gmail.com",
+    pass: "yvxbdrovrmhebgxv",
+  },
+});
+
+    // Email content
+    const mailOptions = {
+      from: 'apluscantlose@gmail.com', // Replace with your Gmail email
+      to: user.email,
+      subject,
+      text: message,
+    };
+
+    
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 module.exports = {
   createUser,
   getUser,
@@ -360,5 +411,6 @@ module.exports = {
   login,
   logout,
   sendResetEmail,
-  changePassword,changePass,allUsers
+  changePassword,changePass,allUsers,
+  sendEmail
 };
