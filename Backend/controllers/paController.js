@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const Prescription = require("../Models/prescription");
 const mongoose = require('mongoose');
 const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const nodemailer = require("nodemailer");
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });

@@ -6,6 +6,7 @@ const validator = require("validator");
 const Appointment = require("../Models/appointments");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 }
@@ -753,7 +754,7 @@ const sendDoctorEmail = async (req, res) => {
       subject,
       text: message,
     };
-
+    
     // Send the email
     await transporter.sendMail(mailOptions);
     res.status(200).json({ message: 'Email sent successfully' });
