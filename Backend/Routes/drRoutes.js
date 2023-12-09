@@ -217,7 +217,8 @@ router.get(
 router.put("/editDoctor/:id", editDoctor);
 router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
-router.put("/rescheduleAppointment/:appointmentId", rescheduleAppointment);
+router.put("/rescheduleAppointment/:appointmentId/:patientID", rescheduleAppointment);
+
 
 router.get("/getDoctor/:doctorId", getDoctor);
 

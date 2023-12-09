@@ -605,9 +605,11 @@ const getDoctor = async (req, res) => {
 
 
 async function rescheduleAppointment(req, res) {
-  const appointmentId = req.params.appointmentId;
+  const appointmentId = req.params.id;
   const { startDate, endDate } = req.body;
-
+  console.log(appointmentId);
+            console.log(startDate);
+            console.log(endDate);
   try {
     // Find the appointment by ID
     const appointment = await Appointment.findById(appointmentId);
