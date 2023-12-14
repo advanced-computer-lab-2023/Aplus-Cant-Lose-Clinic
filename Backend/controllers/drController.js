@@ -883,6 +883,7 @@ const acceptFollowUpRequest=async (req,res)=>
   const {id}=req.params
   //why can't i name them the same??
   const {start,end}=req.body
+  console.log(start);
   try{
     const response =await FollowUp.findByIdAndDelete(id)
     const appointment = await Appointment.create({

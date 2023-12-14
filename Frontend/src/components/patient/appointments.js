@@ -58,6 +58,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
   const [followUpsRequests, setFollowUpsRequests] = useState([]);
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
+  const [cancelledAppointments, setCancelledAppointments] = useState([]);
 
   useEffect(() => {
     dispatch(viewAppoints(pId));
@@ -68,7 +69,9 @@ function BasicTable({ status, date, onPayButtonClick }) {
 
   const handleCancelAppointment=async(appointment)=>
   {
+    setCancelledAppointments([...cancelledAppointments,appointment._id])
     try {
+      
       
       const aid=appointment._id
       const did=appointment.drID._id
@@ -146,8 +149,9 @@ function BasicTable({ status, date, onPayButtonClick }) {
       variant="contained"
       color="secondary"
       onClick={() => {handleCancelAppointment(row)}}
+      disabled={cancelledAppointments.includes(row._id)}
     >
-      Cancel
+      {cancelledAppointments.includes(row._id) ? "Done" : "Cancel"}
     </Button>
   )}
 </TableCell>

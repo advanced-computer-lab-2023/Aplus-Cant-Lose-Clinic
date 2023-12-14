@@ -28,14 +28,14 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
-
 export default function FollowUpRequests() {
   const snackbarMessage = useContext(SnackbarContext);
   const id = useSelector((state) => state.user.id); 
   const [followUpRequests, setFollowUpRequests] = useState([]);
   const [open,setDialogue]=useState(false);
-  const [endDate, setEndDate] = useState("");
-  const [startDate, setStartDate] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [row_id,setRow_id]=useState("");
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -59,18 +59,6 @@ export default function FollowUpRequests() {
     getRequests();
     
   }, []);
-  const handleAccept = async (id, startDate, endDate) => {
-    try {
-      const response = await axios.post(`${API_URL}/doctor/acceptFollowUp/${id}`, {
-        startDate: startDate,
-        endDate: endDate,
-      });
-      snackbarMessage('FollowUp Accepted successfully:');
-     
-    } catch (error) {
-      snackbarMessage('Error Accepting FollowUp:');
-    }
-  };
   
   const handleReject = async (id) => {
     try {
@@ -84,12 +72,35 @@ export default function FollowUpRequests() {
   };
   const handleOpen=(id)=>
   {
+    setRow_id(id);
     setDialogue(true);
+  }
+  const handleSchedule=async()=>
+  {
+    if(endDateTime!==""&&startDateTime!=="")
+    {
+   
+      try {
+        const id=row_id;
+        const response = await axios.post(`${API_URL}/doctor/acceptFollowUp/${id}`, {
+          startDate: startDateTime,
+          endDate: endDateTime,
+        });
+        snackbarMessage('FollowUp Accepted successfully:');
+       
+      } catch (error) {
+        snackbarMessage('Error Accepting FollowUp:');
+      }
+    }
+    setEndDateTime("");
+    setStartDateTime("");
+    setDialogue(false)
   }
   const handleClose=()=>
   {
-
-    setDialogue(false)
+    setEndDateTime("");
+    setStartDateTime("");
+    setDialogue(false);
   }
   
   
@@ -170,16 +181,12 @@ export default function FollowUpRequests() {
                         minutes: renderTimeViewClock,
                         seconds: renderTimeViewClock,
                     }}
-                    value={startDate} // Add this line
-                    onChange={(date) => setStartDate(date)}
+                    value={startDateTime} // Add this line
+                    onChange={(date) => setStartDateTime(date)}
                 />
             </DemoContainer>
         </LocalizationProvider>
-        <span
-            onClick={() => {
-                setStartDate("");
-            }}
-        ></span>
+        
         <Typography>End Date </Typography>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
@@ -192,20 +199,15 @@ export default function FollowUpRequests() {
                         minutes: renderTimeViewClock,
                         seconds: renderTimeViewClock,
                     }}
-                    value={endDate}
-                    onChange={(date) => setEndDate(date)}
+                    value={endDateTime}
+                    onChange={(date) => setEndDateTime(date)}
                 />
             </DemoContainer>
         </LocalizationProvider>
-        <span
-            onClick={() => {
-                setEndDate("");
-            }}
-        ></span>
        
     </DialogContent>
     <DialogActions>
-        <Button onClick={handleClose}>Schedule</Button>
+        <Button onClick={handleSchedule}>Schedule</Button>
     </DialogActions>
 </Dialog>
 </>
