@@ -3,7 +3,7 @@ import axios from "axios";
 import download from "downloadjs"; // Import download function
 import Card from "@mui/material/Card";
 import { Link } from "react-router-dom";
-
+import DownloadIcon from '@mui/icons-material/Download';
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
@@ -21,6 +21,8 @@ const ContractDetails = () => {
 
   const navigate = useNavigate();
   const [contractPath, setContractPath] = useState(null);
+  const [contractStat, setContractStat] = useState(false);
+
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSuccess, setSnackbarSuccess] = useState(false); // New state for success color
@@ -30,7 +32,9 @@ const ContractDetails = () => {
     axios
       .get(`${API_URL}/doctor/getContract/${id}`)
       .then((response) => {
-        setContractPath(response.data.contract);
+        setContractPath(response.data.contract.file);
+        setContractStat(response.data.contract.accepted);
+
       })
       .catch((error) => {
         console.error("Error fetching contract details", error);
@@ -44,6 +48,7 @@ const ContractDetails = () => {
       .then((response) => {
         console.log("Contract accepted successfully", response.data);
         setSnackbarSuccess(true);
+        setContractStat(true);
 
         setSnackbarMessage("Contract accepted successfully");
         setSnackbarOpen(true);
@@ -82,10 +87,10 @@ const ContractDetails = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+mb:"20px"
       }}
     >
-      <Card style={{ width: "400px", padding: "20px" }}>
+      <Card sx={{mb:"30px",width:"95%",mr:"12px"}} >
         <CardContent>
           <Typography variant="h5" component="div">
             Contract Details
@@ -99,6 +104,7 @@ const ContractDetails = () => {
                 onClick={handleAcceptContract}
                 variant="contained"
                 color="primary"
+                disabled={contractStat}
                 style={{ width: "150px", marginTop: "20px" }}
               >
                 Accept Contract
@@ -108,10 +114,10 @@ const ContractDetails = () => {
                 variant="contained"
                 color="secondary"
                 style={{
-                  width: "150px",
                   marginTop: "20px",
                   marginLeft: "10px",
                 }}
+                endIcon={<DownloadIcon/>}
               >
                 Download Contract
               </Button>
@@ -133,17 +139,7 @@ const ContractDetails = () => {
           backgroundColor: snackbarSuccess ? "#4CAF50" : "#f44336", // Set background color based on success state
         }}
       />
-      <Box sx={{}}>
-      <Button
-        Speciality="large"
-        onClick={() => {
-          navigate("/Home");
-        }}
-      >
-        <IconButton>
-          <HomeIcon style={iconStyle} />
-        </IconButton>
-      </Button></Box>
+  
     </div>:<>
       <Link to="/Login" sx={{ left: "100%" }}>
         <Typography

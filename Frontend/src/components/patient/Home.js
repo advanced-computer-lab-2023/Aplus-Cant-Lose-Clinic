@@ -185,19 +185,7 @@ function Home() {
                                 </Button>
                             </NavLink>
                         </Box>
-                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                            <div>
-                                <>
-                                    <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
-                                        <IconButton>
-                                            <WalletIcon style={styles} ></WalletIcon>
-                                        </IconButton>
-                                        <Typography >view wallet</Typography>
-                                    </Button>
-                                    <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='patient'/>
-                                </>
-                            </div>
-                        </Box>
+                  
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/chats'>
                                 <Button sx={{ color: 'white' }}>

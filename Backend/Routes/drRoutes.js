@@ -179,7 +179,7 @@ router.get('/getContract/:id', async (req, res) => {
     }
 
     // Return the contract file path
-    res.json({ contract: doctor.contract.file });
+    res.json({ contract: doctor.contract });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
