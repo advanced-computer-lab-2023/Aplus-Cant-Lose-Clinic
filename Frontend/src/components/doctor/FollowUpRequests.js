@@ -83,8 +83,8 @@ export default function FollowUpRequests() {
       try {
         const id=row_id;
         const response = await axios.post(`${API_URL}/doctor/acceptFollowUp/${id}`, {
-          startDate: startDateTime,
-          endDate: endDateTime,
+          start: new Date(startDateTime),
+          end: new Date(endDateTime),
         });
         snackbarMessage('FollowUp Accepted successfully:');
        
@@ -98,6 +98,7 @@ export default function FollowUpRequests() {
   }
   const handleClose=()=>
   {
+    console.log(new Date(startDateTime))
     setEndDateTime("");
     setStartDateTime("");
     setDialogue(false);
