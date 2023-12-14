@@ -1,14 +1,23 @@
 const mongoose = require("mongoose");
+
 const prescriptionSchema = new mongoose.Schema(
   {
-    medID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Medicine", // Reference to the Medicine model
-      required: true,
-    },
+    meds: [
+      {
+        medID: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Medicine", // Reference to the Medicine model
+          required: true,
+        },
+        dosage: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
     patientID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Patient", // Reference to the Doctor model
+      ref: "Patient", // Reference to the Patient model
       required: true,
     },
     doctorID: {
@@ -25,10 +34,7 @@ const prescriptionSchema = new mongoose.Schema(
       enum: ["filled", "unfilled"], // Define allowed values for status
       default: "unfilled",
     },
-    dosage: {
-      type: String,
-      required: true,
-    }
   },
 );
+
 module.exports = mongoose.model("Prescription", prescriptionSchema);

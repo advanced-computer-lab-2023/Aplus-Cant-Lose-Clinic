@@ -23,7 +23,10 @@ const {
   getDoctorNotifications,
   addDoctorNotification,
   updateDoctorNotifications,
-  sendDoctorEmail
+  sendDoctorEmail,
+  updateDosageForMedicine,
+  addMedicineToPrescription,
+  deleteMedicineFromPrescription
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -269,6 +272,12 @@ router.patch('/:doctorId/notifications', updateDoctorNotifications);
 
 // send email to a doctor
 router.post('/:doctorId/send-email', sendDoctorEmail);
+//--------------------------------------------------------------------------------------------------------------------------
+router.put('/update/:prescriptionID',  updateDosageForMedicine)
+
+router.post('/add/:prescriptionID',  addMedicineToPrescription)
+
+router.delete('/delete/:prescriptionID', deleteMedicineFromPrescription)
 
 
 

@@ -20,6 +20,7 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDispatch, useSelector } from "react-redux";
+import { API_URL } from "../../Consts";
 
 function FreeAppointment() {
     const [open, setOpen] = React.useState(false);
@@ -29,7 +30,7 @@ function FreeAppointment() {
     var closes=false;
     async function addFreeTimeSlots() {
         try {
-            const response = await axios.post(`http://localhost:8000/api/doctor/addAppointmentSlot/${id}`, {
+            const response = await axios.post(`${API_URL}/doctor/addAppointmentSlot/${id}`, {
                 startDate,
                 endDate
             });
