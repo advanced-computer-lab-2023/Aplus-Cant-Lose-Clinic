@@ -24,7 +24,6 @@ const {
   addDoctorNotification,
   updateDoctorNotifications,
   sendDoctorEmail,
-  sendDoctorEmail,
   updateDosageForMedicine,
   addMedicineToPrescription,
   deleteMedicineFromPrescription,
