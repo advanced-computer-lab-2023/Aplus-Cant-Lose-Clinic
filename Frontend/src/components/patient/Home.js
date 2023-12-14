@@ -11,6 +11,10 @@ import { WalletDialog } from '../WalletDialog.js';
 import {useState} from 'react'
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getNotifications } from '../../features/patientSlice.js';
+
 
 function Home() {
     const styles = {
@@ -42,6 +46,18 @@ function Home() {
 
     const [dialogOpen, setDialogOpen] = useState(false);
 
+    const patientId = useSelector((state) => state.user.id);
+  
+    const dispatch= useDispatch();
+    useEffect(() => {
+     dispatch(getNotifications(patientId));
+      console.log("notifiactionsssss");
+      console.log(notifications)
+    }, [dispatch]);
+
+    const notifications = useSelector((state) => state.patient.notifications);
+  
+
     const handleOpenDialog = () => {
       setDialogOpen(true);
     };
@@ -49,10 +65,22 @@ function Home() {
     const handleCloseDialog = () => {
       setDialogOpen(false);
     };
-
+   
+   
+   
+    
 
     return (
         <>
+        
+    
+        {notifications.map((notification, index) => (
+  <Snackbar key={index} open={true} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} >
+    <MuiAlert elevation={6} variant="filled" severity={notification.type}>
+      {notification.message}
+    </MuiAlert>
+  </Snackbar>
+))}
             <AppBar position="static" sx={{ backgroundColor: '#004E98' }}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters >
@@ -157,19 +185,7 @@ function Home() {
                                 </Button>
                             </NavLink>
                         </Box>
-                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                            <div>
-                                <>
-                                    <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
-                                        <IconButton>
-                                            <WalletIcon style={styles} ></WalletIcon>
-                                        </IconButton>
-                                        <Typography >view wallet</Typography>
-                                    </Button>
-                                    <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='patient'/>
-                                </>
-                            </div>
-                        </Box>
+                  
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/chats'>
                                 <Button sx={{ color: 'white' }}>

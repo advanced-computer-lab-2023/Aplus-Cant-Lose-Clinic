@@ -310,20 +310,19 @@ const Prescription = require('../Models/prescription'); // Import the Prescripti
 
 const addPrescription = async (req, res) => {
   try {
-    const { medID, patientID, doctorID, datePrescribed } = req.body;
+    const { medID, dosage, patientID, doctorID, datePrescribed } = req.body;
 
     // Validate inputs
-    if (!medID || !patientID || !doctorID || !datePrescribed) {
-      return res.status(400).json({ error: "Missing required  input fields" });
+    if (!medID || !dosage || !patientID || !doctorID || !datePrescribed) {
+      return res.status(400).json({ error: "Missing required input fields" });
     }
 
     // Create a new prescription instance with the provided data
     const prescription = new Prescription({
-      medID,
+      meds: [{ medID, dosage }],
       patientID,
       doctorID,
       datePrescribed,
-
     });
 
     // Save the prescription to the database
@@ -338,6 +337,7 @@ const addPrescription = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 const getDr = async (req, res) => {
   const doctorId = req.params.id; // Get doctorId from URL parameters
@@ -605,9 +605,11 @@ const getDoctor = async (req, res) => {
 
 
 async function rescheduleAppointment(req, res) {
-  const appointmentId = req.params.appointmentId;
+  const appointmentId = req.params.id;
   const { startDate, endDate } = req.body;
-
+  console.log(appointmentId);
+            console.log(startDate);
+            console.log(endDate);
   try {
     // Find the appointment by ID
     const appointment = await Appointment.findById(appointmentId);
@@ -763,7 +765,99 @@ const sendDoctorEmail = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+const updateDosageForMedicine = async (req, res) => {
+  try {
+    const { medID, dosage } = req.body;
+    const prescriptionID = req.params.prescriptionID;
 
+    // Find the prescription by ID
+    const prescription = await Prescription.findById(prescriptionID);
+
+    if (!prescription) {
+      return res.status(404).json({ message: 'Prescription not found.' });
+    }
+
+    // Find the medicine within the prescription by medID
+    const medicineToUpdate = prescription.meds.find((med) => med.medID.toString() === medID);
+
+    if (!medicineToUpdate) {
+      return res.status(404).json({ message: 'Medicine not found in the prescription.' });
+    }
+
+    // Update the dosage for the found medicine
+    medicineToUpdate.dosage = dosage;
+
+    // Save the updated prescription
+    await prescription.save();
+
+    return res.status(200).json({ message: 'Dosage updated successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+const addMedicineToPrescription = async (req, res) => {
+  try {
+    const { medID, dosage } = req.body;
+    const prescriptionID = req.params.prescriptionID;
+
+    // Find the prescription by ID
+    const prescription = await Prescription.findById(prescriptionID);
+
+    if (!prescription) {
+      return res.status(404).json({ message: 'Prescription not found.' });
+    }
+
+    // Check if the medicine already exists in the prescription
+    const existingMedicine = prescription.meds.find((med) => med.medID.toString() === medID);
+
+    if (existingMedicine) {
+      return res.status(400).json({ message: 'Medicine already exists in the prescription.' });
+    }
+
+    // Add the new medicine with dosage to the prescription
+    prescription.meds.push({ medID, dosage });
+
+    // Save the updated prescription
+    await prescription.save();
+
+    return res.status(201).json({ message: 'Medicine added to prescription successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+const deleteMedicineFromPrescription = async (req, res) => {
+  try {
+    const medID = req.body.medID;
+    const prescriptionID = req.params.prescriptionID;
+
+    // Find the prescription by ID
+    const prescription = await Prescription.findById(prescriptionID);
+
+    if (!prescription) {
+      return res.status(404).json({ message: 'Prescription not found.' });
+    }
+
+    // Find the medicine to delete by ID
+    const medicine = prescription.meds.find((med) => med.medID.toString() === medID);
+
+    if (!medicine) {
+      return res.status(404).json({ message: 'Medicine not found in the prescription.' });
+    }
+
+    // Remove the medicine from the meds array
+    prescription.meds = prescription.meds.filter((med) => med.medID.toString() !== medID);
+
+    // Save the updated prescription
+    await prescription.save();
+
+    return res.status(200).json({ message: 'Medicine deleted from prescription successfully.' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
 
 
 
@@ -791,5 +885,8 @@ module.exports = {
   getDoctorNotifications,
   addDoctorNotification,
   updateDoctorNotifications,
-  sendDoctorEmail
+  sendDoctorEmail,
+  updateDosageForMedicine,
+  addMedicineToPrescription,
+  deleteMedicineFromPrescription
 };

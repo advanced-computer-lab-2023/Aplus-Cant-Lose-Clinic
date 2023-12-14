@@ -20,7 +20,8 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { API_URL } from "../../Consts.js";
-function RescheduleAppointment() {
+
+function RescheduleAppointment({ appointmentId }) {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -28,39 +29,53 @@ function RescheduleAppointment() {
     const [patients, setPatients] = useState([]);
     const [currentpatient, setCurrentPatient] = useState("");
     var closes = false;
-       //to get list of doctors patients so he can choose the name of the patient he want to schedule follow up with
+
     const getPatientList = async () => {
         try {
             const response = await axios.get(`${API_URL}/doctor/patientsInUpcomingApointments/${id}`);
             const patientsdata = response.data.patients;
             setPatients(patientsdata);
         } catch (error) {
-            console.error("Error fetching patientlist", error);
+            console.error("Error fetching patient list:", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Response status:", error.response.status);
+            }
         }
-    }
-    //that is the function that edits the Reschegule for selected patient
+    };
+
     async function rescheduleAppointment() {
         try {
-            console.log(currentpatient);
-
+            console.log(appointmentId.pID._id);
+            console.log(appointmentId._id);
+            const [id] = appointmentId._id;
+            const [pid] = appointmentId.pID._id;
             // Change the API endpoint to handle rescheduling
             const response = await axios.put(
-                `${API_URL}/doctor/rescheduleAppointment/${id}?patientID=${currentpatient}`,
+                `${API_URL}/doctor/rescheduleAppointment/${id}/${pid}`,
                 {
                     startDate,
                     endDate
                 }
             );
+            
             console.log(response);
         } catch (error) {
             console.error("Error rescheduling appointment", error);
         }
     }
+
     const handleClickOpen = async () => {
         setOpen(true);
-        await getPatientList();
-    };
+       // await getPatientList();
 
+        // Retrieve appointmentId from the prop or any other source
+        // For example, if appointmentId is part of the appointment object passed as prop
+        // const appointmentId = appointment._id; // Make sure to pass the correct prop
+        // console.log(appointmentId);
+
+        // You can set the appointmentId in the state or use it directly in the rescheduleAppointment function
+    };
     const handleClose = () => {
         if (closes) {
             closes = false;

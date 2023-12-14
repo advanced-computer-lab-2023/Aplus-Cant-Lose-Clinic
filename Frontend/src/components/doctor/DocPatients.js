@@ -141,7 +141,7 @@ export default function DocPatients() {
           </div>
           <FreeAppointment />
           <FollowUp />
-          <RescheduleAppointment /> 
+
         
 
         </div>
@@ -176,6 +176,7 @@ export default function DocPatients() {
               );
             })
             .map((res) => {
+             // console.log(res._id);
               return (
                 <Accordion>
                   <AccordionSummary
@@ -206,18 +207,15 @@ export default function DocPatients() {
                     <Divider />
                     <div style={{ display: "flex", flexDirection: "row" }}>
                       <Typography sx={{ width: "300px" }}>
-                        Appointment Status:{" "}
+                        Reschedule Appointment:{" "}
                       </Typography>
-                      <Typography>{res.status} </Typography>
-                    </div>
-                    <Divider />
-                    <div style={{ display: "flex", flexDirection: "row" }}>
-                      <Typography sx={{ width: "300px" }}>
-                        Appointment Date:{" "}
-                      </Typography>
-                      <Typography>{res.startDate} </Typography>
-                    </div>
+                      {res.status === "upcoming" && (
+                       
+                        <RescheduleAppointment appointmentId={res}  />
 
+                      )}
+                    </div>
+                    
                   </AccordionDetails>
                 </Accordion>
               );

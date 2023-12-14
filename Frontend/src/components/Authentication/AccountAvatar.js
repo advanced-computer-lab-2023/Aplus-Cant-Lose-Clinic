@@ -3,9 +3,11 @@ import React, { useState, useEffect, useContext } from "react";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
+import LockResetIcon from "@mui/icons-material/LockReset";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Dialog from "@mui/material/Dialog";
+import LogoutIcon from "@mui/icons-material/Logout";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,6 +15,9 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { changePass } from "../../features/userSlice";
+import WalletIcon from "@mui/icons-material/Wallet";
+import { WalletDialog } from "../WalletDialog.js";
+import { Box } from "@mui/material";
 import { SnackbarContext } from "../../App";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../../features/userSlice";
@@ -20,6 +25,7 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
+
 import { API_URL } from "../../Consts";
 
 const myAccountStyles = {
@@ -46,7 +52,7 @@ const containerStyles = {
   padding: "10px",
 };
 
-const avatarStyles = {};
+const avatarStyles = { ml: "10px" };
 
 const logoutButtonStyles = {
   marginRight: "10px",
@@ -54,9 +60,9 @@ const logoutButtonStyles = {
   textDecoration: "underline",
   position: "absolute", // Corrected typo in 'position'
   right: "0px",
-fontSize  : "20px",
+  fontSize: "20px",
   padding: "0px",
-  width:"fit-content",
+  width: "fit-content",
   color: "#ff0000", // Red color
 };
 
@@ -74,8 +80,10 @@ const AccountAvatar = () => {
         console.error("Logout error:", error);
       });
   };
-
+  const [anchorel, setAnchorel] = useState(null);
   const { username } = useSelector((state) => state.user);
+  const { role } = useSelector((state) => state.user);
+
   const [anchorEl, setAnchorEl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -110,6 +118,9 @@ const AccountAvatar = () => {
     setPasswordError("");
     setEmptyFieldError(false);
   };
+  const handlewallet = (event) => {
+    setAnchorel(event.currentTarget);
+  };
 
   const savePassword = async () => {
     if (
@@ -143,18 +154,20 @@ const AccountAvatar = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${API_URL}/changePass/${username}`,
-        { oldPassword: currentPassword, newPassword, username }
-      );
+      const response = await axios.post(`${API_URL}/changePass/${username}`, {
+        oldPassword: currentPassword,
+        newPassword,
+        username,
+      });
 
       console.log("Response:", response);
 
       if (response.data.message) {
         snackbarMessage("Password has been changed", "success");
         closeChangePasswordDialog();
-        dispatch(logout()).then(()=>{        navigate("/Login");
-      })
+        dispatch(logout()).then(() => {
+          navigate("/Login");
+        });
       } else {
         snackbarMessage(
           `An error occurred: ${response.data.error || "Unknown error"}`,
@@ -169,24 +182,67 @@ const AccountAvatar = () => {
       );
     }
   };
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
 
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const styles = {
+    marginRight: "10px",
+    color: "white",
+  };
   return (
     <div sx={containerStyles}>
-      <Avatar
-        src="/path-to-your-avatar-image.jpg"
-        sx={avatarStyles}
-        onClick={handleAvatarClick}
-      />
-      <Typography
-        component="span"
-        onClick={handleAvatarClick}
-        sx={myAccountStyles}
-      >
-        Account
-      </Typography>
-      <Button style={logoutButtonStyles} onClick={handleLogout}>
-        Logout
-      </Button>
+      <>
+        <Avatar
+          src="/path-to-your-avatar-image.jpg"
+          sx={avatarStyles}
+          onClick={handleAvatarClick}
+        />
+        <Typography
+          component="span"
+          onClick={handleAvatarClick}
+          sx={myAccountStyles}
+        >
+          Account
+        </Typography>
+      </>
+      <>
+        <Button
+          style={logoutButtonStyles}
+          onClick={handleLogout}
+          startIcon={<LogoutIcon />}
+        >
+          Logout
+        </Button>
+        <span sx={{ display: "flex", mb: "10px" }}>
+          {role === "doctor" || role === "patient" ? (
+            <>
+              <Button
+                variant="outlined"
+                size="large"
+                sx={{ width: "10%", ml: "4%", mb: "17px",mt:"0px"}}
+                startIcon={<WalletIcon fontSize="large" sx={{color:"grey"}}/>}
+                onClick={() => {
+                  handleOpenDialog();
+                }}
+              >
+                wallet
+              </Button>
+              <WalletDialog
+                open={dialogOpen}
+                onClose={handleCloseDialog}
+                type="patient"
+              />
+            </>
+          ) : null}
+        </span>
+      </>
+
       <Popover
         open={Boolean(anchorEl)}
         anchorEl={anchorEl}
@@ -201,8 +257,20 @@ const AccountAvatar = () => {
         }}
       >
         <List>
-          <ListItem button onClick={openChangePasswordDialog}>
+          <ListItem>
+            <Typography sx={{ fontSize: "15px" }}>username:</Typography>{" "}
+            <Typography sx={{ color: "blue", paddingLeft: "4px" }}>
+              {username}
+            </Typography>
+          </ListItem>
+
+          <ListItem
+            button
+            onClick={openChangePasswordDialog}
+            startIcon={<LockResetIcon />}
+          >
             Change Password
+            <LockResetIcon />
           </ListItem>
         </List>
       </Popover>
@@ -238,6 +306,7 @@ const AccountAvatar = () => {
               ),
             }}
           />
+
           <TextField
             label="Confirm New Password"
             type={showPassword ? "text" : "password"}

@@ -23,7 +23,10 @@ const {
   getDoctorNotifications,
   addDoctorNotification,
   updateDoctorNotifications,
-  sendDoctorEmail
+  sendDoctorEmail,
+  updateDosageForMedicine,
+  addMedicineToPrescription,
+  deleteMedicineFromPrescription
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -179,7 +182,7 @@ router.get('/getContract/:id', async (req, res) => {
     }
 
     // Return the contract file path
-    res.json({ contract: doctor.contract.file });
+    res.json({ contract: doctor.contract });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
@@ -217,7 +220,8 @@ router.get(
 router.put("/editDoctor/:id", editDoctor);
 router.get("/doctorFilterAppointments/:doctorId", doctorFilterAppointments);
 router.get("/appointmentPatients/:doctorId", appointmentPatients);
-router.put("/rescheduleAppointment/:appointmentId", rescheduleAppointment);
+router.put("/rescheduleAppointment/:appointmentId/:patientID", rescheduleAppointment);
+
 
 router.get("/getDoctor/:doctorId", getDoctor);
 
@@ -268,6 +272,12 @@ router.patch('/:doctorId/notifications', updateDoctorNotifications);
 
 // send email to a doctor
 router.post('/:doctorId/send-email', sendDoctorEmail);
+//--------------------------------------------------------------------------------------------------------------------------
+router.put('/update/:prescriptionID',  updateDosageForMedicine)
+
+router.post('/add/:prescriptionID',  addMedicineToPrescription)
+
+router.delete('/delete/:prescriptionID', deleteMedicineFromPrescription)
 
 
 

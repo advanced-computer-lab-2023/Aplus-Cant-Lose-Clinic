@@ -157,6 +157,17 @@ export const viewWallet = createAsyncThunk(
 })
 
 
+export const getNotifications = createAsyncThunk(
+  "patient/:patientId/notifications", 
+  async (id) => {
+  const response = await axios.get(
+    `${API_URL}/patient/${id}/notifications`
+  );
+  return response;
+
+})
+
+
 
 const patientInitial = {
   // status: "unfilled",
@@ -171,6 +182,7 @@ const patientInitial = {
   appoints:[],
   doctors:[],
   hpackages: [],
+  notifications:[],
   wallet:0
 };
 
@@ -264,6 +276,13 @@ const patient = createSlice({
       .addCase(viewWallet.fulfilled, (state, action) => {
         state.loading = false;
         state.wallet = action.payload.data.wallet;
+      })
+
+      builder
+      .addCase(getNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        state.notifications = action.payload.data.notifications;
+        
       })
   },
 });
