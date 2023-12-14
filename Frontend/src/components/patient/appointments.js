@@ -69,14 +69,20 @@ function BasicTable({ status, date, onPayButtonClick }) {
   const handleCancelAppointment=async(appointment)=>
   {
     try {
+      
       const aid=appointment._id
       const did=appointment.drID._id
       const pid=appointment.pID
 
-      const response = await axios.delete(
+      const response = await axios.patch(
          `${API_URL}/patient/CancelAppointment/${aid}/${did}/${pid}`
-      );
-    } catch (error) {
+          );
+          
+         
+         // dispatch(viewAppoints(pId));
+          
+
+        } catch (error) {
       console.error("Error cancelling appointment", error);
     }
   }
@@ -139,8 +145,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
     <Button
       variant="contained"
       color="secondary"
-      onClick={() => {handleCancelAppointment(row)
-      }}
+      onClick={() => {handleCancelAppointment(row)}}
     >
       Cancel
     </Button>

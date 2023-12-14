@@ -88,51 +88,104 @@ const disaptch=useDispatch();
     <>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Container maxWidth="xl">
-          <Toolbar disableGutters>
-            <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-              <NavLink to="/PatientsList">
-                <Button sx={{ color: "white" }}>
-                  <IconButton>
-                    <SickIcon style={styles}></SickIcon>
-                  </IconButton>
-                  <Typography>My Patients</Typography>
-                </Button>
-              </NavLink>
-            </Box>
-            <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-              <NavLink to="/DocPatients">
-                <Button sx={{ color: "white" }}>
-                  <IconButton>
-                    <PendingActionsIcon style={styles}></PendingActionsIcon>
-                  </IconButton>
-                  <Typography>Appointments</Typography>
-                </Button>
-              </NavLink>
-            </Box>
+            <Toolbar disableGutters >
+                <Typography
+                    variant="h6"
+                    sx={{
+                        mr: 4,
+                        display: { xs: '2', md: 'flex' },
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        color: 'inherit',
+                        textDecoration: 'none',
+                    }}
+                >
+                    HomePage
+                </Typography>
 
-            <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                <Button sx={{ color: "white" }} onClick={handleOpenDialoog}>
-                  <IconButton>
-                    <BadgeIcon style={styles}></BadgeIcon>
-                  </IconButton>
-                  <DoctorProfileDialog
-                    open={dialogOpen}
-                    handleClose={handleCloseDialog}
-                  />
-                  <Typography> job credentials</Typography>
-                </Button>
-            </Box>
-            <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-              <NavLink to={`/chats`}>
-                <Button sx={{ color: "white" }}>
-                  <IconButton>
-                    <QuestionAnswerIcon style={styles}></QuestionAnswerIcon>
-                  </IconButton>
-                  <Typography> My chats</Typography>
-                </Button>
-              </NavLink>
-            </Box>
-          </Toolbar>
+              
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to='/PatientsList'>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <FormatListBulletedIcon style={styles} ></FormatListBulletedIcon>
+                            </IconButton>
+                            <Typography >My Patients</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to='/DocPatients'>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography >Appointments</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to='/FollowUpRequests'>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography >Follow Ups</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <div>
+                        <>
+                            <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
+                                <IconButton>
+                                    <WalletIcon style={styles} ></WalletIcon>
+                                </IconButton>
+                                <Typography >view wallet</Typography>
+                            </Button>
+                            <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='doctor'/>
+                        </>
+                    </div>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to={`/Contract`}>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography >Contract</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to={`/Profile`}>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography > job credentials</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
+                    <NavLink to={`/chats`}>
+                        <Button sx={{ color: 'white' }}>
+                            <IconButton>
+                                <GroupIcon style={styles} ></GroupIcon>
+                            </IconButton>
+                            <Typography > My chats</Typography>
+                        </Button>
+                    </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 0 }}>
+                    <Tooltip title="Open settings">
+                        <IconButton sx={{ p: 0 }}>
+                            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+            </Toolbar>
         </Container>
       </AppBar>
 

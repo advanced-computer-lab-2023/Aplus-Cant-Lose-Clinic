@@ -431,7 +431,7 @@ router.get('/delete/:id/:pid', async (req, res) => {
   }
 });
 
-router.delete("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
+router.patch("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
 
 
 
