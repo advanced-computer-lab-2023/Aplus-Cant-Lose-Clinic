@@ -1307,7 +1307,7 @@ const cancelAppointment=async (req,res)=>
     });
 
     await patient.save()     
-      await doctor.save();
+    await doctor.save();
 
       // Send email to the patient
      const emailSubject = "Appointment Canceled";
@@ -1327,6 +1327,8 @@ const cancelAppointment=async (req,res)=>
       await patient.save()     
       await doctor.save();
   }
+  // const app = await Appointment.find();
+  // res.status(200).json(app)
 
      
 

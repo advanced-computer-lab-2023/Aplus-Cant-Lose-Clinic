@@ -913,7 +913,8 @@ const acceptFollowUpRequest=async (req,res)=>
       Description: "follow up",
     });
     
-    res.status(200).json({message:"FollowUp accepted Successfully!",data:appointment})
+    const followUps=await FollowUp.find({drID:response.drID})
+    res.status(200).json(followUps)
   }catch(error)
   {
     console.error(error)
@@ -925,8 +926,10 @@ const rejectFollowUpRequest=async(req,res)=>
 {
   const {id}=req.params
   try{
+    
     const response =await FollowUp.findByIdAndDelete(id)
-    res.status(200).json({message:"FollowUp rejected Successfully!"})
+    const followUps=await FollowUp.find({drID:response.drID});
+    res.status(200).json(followUps)
   }catch(error)
   {
     console.error(error)
