@@ -936,6 +936,79 @@ const rejectFollowUpRequest=async(req,res)=>
     res.status(500).json({message:'Error rejecting FollowUp'})
   }
 }
+const cancelAppointment=async (req,res)=>
+{
+  try
+  {
+    const {aid,did,pid}=req.params
+    console.log(aid,did,pid)
+    if (!aid || !did || !pid) {
+      return res.status(400).json({ message: "Invalid parameters" });
+    }
+    console.log("yyyyyyy",did)
+    const appointment=await Appointment.findById(aid)
+    const doctor=await Doctor.findById(did)
+    const patient=await Patient.findById(pid)
+    if(!appointment)
+    {
+      res.status(500).json({message:"Appointment not found!"})
+    }
+    if(!doctor)
+    {
+      res.status(500).json({message:"Doctor not found!"})
+    }
+    if(!patient)
+    {
+      res.status(500).json({message:"Patient not found!"})
+    }
+    appointment.status="cancelled";
+  
+    ///added start
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentCanceled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
+      type:"AppointmentCanceled",
+    });
+
+    await patient.save()     
+    await doctor.save();
+
+      // Send email to the patient
+     const emailSubject = "Appointment Canceled";
+     const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+     await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+
+    //added end
+    await appointment.save();
+
+    const today=new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const timeDifference = Math.abs(today - appointment.startDate);
+   //const timeDifference = appointment.startDate-today;
+    if (timeDifference > oneDayInMilliseconds) {
+      console.log(timeDifference)
+      console.log(patient.wallet)
+      patient.wallet+=doctor.rate;
+      await patient.save()     
+      await doctor.save();
+  }
+  // const app = await Appointment.find();
+  // res.status(200).json(app)
+
+     
+
+  }
+  catch(error)
+  {
+    console.error(error);
+    res.status(500).json({message:"Error Cancelling Appointment"})
+
+  }
+
+}
 
 
 
@@ -971,6 +1044,7 @@ module.exports = {
   sendDoctorEmail,
   getFollowUpRequests,
   acceptFollowUpRequest,
-  rejectFollowUpRequest
+  rejectFollowUpRequest,
+  cancelAppointment
   
 };

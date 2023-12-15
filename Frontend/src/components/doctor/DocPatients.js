@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
-
+import axios from "axios";
+import { API_URL } from "../../Consts.js";
 import {
   Select,
   MenuItem,
@@ -9,7 +10,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect ,useContext} from "react";
 import { appointmentPatients } from "../../features/doctorSlice";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -23,11 +24,14 @@ import RescheduleAppointment from "./DocRescheduleAppointment";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import AccountAvatar from "../Authentication/AccountAvatar";
+import Button from "@mui/material/Button";
+import { SnackbarContext } from "../../App";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("Any");
   const [upcomingFilter, setUpcomingFilter] = useState(false);
+  const snackbarMessage = useContext(SnackbarContext);
 
   const dispatch = useDispatch();
   const { id, role } = useSelector((state) => state.user);
@@ -37,6 +41,38 @@ export default function DocPatients() {
   }, [dispatch]);
 
   const appointments = useSelector((state) => state.doctor.appointments);
+  const redButtonStyle = {
+    backgroundColor: "#f44336",
+    color: "black",
+    marginRight: "10px",
+    marginBottom: "10px",
+    width: "75px",
+    minWidth: "auto",
+  };
+  const handleCancel=async(appointment)=>
+  {
+    try {
+      
+      
+      const aid=appointment._id
+      const did=appointment.drID
+      const pid=appointment.pID._id
+      console.log("hhhhh",pid);
+
+      const response = await axios.patch(
+         `${API_URL}/doctor/CancelAppointment/${aid}/${did}/${pid}`
+          );
+          snackbarMessage('Appointment Cancelled successfully:');
+          
+         
+          
+
+        } catch (error) {
+          snackbarMessage('Error cancelling appointment"');
+      console.error("Error cancelling appointment", error);
+    }
+
+  }
 
   console.log(appointments);
   const navigate = useNavigate(-1);
@@ -226,6 +262,17 @@ export default function DocPatients() {
                       {res.status === "upcoming" && res._id && res.pID && (
                         
                         <RescheduleAppointment  appointmentID={res?._id} />
+                    )}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <Typography sx={{ width: "300px" }}>
+                        Cancel Appointment:{" "}
+                      </Typography>
+                      {res.status === "upcoming" && res._id && res.pID && (
+                         <Button variant="outlined" onClick={() => handleCancel(res)}>
+                         Cancel
+                       </Button>
+                       
                     )}
                     </div>
                     
