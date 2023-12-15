@@ -578,7 +578,7 @@ const viewPrescriptions = async (req, res) => {
         model: "Doctor", // Reference to the Doctor model
       })
       .populate({
-        path: "medID",
+        path: "meds.medID", // Update the path to access the nested medID in meds array
         model: "Medicine", // Reference to the Medicine model
       });
 
@@ -739,7 +739,10 @@ const viewSpecificPrescription = async (req, res) => {
 
     // Find the prescription by its ID and populate related data
     const prescription = await Prescription.findById(prescriptionId)
-      .populate("medID") // Populate the Medicine
+      .populate({
+        path: "meds.medID", // Update the path to access the nested medID in meds array
+        model: "Medicine", // Reference to the Medicine model
+      })
       .populate("patientID") // Populate the Patient
       .populate("doctorID"); // Populate the Doctor
 
@@ -755,7 +758,7 @@ const viewSpecificPrescription = async (req, res) => {
     console.error("Error retrieving prescription:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // Import your Doctor schema/model
 const getAlldoctors = async (req, res) => {

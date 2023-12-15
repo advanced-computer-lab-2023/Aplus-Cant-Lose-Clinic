@@ -30,7 +30,6 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
 import {useNavigate}  from "react-router-dom";
-import AccountAvatar from "../Authentication/AccountAvatar";
 // ...
 import {
   viewPrescriptions,
@@ -94,9 +93,6 @@ const App = () => {
   return (
     role==="patient" ?(
     <Box sx={{ flexGrow: 1 }}>
-          <div>
-        <AccountAvatar />
-      </div>
       <Dialog
         open={Boolean(prescriptionid)}
         sx={{ width: "100%", height: "100%" }}
@@ -139,21 +135,26 @@ const App = () => {
               </Grid>
             </Grid>
             <Grid item xs={12} md={4}>
+            {prescriptionid.meds.map((medicine, index) => (
               <Box sx={{ margin: "20px 20px 0px 80px" }}>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Name :{prescriptionid.medID?.name}
+                  Medicine Name :{medicine.medID?.name}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
                   Medicine Active elements:
-                  {prescriptionid.medID?.activeElement}
+                  {medicine.medID?.activeElement}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Used for :{prescriptionid.medID?.use}
+                  Medicine Used for :{medicine.medID?.use}
                 </Typography>
                 <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Frequency :{prescriptionid.dosage}
+                  Medicine Frequency :{medicine.medID?.amount}
+                </Typography>
+                <Typography sx={{ fontSize: "16px" }}>
+                  Medicine Dosage :{medicine?.dosage}
                 </Typography>
               </Box>
+))}
             </Grid>
             <Paper
               sx={{
