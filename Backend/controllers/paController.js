@@ -1196,11 +1196,18 @@ const rescheduleAppointment = async (req, res) => {
     const { startDate, endDate } = req.body;
 
     // Assuming you have a model named 'Appointment' for your appointments
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(appointmentId)
+      .populate('drID') 
+      .populate('pID',);
+
 
     if (!appointment) {
       return res.status(404).json({ message: 'Appointment not found' });
     }
+
+    const doctor = appointment.drID;
+    const patient= appointment.pID;
+
 
     // Update the start and end dates
     appointment.startDate = startDate;
