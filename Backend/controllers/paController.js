@@ -1295,7 +1295,14 @@ const cancelAppointment=async (req,res)=>
       message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
       type:"AppointmentCanceled",
     });
-    //still to send an email
+
+    await patient.save()     
+      await doctor.save();
+
+      // Send email to the patient
+     const emailSubject = "Appointment Canceled";
+     const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+     await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
     //added end
     await appointment.save();
 
@@ -1308,7 +1315,10 @@ const cancelAppointment=async (req,res)=>
       console.log(patient.wallet)
       patient.wallet+=doctor.rate;
       await patient.save()     
+      await doctor.save();
   }
+
+     
 
   }
   catch(error)
@@ -1418,7 +1428,7 @@ const sendPatientEmail = async (req, res) => {
     // Email content
     const mailOptions = {
       from: process.env.EMAIL,
-      to: patient.email,
+      to: /*patient.email*/"ahmed.elgamel@student.guc.edu.eg" ,
       subject,
       text: message,
     };
