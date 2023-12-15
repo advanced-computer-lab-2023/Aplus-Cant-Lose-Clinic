@@ -79,15 +79,6 @@ const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
-        
-    
-        {/* {notifications.map((notification, index) => (
-  <Snackbar key={index} open={true} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} >
-    <MuiAlert elevation={6} variant="filled" severity={notification.type}>
-      {notification.message}
-    </MuiAlert>
-  </Snackbar>
-))} */}
 
     <Button
                 variant="outlined"
@@ -102,13 +93,13 @@ const [openDialog, setOpenDialog] = useState(false);
      <Dialog open={openDialog} onClose={handleCloseDialog}>
             <DialogTitle>Notifications</DialogTitle>
             <DialogContent>
-                <DialogContentText>
-                    {/* Add your list of notifications here */}
-                    Notification 1: Something happened!
-                    <br />
-                    Notification 2: Another event occurred!
-                    {/* Add more notifications as needed */}
-                </DialogContentText>
+                {notifications.map((notification, index) => (
+                    <div>
+                     {notification.message}
+                    </div>
+                    
+                      
+                 ))}
             </DialogContent>
 
             <DialogActions>
