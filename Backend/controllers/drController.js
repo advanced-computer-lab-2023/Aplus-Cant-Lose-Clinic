@@ -632,11 +632,11 @@ async function rescheduleAppointment(req, res) {
      ///added start
     //  patient.notifications.push({ //add notifiaction to patient
     //   message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
-    //   type:"AppointmentCanceled",
+    //   type:"AppointmentRescheduled",
     // });
     // doctor.notifications.push({//add notifiaction to doctor
     //   message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
-    //   type:"AppointmentCanceled",
+    //   type:"AppointmentRescheduled",
     // });
     //still to send an email
     //added end

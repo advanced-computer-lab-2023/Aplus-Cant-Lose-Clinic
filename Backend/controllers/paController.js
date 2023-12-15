@@ -1203,6 +1203,19 @@ const rescheduleAppointment = async (req, res) => {
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
+      ///added start
+    //  patient.notifications.push({ //add notifiaction to patient
+    //   message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+    //   type:"AppointmentRescheduled",
+    // });
+    // doctor.notifications.push({//add notifiaction to doctor
+    //   message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+    //   type:"AppointmentRescheduled",
+    // });
+    //still to send an email
+    //added end
+
+    
     // Save the updated appointment
     await appointment.save();
 
