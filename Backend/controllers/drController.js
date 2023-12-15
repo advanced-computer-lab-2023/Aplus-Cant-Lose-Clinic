@@ -617,32 +617,52 @@ async function rescheduleAppointment(req, res) {
 
   try {
     // Find the appointment by ID
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(appointmentId)
+    .populate('drID') 
+    .populate('pID',);
+
+
     if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
       return res.status(400).json({ error: 'Invalid appointmentId' });
   }
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
+    const doctor = appointment.drID;
+    const patient= appointment.pID;
+    const dId = doctor._id;
+    const pId= patient._id;
 
     // Update the appointment with the new dates
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
-     ///added start
-    //  patient.notifications.push({ //add notifiaction to patient
-    //   message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
-    //   type:"AppointmentRescheduled",
-    // });
-    // doctor.notifications.push({//add notifiaction to doctor
-    //   message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
-    //   type:"AppointmentRescheduled",
-    // });
-    //still to send an email
-    //added end
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentRescheduled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+      type:"AppointmentRescheduled",
+    });
+      
 
     // Save the updated appointment
+    await patient.save();
+    await doctor.save();
     await appointment.save();
+
+      // Send email to the doctor
+      const emailSubject2 = "Appointment Reschedule";
+      const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
+      await sendEmail( doctor.email , emailSubject2, emailMessage2 );
+  
+    // Send email to the patient
+    const emailSubject = "Appointment Reschedule";
+      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+      await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
+
+    
 
     // Return a success message or the updated appointment
     res.json({ message: 'Appointment rescheduled successfully', appointment });
