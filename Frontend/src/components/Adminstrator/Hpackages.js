@@ -114,7 +114,7 @@ export default function Hpackages() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="doctorDisc">DoctorDisc</label>
+            <label htmlFor="doctorDisc">Doctor Discount</label>
             <input
               type="number"
               id="doctorDisc"
@@ -125,7 +125,7 @@ export default function Hpackages() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="medicineDisc">MedicineDisc</label>
+            <label htmlFor="medicineDisc">Medicine Discount</label>
             <input
               type="number"
               id="medicineDisc"
@@ -136,7 +136,7 @@ export default function Hpackages() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="familyDisc">FamilyDisc</label>
+            <label htmlFor="familyDisc">Family Discount</label>
             <input
               type="number"
               id="familyDisc"

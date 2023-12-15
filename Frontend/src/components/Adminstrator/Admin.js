@@ -11,6 +11,8 @@ import ViewMedicines from "./ViewMedicines";
 import ViewPatients from "./ViewPatients";
 import ViewPendingDr from "./ViewPendingDr";
 import AddAdmin from "./AddAdmin";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -22,11 +24,7 @@ function CustomTabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+      {value === index && <Box sx={{ p: 3, display: "flex" }}>{children}</Box>}
     </div>
   );
 }
@@ -44,8 +42,6 @@ function a11yProps(index) {
   };
 }
 
-// ... other imports ...
-
 export default function BasicTabs() {
   const [value, setValue] = React.useState(0);
 
@@ -61,32 +57,49 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Add administrator" {...a11yProps(0)} sx={{ width: "220px" }} />
-          <Tab label="Administrator" {...a11yProps(1)} sx={{ width: "220px" }} />
-          <Tab label=" Doctors Join Requests" {...a11yProps(2)} sx={{ width: "220px" }} />
-          <Tab label="Joined Doctors" {...a11yProps(3)} sx={{ width: "220px" }} />
-          <Tab label="Patients List" {...a11yProps(4)} sx={{ width: "220px" }} />
-          {/* Fix the index for "Health Packages" */}
-          <Tab label="Health Packages" {...a11yProps(5)} sx={{ width: "220px" }} />
+          <Tab label="Administrator" {...a11yProps(0)} sx={{ width: "220px",fontSize: "18px" }}/>
+          <Tab
+            label="Doctors Join Requests"
+            {...a11yProps(1)}
+            sx={{ width: "220px",fontSize: "18px"}}
+          />
+          <Tab
+            label="Joined Doctors"
+            {...a11yProps(2)}
+            sx={{ width: "220px" ,fontSize: "18px"}}
+          />
+          <Tab
+            label="Patients List"
+            {...a11yProps(3)}
+            sx={{ width: "220px",fontSize: "18px" }}
+          />
+          <Tab
+            label="Health Packages"
+            {...a11yProps(4)}
+            sx={{ width: "220px" ,fontSize: "18px"}}
+          />
         </Tabs>
       </Box>
+
       <CustomTabPanel value={value} index={0}>
-        <AddAdmin />
+        <div style={{display:"flex",gap:"400px"}}>
+<>
+          <ViewAdmins /></>
+          <div >
+          <AddAdmin/>
+          </div>
+        </div>
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <ViewAdmins />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
         <ViewPendingDr />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
+      <CustomTabPanel value={value} index={2}>
         <ViewDoctors />
       </CustomTabPanel>
-      <CustomTabPanel value={value} index={4}>
+      <CustomTabPanel value={value} index={3}>
         <ViewPatients />
       </CustomTabPanel>
-      {/* Fix the index for "Health Packages" */}
-      <CustomTabPanel value={value} index={5}>
+      <CustomTabPanel value={value} index={4}>
         <Hpackages />
       </CustomTabPanel>
     </Box>

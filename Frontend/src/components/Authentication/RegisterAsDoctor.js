@@ -5,6 +5,8 @@ import { API_URL } from "../../Consts.js";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { registerDoctor } from "../../features/doctorSlice";
+import { NavLink } from "react-router-dom";
+
 import { SnackbarContext } from "../../App";
 function RegisterAsDoctor() {
   const dispatch = useDispatch();
@@ -99,7 +101,13 @@ function RegisterAsDoctor() {
             Date of Birth
           </label>
           <div>
-            <input type="date" id="dBirth" max="2002-10-15" required />
+            <input
+              style={{ width: "92%" }}
+              type="date"
+              id="dBirth"
+              max="2002-10-15"
+              required
+            />
           </div>
         </div>
         <label for="rate">Hourly Rate</label>
@@ -145,18 +153,22 @@ function RegisterAsDoctor() {
           style={{
             backgroundColor: "#4CAF50",
             color: "white",
-            width:"30%",
+            width: "30%",
             fontSize: "22px",
             padding: "10px 15px",
             borderRadius: "5px",
             cursor: "pointer",
             marginTop: "10px",
-         // Adjust the width as needed
+            marginLeft: "50px",
+            // Adjust the width as needed
           }}
         >
           {" "}
           Register
         </button>
+        <span style={{ marginLeft: "30px" }}>
+          <NavLink to="/login">Already a user? Login</NavLink>
+        </span>
       </div>
     </form>
   );

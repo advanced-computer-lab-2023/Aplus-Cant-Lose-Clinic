@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { SnackbarContext } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,12 @@ import { useState, useContext } from "react";
 import { addFamilyMember } from "../../features/patientSlice";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
-const NewFamilyMemberForm = () => {
+import CloseIcon from '@mui/icons-material/Close';
+import IconButton from '@mui/material/IconButton';
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import { Icon } from "@mui/material";
+const NewFamilyMemberForm = ({ open, onClose }) => {
   const snackbarMessage = useContext(SnackbarContext);
   const role = useSelector((state) => state.user.role);
 
@@ -71,71 +76,93 @@ const NewFamilyMemberForm = () => {
       }
     });
   };
-  return (
-    role==="patient"?
-    <form onSubmit={handleSubmit} method="post" style={formStyle}>
-      <h3
-        style={{ textAlign: "center", fontSize: "20px", marginBottom: "10px" }}
-      >
-        Add a Family Member
-      </h3>
-      <div>
-        <label htmlFor="fullName" style={labelStyle}>
-          Full Name:
-        </label>
-        <input
-          type="text"
-          id="fullName"
-          name="fullName"
-          required
-          placeholder="Full Name"
-          style={inputStyle}
-        />
-      </div>
-      <div>
-        <label htmlFor="NID" style={labelStyle}>
-          National ID:
-        </label>
-        <input
-          type="number"
-          id="NID"
-          placeholder="National ID"
-          style={inputStyle}
-        />
-      </div>
-      <div>
-        <label htmlFor="age" style={labelStyle}>
-          Age:
-        </label>
-        <input
-          type="number"
-          id="age"
-          name="age"
-          placeholder="Age"
-          style={inputStyle}
-        />
-      </div>
-      <div>
-        <label htmlFor="gender" style={labelStyle}>
-          Gender:
-        </label>
-        <select id="gender" name="gender" style={selectStyle}>
-          <option value="male">male</option>
-          <option value="female">female</option>
-          <option value="none">none</option>
-        </select>
-      </div>
-      <div>
-        <label htmlFor="relation" style={labelStyle}>
-          Relation:
-        </label>
-        <select id="relation" name="relation" style={selectStyle}>
-          <option>spouse</option>
-          <option>child</option>
-        </select>
-      </div>
-      <input type="submit" value="Add Family Member" style={buttonStyle} />
-    </form>:(
+  useEffect(() => {},[open])
+  return role === "patient" ? (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>
+        <IconButton
+          edge="end"
+          color="inherit"
+          onClick={onClose}
+          aria-label="close"
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <form onSubmit={handleSubmit} method="post" style={formStyle}>
+        <h3
+          style={{
+            textAlign: "center",
+            fontSize: "20px",
+            marginBottom: "10px",
+          }}
+        >
+          Add a Family Member
+        </h3>
+        <div>
+          <label htmlFor="fullName" style={labelStyle}>
+            Full Name:
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            required
+            placeholder="Full Name"
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label htmlFor="NID" style={labelStyle}>
+            National ID:
+          </label>
+          <input
+            type="number"
+            id="NID"
+            placeholder="National ID"
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label htmlFor="age" style={labelStyle}>
+            Age:
+          </label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            placeholder="Age"
+            style={inputStyle}
+          />
+        </div>
+        <div>
+          <label htmlFor="gender" style={labelStyle}>
+            Gender:
+          </label>
+          <select id="gender" name="gender" style={selectStyle}>
+            <option value="male">male</option>
+            <option value="female">female</option>
+            <option value="none">none</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="relation" style={labelStyle}>
+            Relation:
+          </label>
+          <select id="relation" name="relation" style={selectStyle}>
+            <option>spouse</option>
+            <option>child</option>
+          </select>
+        </div>
+        <input type="submit" value="Add Family Member" style={buttonStyle} />
+      </form>{" "}
+    </Dialog>
+  ) : (
     <>
       <Link to="/Login" sx={{ left: "100%" }}>
         <Typography
@@ -153,8 +180,7 @@ const NewFamilyMemberForm = () => {
         </Typography>
       </Link>
     </>
-  ));
-
+  );
 };
 
 export default NewFamilyMemberForm;

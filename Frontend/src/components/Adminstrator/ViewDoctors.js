@@ -46,9 +46,7 @@ export default function ViewDoctors() {
               email
             </TableCell>
             {/* ... (other table headers) ... */}
-            <TableCell align="left" style={cellStyle}>
-              status
-            </TableCell>
+          
             <TableCell align="left" style={cellStyle}>
               Actions
             </TableCell>
@@ -67,9 +65,7 @@ export default function ViewDoctors() {
                 {row.email}
               </TableCell>
               {/* ... (other table data) ... */}
-              <TableCell align="left" style={cellStyle}>
-                {row.status}
-              </TableCell>
+          
               <TableCell>
                 <Button
                   sx={{ backgroundColor: '#a80b0b', color: 'white', width: '35%' }}

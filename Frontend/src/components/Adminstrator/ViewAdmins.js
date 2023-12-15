@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,15 +8,16 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from 'react';
-import { viewAdmin, deleteAdmin } from '../../features/adminSlice';
-import { AutoFixNormal } from '@mui/icons-material';
+import { useEffect } from "react";
+import { viewAdmin, deleteAdmin } from "../../features/adminSlice";
+import { AutoFixNormal } from "@mui/icons-material";
 
 export default function ViewAdmins() {
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(viewAdmin())
+    dispatch(viewAdmin());
   }, [dispatch]);
   const dummyData = useSelector((state) => state.admin.admins);
 
@@ -29,7 +30,7 @@ export default function ViewAdmins() {
   };
 
   const cellStyle = {
-    fontSize: "14px",
+    fontSize: "20px",
   };
   const handleDelete = (id) => {
     dispatch(deleteAdmin(id));
@@ -40,8 +41,12 @@ export default function ViewAdmins() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell align="left" style={cellStyle}>username</TableCell>
-            <TableCell align="left" style={cellStyle}>remove</TableCell>
+            <TableCell align="left" style={cellStyle}>
+              username
+            </TableCell>
+            <TableCell align="left" style={cellStyle}>
+              remove
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -54,13 +59,15 @@ export default function ViewAdmins() {
                 {row.username}
               </TableCell>
               <TableCell>
-
                 <Button
-                  sx={{ backgroundColor: '#a80b0b', color: 'white', width: '35%' }}
-                  onClick={() => handleDelete(row._id)}  // Pass the admin ID to the handler
-                >            <Typography>
-                    Remove
-                  </Typography>
+                  color="error"
+                  variant="contained"
+                  sx={{ width: "35%" }}
+                  endIcon={<DeleteOutlineIcon />}
+                  onClick={() => handleDelete(row._id)} // Pass the admin ID to the handler
+                >
+                  {" "}
+                  <Typography>Remove</Typography>
                 </Button>
               </TableCell>
             </TableRow>
@@ -69,6 +76,4 @@ export default function ViewAdmins() {
       </Table>
     </TableContainer>
   );
-
 }
-

@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useSelector, useDispatch } from "react-redux";
 import { viewPendDr, acceptDr, rejectDr } from "../../features/adminSlice";
-import { useEffect,useContext } from "react";
+import { useEffect, useContext } from "react";
 import { AutoFixNormal } from "@mui/icons-material";
 
 export default function ViewPendingDr() {
@@ -27,7 +27,7 @@ export default function ViewPendingDr() {
   }, [dispatch]);
   const dummyData = useSelector((state) => state.admin.pdoctors);
   const handleAccept = (id) => {
-  const responseData=dispatch(acceptDr(id));
+    const responseData = dispatch(acceptDr(id));
     if (responseData === undefined) {
       snackbarMessage(`error: error in sending an email`, "error");
     } else {
@@ -35,7 +35,7 @@ export default function ViewPendingDr() {
     }
   };
   const handleReject = (id) => {
-    const responseData=dispatch(rejectDr(id));
+    const responseData = dispatch(rejectDr(id));
     if (responseData === undefined) {
       snackbarMessage(`error: error in sending an email`, "error");
     } else {
@@ -56,9 +56,9 @@ export default function ViewPendingDr() {
   };
 
   const buttonStyle = {
-    backgroundColor: "#1776d1",
-    color: "black",
+    border: "1px solid #1776d1",
     marginRight: "10px",
+
     marginBottom: "10px",
     width: "75px", // Set minWidth to "auto" to make the button fit the content
   };
@@ -73,22 +73,21 @@ export default function ViewPendingDr() {
     minWidth: "auto", // Set minWidth to "auto" to make the button fit the content
   };
 
-
   const handleDownload = async (drId) => {
     try {
       const response = await axios.get(`${API_URL}/doctor/downloadf/${drId}`, {
-        responseType: 'blob',
+        responseType: "blob",
       });
 
       // Extract filename from the Content-Disposition header
-      const contentDisposition = response.headers['content-disposition'];
+      const contentDisposition = response.headers["content-disposition"];
       const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-      const filename = filenameMatch ? filenameMatch[1] : 'files.zip';
+      const filename = filenameMatch ? filenameMatch[1] : "files.zip";
 
       // Download the file using the downloadjs library
-      download(response.data, filename, response.headers['content-type']);
+      download(response.data, filename, response.headers["content-type"]);
     } catch (error) {
-      console.error('Error downloading files:', error);
+      console.error("Error downloading files:", error);
       // Handle error, e.g., show an error message to the user
     }
   };
@@ -120,10 +119,9 @@ export default function ViewPendingDr() {
               background
             </TableCell>
             <TableCell align="left" style={cellStyle}>
-documents            </TableCell>
-            <TableCell align="left" style={cellStyle}>
-              status
+              documents{" "}
             </TableCell>
+
             <TableCell align="left" style={cellStyle}>
               Acceptance
             </TableCell>
@@ -160,34 +158,35 @@ documents            </TableCell>
                 {row.background}
               </TableCell>
               <Button
-                sx={ { backgroundColor: "#1776d1",
-                color: "black",
-                marginRight: "10px",
-                marginTop: "45px",
+                sx={{
+                  backgroundColor: "#1776d1",
+                  color: "black",
+                  marginRight: "10px",
+                  marginTop: "18px",
 
-                width: "100px"}}
+                  width: "100px",
+                }}
                 onClick={() => handleDownload(row._id)}
               >
                 <Typography>download</Typography>
               </Button>
-    
-              <TableCell align="left" style={cellStyle}>
-                {row.status}
-              </TableCell>
+
               <TableCell>
-              <Button
+                <Button
+                  varient="contained"
+                  color="success"
                   sx={buttonStyle}
+                  sx={{ marginTop: "7px" }}
                   onClick={() => handleAccept(row._id)}
                 >
                   <Typography>Accept</Typography>
                 </Button>
-              <Button
+                <Button
                   sx={redButtonStyle}
                   onClick={() => handleReject(row._id)}
                 >
                   <Typography>Reject</Typography>
                 </Button>
-            
               </TableCell>
             </TableRow>
           ))}

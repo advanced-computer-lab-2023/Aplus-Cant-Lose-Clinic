@@ -1,45 +1,56 @@
-import { AutoFixNormal } from '@mui/icons-material'
-import { Button } from '@mui/material'
-import React from 'react'
-import { useSelector,useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import {logout } from "../features/userSlice"
-export default function Navbar() {
-    const navigate = useNavigate()
-    const dispatch=useDispatch();
-    const {role } = useSelector((state) => state.user)
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import { NavLink } from "react-router-dom";
+import hi from "../hi.png";
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import LoginIcon from '@mui/icons-material/Login';
+import RegisterOptions from "./Authentication/RegisterAs"; // Import the RegisterOptions component
 
-    const handleLogout=() => {
-      const response= dispatch(logout());
-      if(response){
-        
-        console.log(role);
-      navigate('/Login');}
-    }
+export default function Start() {
+  const [openRegisterDialog, setOpenRegisterDialog] = React.useState(false);
+
+  const handleOpenRegisterDialog = () => {
+    setOpenRegisterDialog(true);
+  };
+
+  const handleCloseRegisterDialog = () => {
+    setOpenRegisterDialog(false);
+  };
 
   return (
-    <div style={{ height: '60px', backgroundColor: '#4477aa', gap: '3px', boxSizing: 'border-box', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', padding: '4px', display: 'flex', width: '100%'}}>
-        <div style={{marginLeft: 'auto'}}></div>
-        {
-          role === '' &&
-          <>
-                  <Button onClick={() => {navigate('/RegisterAs')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Register</Button>
-        <Button onClick={() => {navigate('/Login')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Login</Button>
-          </>
-        }
-        {role === 'doctor' &&
-        <>
-        {/* <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button>
+    <Box sx={{ flexGrow: 1, color: "white" }}>
+      <AppBar position="static">
+        <Toolbar sx={{ display: 'flex',ml:"auto",mr:"60px" }}>
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ mr: 'auto' }}
+          >
+          </IconButton>
 
-        <Button onClick={() => {navigate('/DocPatients')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>Appointments</Button> */}
-        </>}
-        {role !== '' &&
-        <>
-   {/* <Button onClick={() => {navigate('/PatientsList')}} sx={{width: '110px', display: 'flex', boxShadow: '2px 2px 30px rgba(0,0,0,0.4)', justifyContent: 'center', height: '85%', color: 'white', backgroundColor: '#1266aa'}}>patients List</Button> */}
+          <NavLink exact to="/Login">
+            <Button sx={{ color: 'white', fontSize: "25px" }} varient="contained" startIcon={<LoginIcon />}>Login</Button>
+          </NavLink>
 
-        </>}
+          <Button sx={{ color: 'white', fontSize: "20px", ml: "30px" }} color="inherit" startIcon={<AppRegistrationIcon />} onClick={handleOpenRegisterDialog}>
+            Register
+          </Button>
+        </Toolbar>
+      </AppBar>
+      <Box sx={{ ml: "27%" }}>
+        <img src={hi} alt="hi" border="0" style={{ height: '900px' }} />
+        {/* Add content or components below the image if needed */}
+      </Box>
 
-
-    </div>
-  )
+      {/* Render the RegisterOptions dialog */}
+      <RegisterOptions open={openRegisterDialog} onClose={handleCloseRegisterDialog} />
+    </Box>
+  );
 }

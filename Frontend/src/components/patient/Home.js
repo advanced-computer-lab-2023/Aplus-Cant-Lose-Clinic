@@ -84,19 +84,6 @@ function Home() {
             <AppBar position="static" sx={{ backgroundColor: '#004E98' }}>
                 <Container maxWidth="xl">
                     <Toolbar disableGutters >
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                mr: 2,
-                                display: { xs: '2', md: 'flex' },
-                                fontFamily: 'monospace',
-                                fontWeight: 700,
-                                color: 'inherit',
-                                textDecoration: 'none',
-                            }}
-                        >
-                            HomePage
-                        </Typography>
 
                         <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                             <IconButton
@@ -124,16 +111,7 @@ function Home() {
                             </NavLink>
                         </Box>
                   
-                        <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                            <NavLink to='/FamilyMemberForm'>
-                                <Button sx={{ color: 'white' }}>
-                                    <IconButton>
-                                        <FamilyRestroomIcon style={styles}></FamilyRestroomIcon>
-                                    </IconButton>
-                                    <Typography >link Family Members</Typography>
-                                </Button>
-                            </NavLink>
-                        </Box>
+                        
                         <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
                             <NavLink to='/Appointments'>
                                 <Button sx={{ color: 'white' }}>
@@ -196,13 +174,7 @@ function Home() {
                                 </Button>
                             </NavLink>
                         </Box>
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                                </IconButton>
-                            </Tooltip>
-                        </Box>
+                      
                         
                     </Toolbar>
                 </Container>
