@@ -1207,6 +1207,10 @@ const rescheduleAppointment = async (req, res) => {
 
     const doctor = appointment.drID;
     const patient= appointment.pID;
+    const dId = doctor._id;
+    const pId= patient._id;
+  
+    // console.log(appointment)
 
 
     // Update the start and end dates
@@ -1222,18 +1226,23 @@ const rescheduleAppointment = async (req, res) => {
       message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
       type:"AppointmentRescheduled",
     });
-      // Send email to the patient
-      const emailSubject = "Appointment Reschedule";
-      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
-      await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
-      //still will send to doctor 
+      
+        //still will send to doctor 
     //added end
 
     
     // Save the updated appointment
-    await appointment.save();
+    
     await patient.save();
     await doctor.save();
+    await appointment.save();
+
+
+// Send email to the patient
+    const emailSubject = "Appointment Reschedule";
+      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+      await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
+    
 
     res.json({ success: true, message: "Appointment successfully rescheduled" });
   } catch (error) {
@@ -1432,6 +1441,7 @@ const sendPatientEmail = async (req, res) => {
   try {
     // Retrieve patient's email from the database
     const patient = await Patient.findById(patientId);
+   
     if (!patient || !patient.email) {
       return res.status(404).json({ message: 'Patient not found or no email associated.' });
     }
