@@ -65,6 +65,7 @@ export default function FollowUpRequests() {
     try {
       const response = await axios.delete(`${API_URL}/doctor/rejectFollowUp/${id}`);
       snackbarMessage('FollowUp rejected successfully:');
+      window.location.reload();
       
     } catch (error) {
       snackbarMessage('Error rejecting FollowUp:');
@@ -87,7 +88,9 @@ export default function FollowUpRequests() {
           start: new Date(startDateTime),
           end: new Date(endDateTime),
         });
+        window.location.reload();
         snackbarMessage('FollowUp Accepted successfully:');
+        
        
       } catch (error) {
         snackbarMessage('Error Accepting FollowUp:');
