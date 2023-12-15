@@ -1238,12 +1238,17 @@ const rescheduleAppointment = async (req, res) => {
     await appointment.save();
 
 
+      // Send email to the doctor
+      const emailSubject2 = "Appointment Reschedule";
+      const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
+      await sendEmail( doctor.email , emailSubject2, emailMessage2 );
+  
 // Send email to the patient
     const emailSubject = "Appointment Reschedule";
       const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
       await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
-    
 
+    
     res.json({ success: true, message: "Appointment successfully rescheduled" });
   } catch (error) {
     console.error("Error rescheduling appointment", error);
@@ -1324,10 +1329,20 @@ const cancelAppointment=async (req,res)=>
     await patient.save()     
     await doctor.save();
 
+
+       // Send email to the doctor
+       const emailSubject2 = "Appointment Canceled";
+       const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
+       await sendEmail( doctor.email , emailSubject2,emailMessage2 );
+
+
       // Send email to the patient
      const emailSubject = "Appointment Canceled";
      const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
      await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+
+
+ 
 
     //added end
     await appointment.save();
@@ -1470,6 +1485,38 @@ const sendPatientEmail = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+const sendEmail = async (email, subject, message) => {
+  try {
+    console.log("tetst mailllll")
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: /*email*/"ahmed.elgamel@student.guc.edu.eg",
+      subject,
+      text: message,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully'); // Add this log to check if the function is reached
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error; // Propagate the error to the calling function
+  }
+};
+
+
+
+
 const requestFollowUp = async (req, res) => {
   const { pid, did } = req.params;
 
@@ -1523,5 +1570,5 @@ module.exports = {
   addPatientNotification,
   updatePatientNotifications,
   sendPatientEmail,
-  requestFollowUp
+  requestFollowUp,
 };
