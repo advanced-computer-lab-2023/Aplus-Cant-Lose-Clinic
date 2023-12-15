@@ -1214,20 +1214,26 @@ const rescheduleAppointment = async (req, res) => {
     appointment.endDate = endDate;
 
       ///added start
-    //  patient.notifications.push({ //add notifiaction to patient
-    //   message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
-    //   type:"AppointmentRescheduled",
-    // });
-    // doctor.notifications.push({//add notifiaction to doctor
-    //   message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
-    //   type:"AppointmentRescheduled",
-    // });
-    //still to send an email
+     patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentRescheduled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+      type:"AppointmentRescheduled",
+    });
+      // Send email to the patient
+      const emailSubject = "Appointment Reschedule";
+      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+      await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+      //still will send to doctor 
     //added end
 
     
     // Save the updated appointment
     await appointment.save();
+    await patient.save();
+    await doctor.save();
 
     res.json({ success: true, message: "Appointment successfully rescheduled" });
   } catch (error) {
@@ -1313,6 +1319,7 @@ const cancelAppointment=async (req,res)=>
      const emailSubject = "Appointment Canceled";
      const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
      await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+
     //added end
     await appointment.save();
 
