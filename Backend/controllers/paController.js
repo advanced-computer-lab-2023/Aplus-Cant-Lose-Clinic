@@ -578,7 +578,7 @@ const viewPrescriptions = async (req, res) => {
         model: "Doctor", // Reference to the Doctor model
       })
       .populate({
-        path: "medID",
+        path: "meds.medID", // Update the path to access the nested medID in meds array
         model: "Medicine", // Reference to the Medicine model
       });
 
@@ -739,7 +739,10 @@ const viewSpecificPrescription = async (req, res) => {
 
     // Find the prescription by its ID and populate related data
     const prescription = await Prescription.findById(prescriptionId)
-      .populate("medID") // Populate the Medicine
+      .populate({
+        path: "meds.medID", // Update the path to access the nested medID in meds array
+        model: "Medicine", // Reference to the Medicine model
+      })
       .populate("patientID") // Populate the Patient
       .populate("doctorID"); // Populate the Doctor
 
@@ -755,7 +758,7 @@ const viewSpecificPrescription = async (req, res) => {
     console.error("Error retrieving prescription:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // Import your Doctor schema/model
 const getAlldoctors = async (req, res) => {
@@ -1203,6 +1206,19 @@ const rescheduleAppointment = async (req, res) => {
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
+      ///added start
+    //  patient.notifications.push({ //add notifiaction to patient
+    //   message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+    //   type:"AppointmentRescheduled",
+    // });
+    // doctor.notifications.push({//add notifiaction to doctor
+    //   message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+    //   type:"AppointmentRescheduled",
+    // });
+    //still to send an email
+    //added end
+
+    
     // Save the updated appointment
     await appointment.save();
 
@@ -1272,6 +1288,25 @@ const cancelAppointment=async (req,res)=>
       res.status(500).json({message:"Patient not found!"})
     }
     appointment.status="cancelled";
+  
+    ///added start
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentCanceled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
+      type:"AppointmentCanceled",
+    });
+
+    await patient.save()     
+      await doctor.save();
+
+      // Send email to the patient
+     const emailSubject = "Appointment Canceled";
+     const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+     await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+    //added end
     await appointment.save();
 
     const today=new Date();
@@ -1283,7 +1318,10 @@ const cancelAppointment=async (req,res)=>
       console.log(patient.wallet)
       patient.wallet+=doctor.rate;
       await patient.save()     
+      await doctor.save();
   }
+
+     
 
   }
   catch(error)
@@ -1393,7 +1431,7 @@ const sendPatientEmail = async (req, res) => {
     // Email content
     const mailOptions = {
       from: process.env.EMAIL,
-      to: patient.email,
+      to: /*patient.email*/"ahmed.elgamel@student.guc.edu.eg" ,
       subject,
       text: message,
     };
