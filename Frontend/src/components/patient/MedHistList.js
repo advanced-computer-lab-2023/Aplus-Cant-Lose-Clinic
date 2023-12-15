@@ -2,22 +2,29 @@ import React, { useState, useEffect } from "react";
 import download from "downloadjs";
 import axios from "axios";
 import { API_URL } from "../../Consts";
-import { BrowserRouter as Router, Route, Link, Switch, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch,
+  Navigate,
+} from "react-router-dom";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
+import AccountAvatar from "../Authentication/AccountAvatar";
 const MedHistList = () => {
   const [filesList, setFilesList] = useState([]);
   const [errorMsg, setErrorMsg] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState('');
-  const { id,role } = useSelector((state) => state.user);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const { id, role } = useSelector((state) => state.user);
   useEffect(() => {
     const getFilesList = async () => {
       try {
@@ -33,14 +40,11 @@ const MedHistList = () => {
     getFilesList();
   }, [filesList]);
   const handleCloseSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
     setSnackbarOpen(false);
   };
-
-
-
 
   const downloadFile = async (fid, path, mimetype) => {
     try {
@@ -82,12 +86,14 @@ const MedHistList = () => {
     }
   };
 
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
-  return (
-    role==="patient" ?(
+  return role === "patient" ? (
     <div className="files-container">
-                    <Typography variant="h5">Medical History</Typography>
+      <div>
+        <AccountAvatar />
+      </div>
+      <Typography variant="h5">Medical History</Typography>
 
       {errorMsg && <p className="errorMsg">{errorMsg}</p>}
       <table className="files-table">
@@ -136,7 +142,14 @@ const MedHistList = () => {
           )}
         </tbody>
       </table>
-      <Box sx={{ "& > :not(style)": { m: 1 } ,position:"fixed",left:"0px",bottom:"20px"}}>
+      <Box
+        sx={{
+          "& > :not(style)": { m: 1 },
+          position: "fixed",
+          left: "0px",
+          bottom: "20px",
+        }}
+      >
         <Link to="/MedHist">
           {" "}
           <Fab color="primary" aria-label="add">
@@ -144,7 +157,14 @@ const MedHistList = () => {
           </Fab>
         </Link>
       </Box>
-      <Box sx={{ "& > :not(style)": { m: 1 } ,position:"fixed",right:"0px",bottom:"20px"}}>
+      <Box
+        sx={{
+          "& > :not(style)": { m: 1 },
+          position: "fixed",
+          right: "0px",
+          bottom: "20px",
+        }}
+      >
         <Link to="/Home">
           {" "}
           <Fab color="primary" aria-label="add">
@@ -152,7 +172,8 @@ const MedHistList = () => {
           </Fab>
         </Link>
       </Box>
-    </div>):(
+    </div>
+  ) : (
     <>
       <Link to="/Login" sx={{ left: "100%" }}>
         <Typography
@@ -170,7 +191,6 @@ const MedHistList = () => {
         </Typography>
       </Link>
     </>
-  ));
-  
+  );
 };
 export default MedHistList;

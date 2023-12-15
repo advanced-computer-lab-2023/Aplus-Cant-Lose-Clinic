@@ -30,6 +30,7 @@ import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
 import {useNavigate}  from "react-router-dom";
+import AccountAvatar from "../Authentication/AccountAvatar";
 // ...
 import {
   viewPrescriptions,
@@ -93,6 +94,9 @@ const App = () => {
   return (
     role==="patient" ?(
     <Box sx={{ flexGrow: 1 }}>
+          <div>
+        <AccountAvatar />
+      </div>
       <Dialog
         open={Boolean(prescriptionid)}
         sx={{ width: "100%", height: "100%" }}

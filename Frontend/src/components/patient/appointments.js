@@ -39,7 +39,7 @@ import { API_URL } from "../../Consts.js";
 import RescheduleAppointment from "./PatRescheduleAppointment";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
+import AccountAvatar from "../Authentication/AccountAvatar.js";
 
 
 
@@ -305,6 +305,9 @@ const navigate = useNavigate();
   return (
     role==="patient"?(
     <Box sx={{ flexGrow: 1 }}>
+        <div>
+        <AccountAvatar />
+      </div>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
           <Link to="/Home" style={{ color: "white" }}>

@@ -8,8 +8,11 @@ import { useNavigate } from "react-router-dom";
 import { SnackbarContext } from "../../App";
 import { AutoFixNormal } from '@mui/icons-material';
 import Typography from "@mui/material/Typography";
+import AccountAvatar from '../Authentication/AccountAvatar';
 import { Link } from "react-router-dom";
-
+    <div>
+        <AccountAvatar />
+      </div>
   //<------------------------------------------------------------------------------------
   const AddPack = () => {
     const dispatch=useDispatch();
@@ -70,6 +73,9 @@ import { Link } from "react-router-dom";
     return (
       role==="admin"?
         <div className="admin-form">
+              <div>
+        <AccountAvatar />
+      </div>
             <h2>Add Health Package</h2>
             <form onSubmit={handleSave}>
                 <div className="form-group">

@@ -24,6 +24,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { useNavigate } from "react-router-dom";
+import AccountAvatar from "../Authentication/AccountAvatar";
 export default function ButtonAppBar() {
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
@@ -83,6 +84,9 @@ const navigate = useNavigate();
   return (
     role==="patient"?(
     <Box sx={{ flexGrow: 1 }}>
+          <div>
+        <AccountAvatar />
+      </div>
       <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
           <Link to="/Home" style={{ color: "white" }}>

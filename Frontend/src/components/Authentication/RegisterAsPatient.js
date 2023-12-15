@@ -87,6 +87,16 @@ function RegisterAsPatient() {
           <option value="none">none</option>
         </select>
         <div>
+        <label className="form__label" for="dBirth">
+          Date of Birth
+        </label>
+        <input
+          style={{ width: "92%" }}
+          type="date"
+          id="dBirth"
+          max="2001-10-15"
+          required
+        />
           <label className="form__label" for="pmobile">
             mobile number
           </label>
@@ -100,17 +110,8 @@ function RegisterAsPatient() {
           />
         </div>
 
-        <label className="form__label" for="dBirth">
-          Date of Birth
-        </label>
-        <input
-          style={{ width: "92%" }}
-          type="date"
-          id="dBirth"
-          max="2001-10-15"
-          required
-        />
-        <hr></hr>
+
+        <hr/>
         <h5 style={{ marginLeft: "30%" }}> Emergency Contact </h5>
 
         <label className="form__label" for="fullname">

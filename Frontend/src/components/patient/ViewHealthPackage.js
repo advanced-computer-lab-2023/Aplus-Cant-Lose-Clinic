@@ -17,6 +17,7 @@ import {Link } from 'react-router-dom';
 import { Dialog,DialogTitle, DialogContent, DialogActions,DialogD } from '@mui/material';
 import axios from 'axios';
 import { API_URL } from "../../Consts";
+import AccountAvatar from '../Authentication/AccountAvatar';
 import { useNavigate } from 'react-router-dom';
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -102,6 +103,9 @@ const navigate = useNavigate();
   return (
     role==="patient"?(
     <>
+      <div>
+        <AccountAvatar />
+      </div>
       <TableContainer component={Paper} style={tableStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>

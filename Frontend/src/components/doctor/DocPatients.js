@@ -22,7 +22,7 @@ import FollowUp from "./FollowUp";
 import RescheduleAppointment from "./DocRescheduleAppointment";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-
+import AccountAvatar from "../Authentication/AccountAvatar";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
@@ -43,6 +43,9 @@ export default function DocPatients() {
   return (
     (role === "doctor") ? (
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
+            <div>
+        <AccountAvatar />
+      </div>
         <i>
           <IconButton
             color="primary"

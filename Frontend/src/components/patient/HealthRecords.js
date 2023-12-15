@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { API_URL } from "../../Consts.js";
 import { Link } from 'react-router-dom';
+import AccountAvatar from '../Authentication/AccountAvatar.js';
 const styles = {
   paper: {
     padding: '20px',
@@ -61,6 +62,9 @@ function HealthRecords() {
   return (
     role==="patient" ?(
     <div>
+          <div>
+        <AccountAvatar />
+      </div>
       <div style={{ paddingBottom: '1.5%', backgroundColor: '#1769aa' }}>
         <IconButton
           color="#FFFFFF"

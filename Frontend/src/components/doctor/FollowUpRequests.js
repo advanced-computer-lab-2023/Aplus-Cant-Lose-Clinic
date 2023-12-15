@@ -28,6 +28,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import AccountAvatar from "../Authentication/AccountAvatar.js";
 export default function FollowUpRequests() {
   const snackbarMessage = useContext(SnackbarContext);
   const id = useSelector((state) => state.user.id); 
@@ -140,6 +141,9 @@ export default function FollowUpRequests() {
 
   return (
     <>
+        <div>
+        <AccountAvatar />
+      </div>
     <TableContainer component={Paper} style={tableStyle}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         {/* ... (rest of your component) */}

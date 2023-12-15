@@ -11,6 +11,7 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
+import AccountAvatar from '../Authentication/AccountAvatar.js';
 const MedHist = (props) => {
   const { id ,role} = useSelector((state) => state.user);
   const navigate = useNavigate();
@@ -104,6 +105,7 @@ const MedHist = (props) => {
   return (
 role==='patient' ?
     <React.Fragment>
+      <AccountAvatar/>
       <Form className="search-form" onSubmit={handleOnSubmit}>
         {errorMsg && <p className="errorMsg">{errorMsg}</p>}
         <Row>

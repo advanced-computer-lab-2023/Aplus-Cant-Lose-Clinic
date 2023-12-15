@@ -23,7 +23,6 @@ import RegisterAsPatient from "./components/Authentication/RegisterAsPatient";
 
 // import upload_docs from "./components/Authentication/upload_docs";
 import Prescriptions from "./components/patient/Prescription";
-
 import ListOfPrescriptions from "./components/patient/ListOfPrescriptions";
 import ViewFamilyMember from "./components/patient/viewfamilymember";
 import NewFamilyMember from "./components/patient/newfamilymember";

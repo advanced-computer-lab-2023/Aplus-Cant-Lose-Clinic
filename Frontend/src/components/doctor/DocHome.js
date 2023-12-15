@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Paper,
@@ -18,7 +17,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import GroupIcon from "@mui/icons-material/Group";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { WalletDialog } from "../WalletDialog.js";
-import { useState ,useEffect} from "react";
+import { useState } from "react";
 import BadgeIcon from "@mui/icons-material/Badge";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -26,11 +25,10 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import SickIcon from "@mui/icons-material/Sick";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import DoctorProfileDialog from "./DoctorProfileDialog";
-import { useGridStatePersistence } from "@mui/x-data-grid/internals";
 export default function DocHome() {
   console.log("im hiiim ");
   const user = useSelector((state) => state.user);
-const disaptch=useDispatch();
+
   const styles = {
     marginRight: "10px",
     color: "white",
@@ -75,119 +73,12 @@ const disaptch=useDispatch();
   const handleCloseDialoog = () => {
     setDialogOpen(false);
   };
-  useEffect(() => {
-
-  }, [dialogOpen]);
-
-
   return (
     // <div>DocHome
     // {  console.log(user)}
     // </div>
 
     <>
-      <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
-        <Container maxWidth="xl">
-            <Toolbar disableGutters >
-                <Typography
-                    variant="h6"
-                    sx={{
-                        mr: 4,
-                        display: { xs: '2', md: 'flex' },
-                        fontFamily: 'monospace',
-                        fontWeight: 700,
-                        color: 'inherit',
-                        textDecoration: 'none',
-                    }}
-                >
-                    HomePage
-                </Typography>
-
-              
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to='/PatientsList'>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <FormatListBulletedIcon style={styles} ></FormatListBulletedIcon>
-                            </IconButton>
-                            <Typography >My Patients</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to='/DocPatients'>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <GroupIcon style={styles} ></GroupIcon>
-                            </IconButton>
-                            <Typography >Appointments</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to='/FollowUpRequests'>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <GroupIcon style={styles} ></GroupIcon>
-                            </IconButton>
-                            <Typography >Follow Ups</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <div>
-                        <>
-                            <Button sx={{ color: 'white' }} onClick={()=>{handleOpenDialog()}}>
-                                <IconButton>
-                                    <WalletIcon style={styles} ></WalletIcon>
-                                </IconButton>
-                                <Typography >view wallet</Typography>
-                            </Button>
-                            <WalletDialog open={dialogOpen} onClose={handleCloseDialog} type='doctor'/>
-                        </>
-                    </div>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to={`/Contract`}>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <GroupIcon style={styles} ></GroupIcon>
-                            </IconButton>
-                            <Typography >Contract</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to={`/Profile`}>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <GroupIcon style={styles} ></GroupIcon>
-                            </IconButton>
-                            <Typography > job credentials</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: '2', md: 'flex' } }}>
-                    <NavLink to={`/chats`}>
-                        <Button sx={{ color: 'white' }}>
-                            <IconButton>
-                                <GroupIcon style={styles} ></GroupIcon>
-                            </IconButton>
-                            <Typography > My chats</Typography>
-                        </Button>
-                    </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 0 }}>
-                    <Tooltip title="Open settings">
-                        <IconButton sx={{ p: 0 }}>
-                            <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                        </IconButton>
-                    </Tooltip>
-                </Box>
-            </Toolbar>
-        </Container>
-      </AppBar>
 
       <Snackbar
         open={false}

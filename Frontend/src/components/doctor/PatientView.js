@@ -6,6 +6,7 @@ import {Box } from '@mui/material';
 import { addHealthRecord } from "../../features/doctorSlice";
 import {useNavigate} from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import AccountAvatar from '../Authentication/AccountAvatar';
 import {
 
   Dialog,
@@ -139,6 +140,9 @@ const handleSubmitHealthRecord = async(event)=>{
   return (role==="doctor" ?
 
     <div>
+          <div>
+        <AccountAvatar />
+      </div>
      <div style={{ paddingBottom: '4%', backgroundColor: "#004E98" ,marginBottom:"0.5%"}}>
           <IconButton
             color="#FFFFFF"

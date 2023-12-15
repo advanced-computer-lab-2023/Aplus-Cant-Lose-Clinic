@@ -34,7 +34,7 @@ import { Icon } from "@mui/material";
 import List from "@mui/material/List";
 import { API_URL } from "../../Consts";
 import axios from "axios";
-
+import AccountAvatar from "../Authentication/AccountAvatar";
 export default function ButtonAppBar() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -199,6 +199,9 @@ handleCloseDialog();      }
   };
   return role === "patient" ? (
     <Box sx={{ flexGrow: 1 }}>
+        <div>
+        <AccountAvatar />
+      </div>
       <Dialog
         open={isDialogOpen2}
         onClose={handleCloseDialog2}

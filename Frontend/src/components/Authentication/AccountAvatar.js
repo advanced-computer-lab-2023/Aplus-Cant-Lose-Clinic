@@ -5,6 +5,8 @@ import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import LockResetIcon from "@mui/icons-material/LockReset";
 import List from "@mui/material/List";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import PermPhoneMsgIcon from "@mui/icons-material/PermPhoneMsg";
 import ListItem from "@mui/material/ListItem";
 import Dialog from "@mui/material/Dialog";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -24,6 +26,7 @@ import { logout } from "../../features/userSlice";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import NavbarGen from "../NavbarGen";
 import axios from "axios";
 
 import { API_URL } from "../../Consts";
@@ -225,8 +228,10 @@ const AccountAvatar = () => {
               <Button
                 variant="outlined"
                 size="large"
-                sx={{ width: "10%", ml: "4%", mb: "17px",mt:"0px"}}
-                startIcon={<WalletIcon fontSize="large" sx={{color:"grey"}}/>}
+                sx={{ width: "10%", ml: "4%", mb: "17px", mt: "0px" }}
+                startIcon={
+                  <WalletIcon fontSize="large" sx={{ color: "grey" }} />
+                }
                 onClick={() => {
                   handleOpenDialog();
                 }}
@@ -241,6 +246,24 @@ const AccountAvatar = () => {
             </>
           ) : null}
         </span>
+        {(role === "doctor" || role === "patient") && (
+          <>
+            <Button
+              variant="outlined"
+              size="large"
+              sx={{ width: "10%", ml: "4%", mb: "17px", mt: "0px" }}
+              startIcon={
+                <QuestionAnswerIcon fontSize="large" sx={{ color: "grey" }} />
+              }
+              onClick={() => navigate("/chats")}
+            >
+              chats/video
+            </Button>
+            <div>
+              <NavbarGen />
+            </div>
+          </>
+        )}
       </>
 
       <Popover

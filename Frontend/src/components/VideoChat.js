@@ -11,7 +11,7 @@ import { useSelector } from "react-redux"
 import "../App.css"
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import { useNavigate } from "react-router-dom"
-
+import AccountAvatar from "./Authentication/AccountAvatar"
 const socket = io.connect('http://localhost:5000')
 function VideoChat() {
 	const [ me, setMe ] = useState("")
@@ -121,6 +121,9 @@ useEffect(() => {
 
 	return (
 		<>
+        <div>
+        <AccountAvatar />
+      </div>
 			<h1 style={{ textAlign: "center", color: '#fff' }}>Zoomish</h1>
 		<div className="container">
 			<div className="video-container">
