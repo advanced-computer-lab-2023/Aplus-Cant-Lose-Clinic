@@ -14,6 +14,7 @@ import MuiAlert from '@mui/material/Alert';
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getNotifications } from '../../features/patientSlice.js';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 
 function Home() {
@@ -74,13 +75,24 @@ function Home() {
         <>
         
     
-        {notifications.map((notification, index) => (
+        {/* {notifications.map((notification, index) => (
   <Snackbar key={index} open={true} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'left' }} >
     <MuiAlert elevation={6} variant="filled" severity={notification.type}>
       {notification.message}
     </MuiAlert>
   </Snackbar>
-))}
+))} */}
+
+    <Button
+                variant="outlined"
+                size="large"
+                sx={{ width: "0%", ml: "0%", mb: "0.5%",mt:"0px" ,borderRadius:"50%",alignItems: 'center',justifyContent: 'center',display: 'flex', }}
+                onClick={() => {}}
+         >
+                   
+                    <NotificationsIcon fontSize="small" sx={{color:"grey"}}/>
+                
+        </Button>
         
             <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
                 <div style={divstyle}>
