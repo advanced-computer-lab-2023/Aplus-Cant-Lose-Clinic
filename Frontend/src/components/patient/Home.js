@@ -15,6 +15,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getNotifications } from '../../features/patientSlice.js';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
 
 
 function Home() {
@@ -45,7 +50,6 @@ function Home() {
 
     }
 
-    const [dialogOpen, setDialogOpen] = useState(false);
 
     const patientId = useSelector((state) => state.user.id);
   
@@ -59,14 +63,16 @@ function Home() {
     const notifications = useSelector((state) => state.patient.notifications);
   
 
-    const handleOpenDialog = () => {
-      setDialogOpen(true);
-    };
-  
-    const handleCloseDialog = () => {
-      setDialogOpen(false);
-    };
-   
+const [openDialog, setOpenDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
    
    
     
@@ -86,13 +92,31 @@ function Home() {
     <Button
                 variant="outlined"
                 size="large"
-                sx={{ width: "0%", ml: "0%", mb: "0.5%",mt:"0px" ,borderRadius:"50%",alignItems: 'center',justifyContent: 'center',display: 'flex', }}
-                onClick={() => {}}
-         >
+                sx={{ width: "0", ml: "0%", mb: "0.5%",mt:"0px" ,borderRadius:"50%",alignItems: 'center',justifyContent: 'center',display: 'flex', }}
+                onClick={handleOpenDialog}>
                    
                     <NotificationsIcon fontSize="small" sx={{color:"grey"}}/>
                 
         </Button>
+
+     <Dialog open={openDialog} onClose={handleCloseDialog}>
+            <DialogTitle>Notifications</DialogTitle>
+            <DialogContent>
+                <DialogContentText>
+                    {/* Add your list of notifications here */}
+                    Notification 1: Something happened!
+                    <br />
+                    Notification 2: Another event occurred!
+                    {/* Add more notifications as needed */}
+                </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+                <Button onClick={handleCloseDialog}>Close</Button>
+            </DialogActions>
+      </Dialog>
+
+
         
             <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
                 <div style={divstyle}>
