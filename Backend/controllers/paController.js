@@ -1272,6 +1272,18 @@ const cancelAppointment=async (req,res)=>
       res.status(500).json({message:"Patient not found!"})
     }
     appointment.status="cancelled";
+  
+    ///added start
+    patient.notifications.push({ //add notifiaction to patient
+      message:"APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}",
+      type:"AppointmentCanceled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:"APPOINTEMNT CANCELED WITH PATIENT ${patient.name}",
+      type:"AppointmentCanceled",
+    });
+    //still to send an email
+    //added end
     await appointment.save();
 
     const today=new Date();
