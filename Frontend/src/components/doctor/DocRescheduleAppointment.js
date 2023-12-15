@@ -21,7 +21,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { API_URL } from "../../Consts.js";
 
-function RescheduleAppointment({ appointmentId }) {
+function RescheduleAppointment({  appointmentID }) {
     const [open, setOpen] = React.useState(false);
     const [endDate, setEndDate] = useState("");
     const [startDate, setStartDate] = useState("");
@@ -44,26 +44,37 @@ function RescheduleAppointment({ appointmentId }) {
         }
     };
 
+    // Example code in DocRescheduleAppointment.js
     async function rescheduleAppointment() {
         try {
-            console.log(appointmentId.pID._id);
-            console.log(appointmentId._id);
-            const [id] = appointmentId._id;
-            const [pid] = appointmentId.pID._id;
-            // Change the API endpoint to handle rescheduling
-            const response = await axios.put(
-                `${API_URL}/doctor/rescheduleAppointment/${id}/${pid}`,
-                {
-                    startDate,
-                    endDate
-                }
-            );
+            const appointmentId = appointmentID;
             
-            console.log(response);
+           
+            console.log("Attempting to reschedule appointment:", appointmentId,  startDate, endDate);
+            if (appointmentId ) {
+                const response = await axios.put(
+                    `${API_URL}/doctor/rescheduleAppointment/${appointmentId}`, // Use appointmentID directly
+                    {
+                        startDate,
+                        endDate
+                    }
+                );
+                console.log("Response:", response.data);
+                // You can handle the response here, e.g., show a success message
+            } else {
+                console.error("Invalid appointmentId ");
+            }
         } catch (error) {
             console.error("Error rescheduling appointment", error);
+            if (error.response) {
+                console.error("Response data:", error.response.data);
+                console.error("Response status:", error.response.status);
+            }
         }
     }
+    
+
+    
 
     const handleClickOpen = async () => {
         setOpen(true);

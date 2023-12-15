@@ -606,15 +606,21 @@ const getDoctor = async (req, res) => {
 
 
 async function rescheduleAppointment(req, res) {
-  const appointmentId = req.params.id;
+  const {appointmentId} = req.params;
   const { startDate, endDate } = req.body;
   console.log(appointmentId);
             console.log(startDate);
             console.log(endDate);
+            const mongoose = require('mongoose');
+           // const Appointment = require("C:\Users\Future\Documents\GitHub\Aplus-Cant-Lose-Clinic\Backend\Models\appointments.js");
+            console.log(req.params);
+
   try {
     // Find the appointment by ID
     const appointment = await Appointment.findById(appointmentId);
-
+    if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
+      return res.status(400).json({ error: 'Invalid appointmentId' });
+  }
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }

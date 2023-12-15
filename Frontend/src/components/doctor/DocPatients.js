@@ -152,33 +152,44 @@ export default function DocPatients() {
             flexDirection: "column",
           }}
         >
-          {appointments
-            .filter((res) => {
-              return (
-                nameFilter === "" ||
-                res.pID.name.toLowerCase().includes(nameFilter.toLowerCase())
-              );
-            })
-            .filter((res) => {
-              return (
-                startDateFilter === "" ||
-                new Date(res.startDate) >= new Date(startDateFilter)
-              );
-            })
-
-            .filter((res) => {
-              return statusFilter === "Any" || res.status === statusFilter;
-            })
-            .filter((res) => {
-              return (
-                upcomingFilter === false ||
-                new Date(res.startDate) - new Date() > 0
-              );
-            })
-            .map((res) => {
-             // console.log(res._id);
-              return (
-                <Accordion>
+         {appointments
+    .filter((res) => {
+        return (
+            nameFilter === "" ||
+            (res.pID && res.pID.name.toLowerCase().includes(nameFilter.toLowerCase()))
+        );
+    })
+    .filter((res) => {
+        return (
+            startDateFilter === "" ||
+            (res.startDate && new Date(res.startDate) >= new Date(startDateFilter))
+        );
+    })
+    .filter((res) => {
+        return statusFilter === "Any" || (res.status && res.status === statusFilter);
+    })
+    .filter((res) => {
+      return (
+          upcomingFilter === false ||
+          (res.startDate && new Date(res.startDate) > new Date())
+      );
+  })
+  
+    .filter((res) => {
+        return (
+            upcomingFilter === false ||
+            (res.startDate && new Date(res.startDate) - new Date() > 0)
+        );
+    })
+    .map((res) => {
+      // Additional checks for undefined properties
+      if (!res._id || !res.pID) {
+          console.error("Invalid appointment object:", res);
+          return null; // Skip rendering if the object is invalid
+      }
+  
+      return (
+          <Accordion key={res._id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -209,11 +220,10 @@ export default function DocPatients() {
                       <Typography sx={{ width: "300px" }}>
                         Reschedule Appointment:{" "}
                       </Typography>
-                      {res.status === "upcoming" && (
-                       
-                        <RescheduleAppointment appointmentId={res}  />
-
-                      )}
+                      {res.status === "upcoming" && res._id && res.pID && (
+                        
+                        <RescheduleAppointment  appointmentID={res?._id} />
+                    )}
                     </div>
                     
                   </AccordionDetails>
