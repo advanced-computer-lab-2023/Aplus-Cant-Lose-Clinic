@@ -58,6 +58,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
   const [followUpsRequests, setFollowUpsRequests] = useState([]);
   const dispatch = useDispatch();
   const pId = useSelector((state) => state.user.id);
+  const [cancelledAppointments, setCancelledAppointments] = useState([]);
 
   useEffect(() => {
     dispatch(viewAppoints(pId));
@@ -68,15 +69,23 @@ function BasicTable({ status, date, onPayButtonClick }) {
 
   const handleCancelAppointment=async(appointment)=>
   {
+    setCancelledAppointments([...cancelledAppointments,appointment._id])
     try {
+      
+      
       const aid=appointment._id
       const did=appointment.drID._id
       const pid=appointment.pID
 
-      const response = await axios.delete(
+      const response = await axios.patch(
          `${API_URL}/patient/CancelAppointment/${aid}/${did}/${pid}`
-      );
-    } catch (error) {
+          );
+          
+         
+         // dispatch(viewAppoints(pId));
+          
+
+        } catch (error) {
       console.error("Error cancelling appointment", error);
     }
   }
@@ -139,10 +148,10 @@ function BasicTable({ status, date, onPayButtonClick }) {
     <Button
       variant="contained"
       color="secondary"
-      onClick={() => {handleCancelAppointment(row)
-      }}
+      onClick={() => {handleCancelAppointment(row)}}
+      disabled={cancelledAppointments.includes(row._id)}
     >
-      Cancel
+      {cancelledAppointments.includes(row._id) ? "Done" : "Cancel"}
     </Button>
   )}
 </TableCell>

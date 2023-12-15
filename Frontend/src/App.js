@@ -36,6 +36,7 @@ import ViewHealthPackage from "./components/patient/ViewHealthPackage";
 import SubsciptionPayment from "./components/patient/SubscriptionPayment";
 import FamilyMemberForm from "./components/patient/FamilyMemberForm.js";
 import Chatpage from "./Pages/Chatpage";
+import FollowUpRequests from "./components/doctor/FollowUpRequests.js";
 
 import {
   createBrowserRouter,
@@ -126,6 +127,7 @@ const router = createBrowserRouter(
       <Route path="/SuccessAppoint/:appointmentID/:patientId" element={<SuccessAppoint/>}/>
 
       <Route path="/chats" element={<Chatpage/>} />
+      <Route path="/FollowUpRequests" element={<FollowUpRequests/>}/>
     </Route>
   )
   );

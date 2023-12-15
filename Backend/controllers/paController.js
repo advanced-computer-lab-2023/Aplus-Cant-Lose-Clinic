@@ -1256,7 +1256,7 @@ const cancelAppointment=async (req,res)=>
       return res.status(400).json({ message: "Invalid parameters" });
     }
     console.log("yyyyyyy",did)
-    const appointment=await Appointment.findByIdAndDelete(aid)
+    const appointment=await Appointment.findById(aid)
     const doctor=await Doctor.findById(did)
     const patient=await Patient.findById(pid)
     if(!appointment)
@@ -1271,20 +1271,19 @@ const cancelAppointment=async (req,res)=>
     {
       res.status(500).json({message:"Patient not found!"})
     }
+    appointment.status="cancelled";
+    await appointment.save();
+
     const today=new Date();
     const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
     const timeDifference = Math.abs(today - appointment.startDate);
    //const timeDifference = appointment.startDate-today;
-
     if (timeDifference > oneDayInMilliseconds) {
       console.log(timeDifference)
       console.log(patient.wallet)
       patient.wallet+=doctor.rate;
-      await patient.save()
-      
-      
+      await patient.save()     
   }
-
 
   }
   catch(error)

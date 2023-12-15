@@ -7,6 +7,7 @@ const Appointment = require("../Models/appointments");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const FollowUp=require("../Models/followUps");
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 }
@@ -863,6 +864,63 @@ const deleteMedicineFromPrescription = async (req, res) => {
 
 
 
+const getFollowUpRequests=async(req,res)=>
+{
+  const {doctorId}=req.params;
+  try{
+  const response =await FollowUp.find({drID:doctorId});
+  res.status(200).json(response)
+}catch(error)
+{
+  console.error(error)
+  res.status(500).json({message:'Internal server error'})
+}
+  
+
+}
+const acceptFollowUpRequest=async (req,res)=>
+{
+  const {id}=req.params
+  //why can't i name them the same??
+  const {start,end}=req.body
+  console.log(start);
+  try{
+    const response =await FollowUp.findByIdAndDelete(id)
+    const appointment = await Appointment.create({
+      startDate:start,
+      endDate:end,
+      drID:response.drID,
+      pID:response.pID,
+      status:"upcoming",
+      Description: "follow up",
+    });
+    
+    res.status(200).json({message:"FollowUp accepted Successfully!",data:appointment})
+  }catch(error)
+  {
+    console.error(error)
+    res.status(500).json({message:'Error accepting FollowUp'})
+  }
+
+}
+const rejectFollowUpRequest=async(req,res)=>
+{
+  const {id}=req.params
+  try{
+    const response =await FollowUp.findByIdAndDelete(id)
+    res.status(200).json({message:"FollowUp rejected Successfully!"})
+  }catch(error)
+  {
+    console.error(error)
+    res.status(500).json({message:'Error rejecting FollowUp'})
+  }
+}
+
+
+
+
+
+
 
 
 module.exports = {
@@ -888,5 +946,10 @@ module.exports = {
   sendDoctorEmail,
   updateDosageForMedicine,
   addMedicineToPrescription,
-  deleteMedicineFromPrescription
+  deleteMedicineFromPrescription,
+  sendDoctorEmail,
+  getFollowUpRequests,
+  acceptFollowUpRequest,
+  rejectFollowUpRequest
+  
 };
