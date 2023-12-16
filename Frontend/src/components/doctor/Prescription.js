@@ -9,13 +9,15 @@ import {
   Typography,
   Grid,
   Paper,
+  Dialog,
+  Container,
 } from '@mui/material';
 import axios from 'axios';
-import Dialog from '@mui/material/Dialog';
 import { Link } from 'react-router-dom';
-import { API_URL } from '../../Consts';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Container from '@mui/material/Container';
+import AddIcon from '@mui/icons-material/Add';
+
+import { API_URL } from '../../Consts';
 
 const Prescriptions = () => {
   const doctorId = useSelector((state) => state.user.id);
@@ -23,6 +25,7 @@ const Prescriptions = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [prescriptionsList, setPrescriptionsList] = useState([]);
   const [prescriptionid, setPrescriptionid] = useState(null);
+  const [isAddPrescriptionDialogOpen, setAddPrescriptionDialogOpen] = useState(false);
 
   const Info = {
     margin: '20px 20px',
@@ -64,6 +67,14 @@ const Prescriptions = () => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleAddPrescription = () => {
+    setAddPrescriptionDialogOpen(true);
+  };
+
+  const handleCloseAddPrescriptionDialog = () => {
+    setAddPrescriptionDialogOpen(false);
   };
 
   useEffect(() => {
@@ -218,6 +229,12 @@ const Prescriptions = () => {
                   Prescription Date: {new Date(prescription.datePrescribed).toLocaleDateString()}
                 </Paper>
               ))}
+              <IconButton
+                onClick={handleAddPrescription}
+                sx={{ color: 'white', marginLeft: '25%' }}
+              >
+                <AddIcon />
+              </IconButton>
             </Paper>
           </div>
         ))}
