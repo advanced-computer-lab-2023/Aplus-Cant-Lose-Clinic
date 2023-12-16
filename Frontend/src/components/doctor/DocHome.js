@@ -88,23 +88,7 @@ export default function DocHome() {
     // </div>
 
     <>
-      <Button
-        variant="outlined"
-        size="large"
-        sx={{
-          width: "0",
-          ml: "0%",
-          mb: "0.5%",
-          mt: "0px",
-          borderRadius: "50%",
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-        onClick={handleOpenDialog}
-      >
-        <NotificationsIcon fontSize="small" sx={{ color: "grey" }} />
-      </Button>
+      
 
       <Snackbar
         open={false}

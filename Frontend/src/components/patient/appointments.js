@@ -80,6 +80,8 @@ function BasicTable({ status, date, onPayButtonClick }) {
       const response = await axios.patch(
          `${API_URL}/patient/CancelAppointment/${aid}/${did}/${pid}`
           );
+          window.location.reload();
+
           
          
          // dispatch(viewAppoints(pId));
