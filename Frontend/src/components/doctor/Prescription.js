@@ -45,16 +45,36 @@ const Prescriptions = () => {
         margin: '20px 20px',
         alignItems: 'baseline',
     };
-    const handleFormSubmit = async (formData) => {
-        // Add logic to submit the prescription form data
-        // For example, make an API call to create a new prescription
-        console.log('Form Data:', formData);
-
+    const handleFormSubmit = async () => {
+      try {
+        // Validate the form data before submitting
+        if (!formData.medicineName || !formData.dosage) {
+          console.error("Invalid form data");
+          return;
+        }
+  
+        // Make an API call to create a new prescription
+        const response = await axios.post(`${API_URL}/doctor/addPrescription`, {
+          medName: formData.medicineName,
+          dosage: formData.dosage,
+          patientID: selectedPatient,
+          doctorID: doctorId,
+          datePrescribed: formData.prescriptionDate || new Date(),
+        });
+  
+        // Check the response and handle accordingly
+        console.log("API Response:", response.data);
+  
         // Close the form dialog
         setAddPrescriptionDialogOpen(false);
-
-        // You may want to refresh the prescription list or perform other actions
+  
+        // Optionally, you may want to refresh the prescription list or perform other actions
+      } catch (error) {
+        console.error("Error submitting prescription:", error);
+        // Handle the error (e.g., show an error message to the user)
+      }
     };
+  
     const getPatients = async () => {
         try {
             const { data } = await axios.get(
@@ -161,6 +181,7 @@ const Prescriptions = () => {
     const handleAddPrescriptionClose = () => {
       setAddPrescriptionDialogOpen(false);
   };
+  
 
     useEffect(() => {
         getPatients();
