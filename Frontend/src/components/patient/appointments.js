@@ -139,7 +139,11 @@ function BasicTable({ status, date, onPayButtonClick }) {
           {row.startDate &&
             new Date(row.startDate).toLocaleDateString()}
         </TableCell>
-        <TableCell sx={{fontSize:"16px"}} align="left">{row.status}</TableCell>
+        <TableCell sx={{fontSize:"16px"}} align="left">{row.status}
+        {row.Description.toLowerCase().includes('follow up') && (
+    <span style={{ marginLeft: '0px', color: 'green' }}>+</span>
+  )}
+      </TableCell>
         <TableCell sx={{fontSize:"20px"}} align="left">
           {row.status === "upcoming" && (
             <RescheduleAppointment appointment={row} />

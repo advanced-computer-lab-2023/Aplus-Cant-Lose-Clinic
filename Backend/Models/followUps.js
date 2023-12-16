@@ -12,7 +12,8 @@ const followUpSchema = new mongoose.Schema({
   },
   patientName:{
     type:String
-  }
+  },
+  requestDate:{type:Date}
 
   
 });
