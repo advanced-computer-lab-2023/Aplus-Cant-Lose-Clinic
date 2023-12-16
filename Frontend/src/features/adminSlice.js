@@ -198,7 +198,7 @@ state.hpackages[i]={...action.payload.newData};
 
       .addCase(viewPatients.fulfilled, (state, action) => {
         state.loading = false;
-        state.patients = action.payload.data.patient;
+        state.patients = action.payload.data.patients;
         state.response = "viewPatients";
       })
       .addCase(viewPatients.rejected, (state, action) => {

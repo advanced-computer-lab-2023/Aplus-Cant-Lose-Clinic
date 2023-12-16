@@ -88,7 +88,9 @@ const AccountAvatar = () => {
   const handleLogout = () => {
     dispatch(logout())
       .then(() => {
+
         navigate("/Login");
+
       })
       .catch((error) => {
         console.error("Logout error:", error);
@@ -395,7 +397,7 @@ const AccountAvatar = () => {
       <Dialog open={openDialogg} onClose={handleCloseDialog}>
         <DialogTitle>Notifications</DialogTitle>
         <DialogContent>
-          {notifications.map((notification, index) => (
+          {notifications?.map((notification, index) => (
             <div>{notification.message}</div>
           ))}
         </DialogContent>

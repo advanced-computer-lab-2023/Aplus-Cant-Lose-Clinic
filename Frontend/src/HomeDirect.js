@@ -19,7 +19,7 @@ const containerStyles = {
   paddingBottom: "2px",
   paddingTop: "2px", // Center items vertically
 };
-const ENDPOINT = 'http://localhost:5000'; // "https://talk-a-tive.herokuapp.com"; -> After deployment
+const ENDPOINT = 'http://localhost:10000'; // "https://talk-a-tive.herokuapp.com"; -> After deployment
 const socket = io(ENDPOINT);
 
 

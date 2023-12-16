@@ -1,3 +1,4 @@
+/* package whatever; // don't place package name! */
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";

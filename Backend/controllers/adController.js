@@ -86,10 +86,10 @@ const viewJoinedDr = async (req, res) => {
 
 const viewPatients = async (req, res) => {
   try {
-    const patient = await Patient.find();
-    res.status(201).json({ message: "patients r got successfully", patient });
+    const patients = await Patient.find().populate('hPackage'); // Use populate to replace hPackage with actual data
+    res.status(201).json({ message: "Patients retrieved successfully", patients });
   } catch (error) {
-    console.error("Error creating user:", error);
+    console.error("Error retrieving patients:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

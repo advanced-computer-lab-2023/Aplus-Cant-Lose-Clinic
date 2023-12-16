@@ -29,7 +29,7 @@ export default function ViewDoctors() {
   };
 
   const cellStyle = {
-    fontSize: "14px",
+    fontSize: "20px",
   };
 
   const handleDelete = (id) => {
@@ -58,7 +58,7 @@ export default function ViewDoctors() {
               key={row._id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th" scope="row" style={cellStyle}>
                 {row.name}
               </TableCell>
               <TableCell align="left" style={cellStyle}>

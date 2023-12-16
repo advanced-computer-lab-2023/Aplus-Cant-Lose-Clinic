@@ -63,11 +63,11 @@ function App() {
           <div className="form">
             <form onSubmit={handleSubmit}>
               <div className="input-container">
-                <label htmlFor="username">Username </label>
+                <label htmlFor="username" style={{fontSize:"18px"}}>Username </label>
                 <input type="text" id="username" name="username" required />
               </div>
               <div className="input-container">
-                <label htmlFor="password">Password </label>
+                <label htmlFor="password" style={{fontSize:"18px"}}>Password </label>
                 <div className="password-input">
                   <input
                     type={showPassword ? "text" : "password"}
