@@ -16,8 +16,11 @@ import axios from 'axios';
 import { Link } from 'react-router-dom';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AddIcon from '@mui/icons-material/Add';
-
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
 import { API_URL } from '../../Consts';
+import { TextField } from "@mui/material";
 
 const Prescriptions = () => {
   const doctorId = useSelector((state) => state.user.id);
@@ -25,13 +28,26 @@ const Prescriptions = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [prescriptionsList, setPrescriptionsList] = useState([]);
   const [prescriptionid, setPrescriptionid] = useState(null);
-  const [isAddPrescriptionDialogOpen, setAddPrescriptionDialogOpen] = useState(false);
-
+  const [AddPrescriptionDialogOpen, setAddPrescriptionDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    medicineName: '',
+    dosage: '',
+    // Add more form fields as needed
+  });
   const Info = {
     margin: '20px 20px',
     alignItems: 'baseline',
   };
+  const handleFormSubmit = async (formData) => {
+    // Add logic to submit the prescription form data
+    // For example, make an API call to create a new prescription
+    console.log('Form Data:', formData);
 
+    // Close the form dialog
+    setAddPrescriptionDialogOpen(false);
+
+    // You may want to refresh the prescription list or perform other actions
+  };
   const getPatients = async () => {
     try {
       const { data } = await axios.get(
@@ -73,16 +89,43 @@ const Prescriptions = () => {
     setAddPrescriptionDialogOpen(true);
   };
 
-  const handleCloseAddPrescriptionDialog = () => {
-    setAddPrescriptionDialogOpen(false);
-  };
-
   useEffect(() => {
     getPatients();
   }, []);
 
   return (
     <div>
+      <Dialog
+              open={AddPrescriptionDialogOpen}
+              sx={{ width: '100%', height: '100%' }}>
+               {prescriptionid ? ( 
+          <DialogContent>
+            <DialogTitle>Prescription Details</DialogTitle>
+            {/* Render prescription details here based on prescriptionid */}
+            <Typography>Prescription ID: {prescriptionid}</Typography>
+            {/* Add more details as needed */}
+          </DialogContent>
+        ) : (
+          <DialogContent>
+            <DialogTitle>Add Prescription</DialogTitle>
+            <TextField
+              label="Medicine Name"
+              fullWidth
+              value={formData.medicineName}
+              onChange={(e) => setFormData({ ...formData, medicineName: e.target.value })}
+            />
+            <TextField
+              label="Dosage"
+              fullWidth
+              value={formData.dosage}
+              onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
+            />
+            {/* Add more form fields as needed */}
+            <Button variant="contained" onClick={handleFormSubmit}>
+              Add Prescription
+            </Button>
+          </DialogContent>)}
+      </Dialog>
       <Dialog
         open={Boolean(prescriptionid)}
         sx={{ width: '100%', height: '100%' }}
