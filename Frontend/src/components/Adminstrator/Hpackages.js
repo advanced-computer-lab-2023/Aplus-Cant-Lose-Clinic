@@ -13,9 +13,11 @@ import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import { Button, Typography } from "@mui/material";
 import { NavLink } from 'react-router-dom';
+import AddPack from './AddPack';
 import { useContext } from "react";
 import { SnackbarContext } from "../../App";
 import Dialog from "@mui/material/Dialog";
+import IconButton from "@mui/material/IconButton";
 
 export default function Hpackages() {
   const snackbarMessage = useContext(SnackbarContext);
@@ -28,7 +30,15 @@ export default function Hpackages() {
   useEffect(() => {
     dispatch(viewHealthP())
   }, [dispatch]);
+  const [isDialogOpen, setDialogOpen] = useState(false);
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
   const dummyData = useSelector((state) => state.admin.hpackages);
   console.log(dummyData);
   const handleDelete = (id) => {
@@ -84,77 +94,74 @@ export default function Hpackages() {
   };
 
   const cellStyle = {
-    fontSize: "14px",
+    fontSize: "20px",
   };
   return (
     <>
 
-      <Dialog open={isOpen}>
-        <form onSubmit={handleSave}>
-          <div className="form-group">
-            <label htmlFor="type">Type</label>
-            <input
-              type="text"
-              id="type"
-              name="type"
-              defaultValue={editRow.type}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="rate"
-            >Rate</label>
-            <input
-              type="number"
-              id="rate"
-              name="rate"
-              defaultValue={editRow.rate}
-
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="doctorDisc">Doctor Discount</label>
-            <input
-              type="number"
-              id="doctorDisc"
-              name="doctorDisc"
-              defaultValue={editRow.doctorDisc}
-
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="medicineDisc">Medicine Discount</label>
-            <input
-              type="number"
-              id="medicineDisc"
-              name="medicineDisc"
-              defaultValue={editRow.medicineDisc}
-
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="familyDisc">Family Discount</label>
-            <input
-              type="number"
-              id="familyDisc"
-              name="familyDisc"
-              defaultValue={editRow.familyDisc}
-
-              required
-            />
-          </div>
-
-
-          <div className="button-group">
-            <button type="submit" >Save</button>
-
-          </div>
-        </form>
-
-      </Dialog>
+<Dialog open={isOpen} maxWidth="sm" fullWidth maxWidth="md" style={{ margin: '20px' }}       onClose={() => setIsOpen(false)}
+>
+  <form onSubmit={handleSave} style={{ width: '90%', padding: '20px' }}>
+    <div style={{ marginBottom: '15px' }}>
+      <label htmlFor="type">Type</label>
+      <input
+        type="text"
+        id="type"
+        name="type"
+        defaultValue={editRow.type}
+        required
+        style={{ width: '100%', padding: '8px' }}
+      />
+    </div>
+    <div style={{ marginBottom: '15px' }}>
+      <label htmlFor="rate">Rate</label>
+      <input
+        type="number"
+        id="rate"
+        name="rate"
+        defaultValue={editRow.rate}
+        required
+        style={{ width: '100%', padding: '8px' }}
+      />
+    </div>
+    <div style={{ marginBottom: '15px' }}>
+      <label htmlFor="doctorDisc">Doctor Discount</label>
+      <input
+        type="number"
+        id="doctorDisc"
+        name="doctorDisc"
+        defaultValue={editRow.doctorDisc}
+        required
+        style={{ width: '100%', padding: '8px' }}
+      />
+    </div>
+    <div style={{ marginBottom: '15px' }}>
+      <label htmlFor="medicineDisc">Medicine Discount</label>
+      <input
+        type="number"
+        id="medicineDisc"
+        name="medicineDisc"
+        defaultValue={editRow.medicineDisc}
+        required
+        style={{ width: '100%', padding: '8px' }}
+      />
+    </div>
+    <div style={{ marginBottom: '15px' }}>
+      <label htmlFor="familyDisc">Family Discount</label>
+      <input
+        type="number"
+        id="familyDisc"
+        name="familyDisc"
+        defaultValue={editRow.familyDisc}
+        required
+        style={{ width: '100%', padding: '8px' }}
+      />
+    </div>
+    <div className="button-group" style={{ marginTop: '20px', textAlign: 'center' }}>
+      <button type="submit" style={{ padding: '10px', fontSize: '16px' }}>Save</button>
+    </div>
+  </form>
+</Dialog>
       <TableContainer component={Paper} style={tableStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -186,7 +193,7 @@ export default function Hpackages() {
                 key={row._id}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <TableCell component="th" scope="row">
+                <TableCell component="th" scope="row" style={cellStyle}>
                   {row.type}
                 </TableCell>
                 <TableCell align="left" style={cellStyle}>
@@ -220,11 +227,12 @@ export default function Hpackages() {
           </TableBody>
         </Table>
       </TableContainer>
-      <NavLink to="/AddHealthPackages">
+      <AddPack isOpen={isDialogOpen} onClose={handleCloseDialog} />
+<Button onClick={handleOpenDialog} size="small" sx={{ml:"auto"}}>
         <Fab color="primary" aria-label="add">
           <AddIcon />
         </Fab>
-      </NavLink>
+        </Button>
     </>
   );
 }

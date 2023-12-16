@@ -68,6 +68,7 @@ import Success from "./components/patient/Success.js";
 import HealthRecords from "./components/patient/HealthRecords.js";
 import AvailableApp from "./components/patient/AvailableApp";
 import MedHistList from "./components/patient/MedHistList";
+import Vid from "./components/Vid.js";
 import SuccessAppoint from "./components/patient/SuccessAppoint";
 import DocPrescriptions from "./components/doctor/Prescription";
 const router = createBrowserRouter(
@@ -119,7 +120,7 @@ const router = createBrowserRouter(
       <Route path="/Contract" element={<Contract />} />
       <Route path="/PatientsList" element={<PatientView />} />
 
-      <Route path="/vidcall" element={<VideoChat />} />
+      <Route path="/vidcall" element={<Vid />} />
 
       
       <Route path="AddHealthPackages" element={<AddPack />} />
