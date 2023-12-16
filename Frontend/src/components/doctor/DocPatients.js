@@ -62,13 +62,13 @@ export default function DocPatients() {
       const response = await axios.patch(
          `${API_URL}/doctor/CancelAppointment/${aid}/${did}/${pid}`
           );
-          snackbarMessage('Appointment Cancelled successfully:');
+          snackbarMessage('Appointment Cancelled successfully');
           
          
           
 
         } catch (error) {
-          snackbarMessage('Error cancelling appointment"');
+          snackbarMessage('Error cancelling appointment');
       console.error("Error cancelling appointment", error);
     }
 
