@@ -1,6 +1,7 @@
 // Import necessary libraries and constants
 import React, { useState, useEffect, useContext } from "react";
 import Avatar from "@mui/material/Avatar";
+
 import Typography from "@mui/material/Typography";
 import Popover from "@mui/material/Popover";
 import LockResetIcon from "@mui/icons-material/LockReset";
@@ -28,6 +29,9 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import NavbarGen from "../NavbarGen";
 import axios from "axios";
+import { getNotifications } from "../../features/patientSlice.js";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import getNotificationsd from "../../features/doctorSlice.js";
 
 import { API_URL } from "../../Consts";
 
@@ -73,7 +77,14 @@ const AccountAvatar = () => {
   const snackbarMessage = useContext(SnackbarContext);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [openDialogg, setOpenDialogg] = useState(false);
+  const handleOpenDialogg = () => {
+    setOpenDialogg(true);
+  };
 
+  const handleCloseDialogg = () => {
+    setOpenDialogg(false);
+  };
   const handleLogout = () => {
     dispatch(logout())
       .then(() => {
@@ -85,7 +96,7 @@ const AccountAvatar = () => {
   };
   const [anchorel, setAnchorel] = useState(null);
   const { username } = useSelector((state) => state.user);
-  const { role } = useSelector((state) => state.user);
+  const { role, id } = useSelector((state) => state.user);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
@@ -96,8 +107,25 @@ const AccountAvatar = () => {
   const [emptyFieldError, setEmptyFieldError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    if (role === "doctor") {
+      dispatch(getNotificationsd(id));
+    }
+    if (role === "patient") {
+      dispatch(getNotifications(id));
+    }
+  }, [dispatch]);
 
+  const notificationsp = useSelector((state) => state.patient.notifications);
+
+  const notificationsd = useSelector((state) => state.doctor.notifications);
+  let notifications = null;
+  if (role === "doctor") {
+    notifications = notificationsd;
+  }
+  if (role === "patient") {
+    notifications = notificationsp;
+  }
   const isPasswordValid = (password) => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*[@#$%^&+=]).{8,}$/;
     return passwordRegex.test(password);
@@ -225,6 +253,17 @@ const AccountAvatar = () => {
         <span sx={{ display: "flex", mb: "10px" }}>
           {role === "doctor" || role === "patient" ? (
             <>
+                <Button
+                variant="outlined"
+                size="large"
+                sx={{
+                width:"2%",
+                borderRadius:"50%",ml:"100px",mb:"11px"
+                }}
+                onClick={handleOpenDialogg}
+              >
+                <NotificationsIcon fontSize="small" sx={{ color: "grey" }} />
+              </Button>
               <Button
                 variant="outlined"
                 size="large"
@@ -238,11 +277,7 @@ const AccountAvatar = () => {
               >
                 wallet
               </Button>
-              <WalletDialog
-                open={dialogOpen}
-                onClose={handleCloseDialog}
-                type="patient"
-              />
+          
             </>
           ) : null}
         </span>
@@ -357,6 +392,23 @@ const AccountAvatar = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={openDialogg} onClose={handleCloseDialog}>
+        <DialogTitle>Notifications</DialogTitle>
+        <DialogContent>
+          {notifications.map((notification, index) => (
+            <div>{notification.message}</div>
+          ))}
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseDialogg}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <WalletDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        type="patient"
+      />
     </div>
   );
 };

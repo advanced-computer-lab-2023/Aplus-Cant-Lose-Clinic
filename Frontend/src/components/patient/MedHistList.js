@@ -163,9 +163,9 @@ const handleClose=() => {setOpen(false);}
           bottom: "20px",
         }}
       >
-        <IconButton onClick={handleOpen} size="large" >
-          <Fab color="primary" aria-label="add" size="large" >
-            <AddIcon size="large" sx={{fontSize:"large",width:"50px",height:"50px"}} />
+        <IconButton onClick={handleOpen}>
+          <Fab color="primary" aria-label="add">
+            <AddIcon  />
           </Fab>
           medical history
         </IconButton>

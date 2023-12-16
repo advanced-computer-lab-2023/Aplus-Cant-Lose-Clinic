@@ -19,6 +19,8 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import GroupIcon from "@mui/icons-material/Group";
 import WalletIcon from "@mui/icons-material/Wallet";
 import { useState } from "react";
+import HomeIcon from "@mui/icons-material/Home";
+
 import BadgeIcon from "@mui/icons-material/Badge";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
@@ -31,6 +33,7 @@ import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
 import VaccinesIcon from "@mui/icons-material/Vaccines";
+import { Link } from "react-router-dom";
 import PermPhoneMsgIcon from "@mui/icons-material/PermPhoneMsg";
 import { useEffect } from "react";
 
@@ -121,6 +124,13 @@ const NavbarGen = () => {
           <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
             <Container maxWidth="xl">
               <Toolbar disableGutters>
+                <Link to="/Home">
+                  <Button variant="large">
+                    <IconButton>
+                      <HomeIcon sx={{ color: "white", mr: "30px" }} />
+                    </IconButton>
+                  </Button>
+                </Link>{" "}
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <NavLink
                     to="/PatientsList"
@@ -207,6 +217,13 @@ const NavbarGen = () => {
           <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
             <Container maxWidth="xl">
               <Toolbar disableGutters>
+                <Link to="/Home">
+                  <Button variant="large">
+                    <IconButton>
+                      <HomeIcon sx={{ color: "white", mr: "30px" }} />
+                    </IconButton>
+                  </Button>
+                </Link>{" "}
                 <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
                   <IconButton
                     size="large"
@@ -217,7 +234,6 @@ const NavbarGen = () => {
                   ></IconButton>
                   <Menu></Menu>
                 </Box>
-
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <NavLink
                     to="/viewfamilymembers"
@@ -237,7 +253,6 @@ const NavbarGen = () => {
                     </Button>
                   </NavLink>
                 </Box>
-
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <NavLink
                     to="/Appointments"
@@ -255,7 +270,6 @@ const NavbarGen = () => {
                     </Button>
                   </NavLink>
                 </Box>
-
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <NavLink
                     to="/HealthRecords"
@@ -263,13 +277,20 @@ const NavbarGen = () => {
                   >
                     <Button
                       sx={{
-                        color: isActive("/HealthRecords") ? "#ffd791" : "white",width:"100%"
+                        color: isActive("/HealthRecords") ? "#ffd791" : "white",
+                        width: "100%",
                       }}
-                      startIcon={<MedicalInformationIcon style={styles} size="small"></MedicalInformationIcon>}
+                      startIcon={
+                        <MedicalInformationIcon
+                          style={styles}
+                          size="small"
+                        ></MedicalInformationIcon>
+                      }
                     >
-                    
-                      <Typography sx={{width:"70%"}}>Health Records/
-                      <br></br>Medical History</Typography>
+                      <Typography sx={{ width: "70%" }}>
+                        Health Records/
+                        <br></br>Medical History
+                      </Typography>
                     </Button>
                   </NavLink>
                 </Box>
@@ -292,7 +313,6 @@ const NavbarGen = () => {
                     </Button>
                   </NavLink>
                 </Box>
-
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <NavLink
                     to="/ViewHealthPackage"

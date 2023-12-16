@@ -80,39 +80,12 @@ const [openDialog, setOpenDialog] = useState(false);
     return (
         <>
 
-    <Button
-                variant="outlined"
-                size="large"
-                sx={{ width: "0", ml: "0%", mb: "0.5%",mt:"0px" ,borderRadius:"50%",alignItems: 'center',justifyContent: 'center',display: 'flex', }}
-                onClick={handleOpenDialog}>
-                   
-                    <NotificationsIcon fontSize="small" sx={{color:"grey"}}/>
-                
-        </Button>
-
-     <Dialog open={openDialog} onClose={handleCloseDialog}>
-            <DialogTitle>Notifications</DialogTitle>
-            <DialogContent>
-                {notifications.map((notification, index) => (
-                    <div>
-                     {notification.message}
-                    </div>
-                    
-                      
-                 ))}
-            </DialogContent>
-
-            <DialogActions>
-                <Button onClick={handleCloseDialog}>Close</Button>
-            </DialogActions>
-      </Dialog>
-
 
         
             <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
                 <div style={divstyle}>
                     <img src="../doctors.jpg" alt="doctors" width="50%" height="auto" style={picstyle} />
-                    <Typography sx={{ margin: '10px' }} style={textstyle}>Here you can find Professional doctors in different specialities,
+                    <Typography sx={{ margin: '10px',fontSize:"20px" ,ml:"30px"}} style={textstyle}>Here you can find Professional doctors in different specialities,
                         Find your doctor and schadule your appointment with us.
                     </Typography>
                 </div>
@@ -120,7 +93,8 @@ const [openDialog, setOpenDialog] = useState(false);
 
                     <Button sx={{
                         color: 'white', borderRadius: '25px', backgroundColor: '#004E98',
-                        margin: '10px', left: '40%', '&:hover': {
+                        width:"300px",
+                        margin: '10px', left: '50%', '&:hover': {
                             backgroundColor: 'grey',
                         },
                     }}>
@@ -129,25 +103,7 @@ const [openDialog, setOpenDialog] = useState(false);
                 </NavLink>
 
             </Paper>
-            <Paper sx={{ width: '60%', marginTop: '40px', marginLeft: '20%', boxShadow: "5px 5px 5px 5px #8585854a", }}>
-                <div style={divstyle}>
-                    <img src="https://img.freepik.com/free-photo/nurses-are-well-good-taken-care-elderly-woman-patients-hospital-bed-patients-feel-happiness-medical-healthcare-concept_1150-21696.jpg" alt="health pic" width="50%" height="auto" style={pic2style} />
-                    <Typography sx={{ margin: '10px' }} style={text2style}>
-                        Don't forget to subscripe to our health membership that will give
-                        you and your family discounts to always check your health.
-                    </Typography>
-                </div>
-                <NavLink to='/Home'>
-                    <Button sx={{
-                        color: 'white', borderRadius: '25px', backgroundColor: '#004E98',
-                        margin: '10px', left: '40%', '&:hover': {
-                            backgroundColor: 'grey',
-                        },
-                    }}>
-                        Hospital membership
-                    </Button>
-                </NavLink>
-            </Paper>
+          
 
 
             <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>

@@ -29,7 +29,9 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
-import {useNavigate}  from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import DownloadPage from "./DownloadP";
+import AccountAvatar from "../Authentication/AccountAvatar";
 // ...
 import {
   viewPrescriptions,
@@ -40,13 +42,13 @@ import Dialog from "@mui/material/Dialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
 const App = () => {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [nameFilter, setNameFilter] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [isFilled, setIsFilled] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const patientId = useSelector((state) => state.user.id);
   const role = useSelector((state) => state.user.role);
 
@@ -65,8 +67,6 @@ const App = () => {
     marginLeft: "auto",
     border: "0",
   }));
-
-
 
   const dateTimePickerContainer = {
     display: "flex",
@@ -88,93 +88,114 @@ const App = () => {
 
   const handleView = (id) => {
     setPrescriptionid(rows.find((row) => row._id === id));
+    setOpen(true);
   };
 
-  return (
-    role==="patient" ?(
+  return role === "patient" ? (
     <Box sx={{ flexGrow: 1 }}>
-      <Dialog
-        open={Boolean(prescriptionid)}
-        sx={{ width: "100%", height: "100%" }}
-      >
+      <AccountAvatar />
+      <Dialog open={open} sx={{ width: "100%", height: "100%" }}>
         {prescriptionid && prescriptionid.patientID ? (
-          <Paper
-            sx={{
-              width: "60%",
-              marginTop: "40px",
-              marginLeft: "20%",
-              boxShadow: "5px 5px 5px 5px #8585854a",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={4}>
-                <Box style={Info}>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    <strong>Date : </strong>
-                    {prescriptionid?.datePrescribed}
-                  </Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <img
-                  src="/virtualclinic.png"
-                  alt="virtualclinic"
-                  width={"200px"}
-                  sx={{ marginBottom: "50px" }}
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <Box sx={{ margin: "20px 20px 0px 80px" }}>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID?.name}
-                  </Typography>
-                  <Typography sx={{ fontSize: "16px" }}>
-                    {prescriptionid.doctorID?.speciality}
-                  </Typography>
-                </Box>
-              </Grid>
-            </Grid>
-            <Grid item xs={12} md={4}>
-            {prescriptionid.meds.map((medicine, index) => (
-              <Box sx={{ margin: "20px 20px 0px 80px" }}>
-                <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Name :{medicine.medID?.name}
-                </Typography>
-                <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Active elements:
-                  {medicine.medID?.activeElement}
-                </Typography>
-                <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Used for :{medicine.medID?.use}
-                </Typography>
-                <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Frequency :{medicine.medID?.amount}
-                </Typography>
-                <Typography sx={{ fontSize: "16px" }}>
-                  Medicine Dosage :{medicine?.dosage}
-                </Typography>
-              </Box>
-))}
-            </Grid>
+          <div id="pagetodownload">
             <Paper
               sx={{
-                width: "100px",
+                width: "100%",
                 marginTop: "40px",
-                marginLeft: "40%",
-                boxShadow: "none",
-                display: "flex",
+                marginLeft: "2%",
+                boxShadow: "5px 5px 5px 5px #8585854a",
               }}
             >
-              {prescriptionid.status=="filled" ? (
-                <img
-                  src="/Pharmacy Stamp.png"
-                  alt="hospital stamp"
-                  width={"100px"}
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  <Box style={Info}>
+                    <Typography sx={{ fontSize: "16px" }}>
+                      <strong>Date : </strong>
+                      {new Date(
+                        prescriptionid?.datePrescribed
+                      ).toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <img
+                    src="/virtualclinic.png"
+                    alt="virtualclinic"
+                    width={"100%"}
+                    sx={{ marginBottom: "50px" }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  <Box sx={{ margin: "20px 20px 0px 80px" }}>
+                    <Typography sx={{ fontSize: "16px" }}>
+                      {prescriptionid.doctorID?.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: "16px" }}>
+                      {prescriptionid.doctorID?.speciality}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} md={4} sx={{ pr: "10%" }}>
+                {prescriptionid.meds.map((medicine, index) => (
+                  <Box sx={{ margin: "20px 20px 0px 80px" }}>
+                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                      Medicine Name :
+                      <span style={{ fontSize: "16px", fontWeight: "normal" }}>
+                        {medicine.medID?.name}
+                      </span>
+                    </Typography>
+                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                      Medicine Active elements:
+                      <span style={{ fontSize: "16px", fontWeight: "normal" }}>
+                        {medicine.medID?.activeElement}
+                      </span>
+                    </Typography>
+
+                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                      Medical Use :
+                      <span style={{ fontSize: "16px", fontWeight: "normal" }}>
+                        {medicine.medID?.use}
+                      </span>
+                    </Typography>
+                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                      Medicine Frequency :
+                      <span style={{ fontSize: "16px", fontWeight: "normal" }}>
+                        {medicine.medID?.amount}
+                      </span>
+                    </Typography>
+                    <Typography sx={{ fontSize: "20px", fontWeight: "bold" }}>
+                      Medicine Dosage :
+                      <span style={{ fontSize: "16px", fontWeight: "normal" }}>
+                        {medicine?.dosage}
+                      </span>
+                    </Typography>
+                    <hr />
+                  </Box>
+                ))}
+              </Grid>
+              <Paper
+                sx={{
+                  width: "100px",
+                  marginTop: "40px",
+                  marginLeft: "40%",
+                  boxShadow: "none",
+                  display: "flex",
+                }}
+              >
+                {prescriptionid.status == "filled" ? (
+                  <img
+                    src="/Pharmacy Stamp.png"
+                    alt="hospital stamp"
+                    width={"100%"}
+                  />
+                ) : (
+                  ""
+                )}
+                <DownloadPage
+                  rootElementId="pagetodownload"
+                  downloadFileName="prescription"
                 />
-              ) : (
-                ""
-              )}
-              <Link to={"/Home"}>
+
                 <Button
                   sx={{
                     margin: "10px 0px 0px 50px",
@@ -182,44 +203,41 @@ const App = () => {
                     color: "black",
                     border: "black",
                   }}
+                  onClick={() => {
+                    setOpen(false);
+                  }}
                 >
                   <IconButton sx={{ paddingLeft: "0px" }}>
                     <ArrowBackIosIcon />
                   </IconButton>
                   Back
                 </Button>
-              </Link>
+              </Paper>
             </Paper>
-          </Paper>
+          </div>
         ) : null}
       </Dialog>
-      <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
+      <AppBar position="static" sx={{ backgroundColor: "#7b2cbf" }}>
         <Toolbar>
           <Grid container alignItems="center" spacing={2}>
             <Grid item>
-              <Link to="/Home">
-                <Button variant="large">
-                  <IconButton>
-                    <HomeIcon style={iconStyle} />
-                  </IconButton>
-                </Button>
-              </Link>
+              
             </Grid>
             <Grid item>
               <Typography variant="h5">My Prescriptions</Typography>
             </Grid>
             <Grid item style={filterStyle}>
-            <Checkbox
-            label="Filled"
-            sx={{color:"black"}}
-            value={isFilled}
-            onChange={(event) => {
-              setIsFilled(event.target.checked);
-            }}
-          />
-          <Typography>filled</Typography>
+              <Checkbox
+                label="Filled"
+                sx={{ color: "black" }}
+                value={isFilled}
+                onChange={(event) => {
+                  setIsFilled(event.target.checked);
+                }}
+              />
+              <Typography>filled</Typography>
             </Grid>
-            <Grid item sx={{display:"inline-flex"}}> 
+            <Grid item sx={{ display: "inline-flex" }}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer
                   components={["DateTimePicker", "DateTimePicker"]}
@@ -243,7 +261,7 @@ const App = () => {
                   setSelectedDate("");
                 }}
               >
-                <Typography>Cancel</Typography>
+                <span>Cancel</span>
               </span>
             </Grid>
             <Grid item>
@@ -254,14 +272,11 @@ const App = () => {
                     onChange={(e) => {
                       setNameFilter(e.target.value);
                     }}
-                    // sx={{
-                    //   height: "80%",
-                    //   borderRadius: "15px",
-                    //   backgroundColor: "white",
-                    //   color: "white !important",
-                    // }}
                     label="Name..."
                     variant="filled"
+                    InputLabelProps={{
+                      style: { color: "white" },
+                    }}
                   />
                 </Grid>
               </Search>
@@ -278,6 +293,9 @@ const App = () => {
                 //   backgroundColor: "white",
                 //   color: "white !important",
                 // }}
+                InputLabelProps={{
+                  style: { color: "white" },
+                }}
                 label="Speciality..."
                 variant="filled"
               />
@@ -297,11 +315,21 @@ const App = () => {
           <Table stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell align="left">Filled</TableCell>
-                <TableCell align="left">Date</TableCell>
-                <TableCell align="left">Doctor Name</TableCell>
-                <TableCell align="left">Speciality</TableCell>
-                <TableCell align="left">View</TableCell>
+                <TableCell align="left" sx={{ fontSize: "20px" }}>
+                  Filled
+                </TableCell>
+                <TableCell align="left" sx={{ fontSize: "20px" }}>
+                  Date
+                </TableCell>
+                <TableCell align="left" sx={{ fontSize: "20px" }}>
+                  Doctor Name
+                </TableCell>
+                <TableCell align="left" sx={{ fontSize: "20px" }}>
+                  Speciality
+                </TableCell>
+                <TableCell align="left" sx={{ fontSize: "20px" }}>
+                  View
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -327,13 +355,11 @@ const App = () => {
                 .filter((row) => {
                   return (
                     selectedDate === "" ||
-                    new Date(row.datePrescribed) >=new Date(selectedDate)
+                    new Date(row.datePrescribed) >= new Date(selectedDate)
                   );
-                }).filter((row) => {
-                  return (
-                    isFilled === false ||
-                    row.status==="filled"
-                  );
+                })
+                .filter((row) => {
+                  return isFilled === false || row.status === "filled";
                 })
                 .map((row, index) => (
                   <TableRow key={index} hover role="checkbox" tabIndex={-1}>
@@ -341,15 +367,22 @@ const App = () => {
                       <FormControlLabel
                         disabled
                         control={<Checkbox checked={row.status === "filled"} />}
-                        label="Disabled"
+                        label={
+                          row.status === "filled" ? "Filled" : "Not Filled"
+                        }
+                        sx={{ fontSize: "20px" }}
                       />
                     </TableCell>
-                    <TableCell align="left">{row.datePrescribed}</TableCell>
-                    <TableCell align="left">{row.doctorID?.name}</TableCell>
-                    <TableCell align="left">
+                    <TableCell align="left" sx={{ fontSize: "20px" }}>
+                      {new Date(row.datePrescribed).toLocaleString()}
+                    </TableCell>
+                    <TableCell align="left" sx={{ fontSize: "20px" }}>
+                      {row.doctorID?.name}
+                    </TableCell>
+                    <TableCell align="left" sx={{ fontSize: "20px" }}>
                       {row.doctorID?.speciality}
                     </TableCell>
-                    <TableCell align="left">
+                    <TableCell align="left" sx={{ fontSize: "20px" }}>
                       <IconButton onClick={() => handleView(row._id)}>
                         <VaccinesIcon />
                       </IconButton>
@@ -360,7 +393,8 @@ const App = () => {
           </Table>
         </TableContainer>
       </Paper>
-    </Box>): (
+    </Box>
+  ) : (
     <>
       <Link to="/Login" sx={{ left: "100%" }}>
         <Typography
@@ -378,8 +412,7 @@ const App = () => {
         </Typography>
       </Link>
     </>
-  ));
-  
+  );
 };
 
 export default App;

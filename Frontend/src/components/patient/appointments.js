@@ -112,13 +112,13 @@ function BasicTable({ status, date, onPayButtonClick }) {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
   <TableRow>
-    <TableCell>Doctor Name</TableCell>
-    <TableCell align="left">Doctor Speciality</TableCell>
-    <TableCell align="left">Date</TableCell>
-    <TableCell align="left">Status</TableCell>
-    <TableCell align="left">Reschedule Appointment</TableCell> {/* Add this line */}
-    <TableCell align="left">Cancel Appointment </TableCell>
-    <TableCell align="left">Request FollowUp </TableCell>
+    <TableCell sx={{fontSize:"20px"}}>Doctor Name</TableCell>
+    <TableCell sx={{fontSize:"20px"}} align="left">Doctor Speciality</TableCell>
+    <TableCell sx={{fontSize:"20px"}} align="left">Date</TableCell>
+    <TableCell sx={{fontSize:"20px"}} align="left">Status</TableCell>
+    <TableCell sx={{fontSize:"20px"}} align="left">Reschedule Appointment</TableCell> {/* Add this line */}
+    <TableCell sx={{fontSize:"20px"}} align="left">Cancel Appointment </TableCell>
+    <TableCell sx={{fontSize:"20px"}} align="left">Request FollowUp </TableCell>
 
   </TableRow>
 </TableHead>
@@ -129,21 +129,21 @@ function BasicTable({ status, date, onPayButtonClick }) {
     .filter((row) => date === "" || new Date(row.startDate) >= new Date(date))
     .map((row, index) => (
       <TableRow key={index}>
-        <TableCell component="th" scope="row">
+        <TableCell  sx={{fontSize:"16px"}}component="th" scope="row">
           {row.drID?.name}
         </TableCell>
-        <TableCell align="left">{row.drID?.speciality}</TableCell>
-        <TableCell align="left">
+        <TableCell sx={{fontSize:"16px"}} align="left">{row.drID?.speciality}</TableCell>
+        <TableCell sx={{fontSize:"16px"}} align="left">
           {row.startDate &&
             new Date(row.startDate).toLocaleDateString()}
         </TableCell>
-        <TableCell align="left">{row.status}</TableCell>
-        <TableCell align="left">
+        <TableCell sx={{fontSize:"16px"}} align="left">{row.status}</TableCell>
+        <TableCell sx={{fontSize:"20px"}} align="left">
           {row.status === "upcoming" && (
             <RescheduleAppointment appointment={row} />
           )}
         </TableCell>
-        <TableCell align="left">
+        <TableCell sx={{fontSize:"19px"}} align="left">
   {row.status === "upcoming" && (
     <Button
       variant="contained"
@@ -155,7 +155,7 @@ function BasicTable({ status, date, onPayButtonClick }) {
     </Button>
   )}
 </TableCell>
-<TableCell align="left">
+<TableCell  align="left">
                 {row.status === "completed" && (
                   <Button
                     variant="contained"
