@@ -248,7 +248,7 @@ router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
 
-router.post("/createCheckoutSession/:id/:pid", createCheckoutSession);
+router.get("/createCheckoutSession/:pid/:id", createCheckoutSession);
 router.post(
   "/createAppointmentCheckoutSession/:amount/:appointmentId/:patientId",
   createAppointmentCheckoutSession

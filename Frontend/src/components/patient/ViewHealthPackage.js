@@ -8,8 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
+import SubsciptionPayment from "./SubscriptionPayment";
 import { IconButton } from "@mui/material";
-import InfoIcon from '@mui/icons-material/Info';
+import InfoIcon from "@mui/icons-material/Info";
 import {
   viewHealthP,
   unsubscribeHealthPackage,
@@ -56,8 +57,21 @@ export default function Hpackages() {
   //dialogiue component state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState("");
+  const [dialoggOpen, setDialoggOpen] = useState(false);
+  const [h_id, setH_id] = useState(0);
+
+  const [amount, setAmount] = useState(0);
 
   const navigate = useNavigate();
+  const handleSubscribe = (h_id, amount) => {
+    setH_id(h_id);
+    setAmount(amount);
+    setDialoggOpen(true);
+  };
+
+  const handleCloseDialogg = () => {
+    setDialoggOpen(false);
+  };
   const handleOpenDialog = async (healthPackageId) => {
     try {
       const response = await axios.get(
@@ -112,7 +126,7 @@ export default function Hpackages() {
       <div>
         <AccountAvatar />
       </div>
-      <h3 style={{marginLeft:"40%",marginTop:"20px"}}>Health Packages</h3>
+      <h3 style={{ marginLeft: "40%", marginTop: "20px" }}>Health Packages</h3>
       <TableContainer component={Paper} style={tableStyle}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -158,16 +172,14 @@ export default function Hpackages() {
 
                 <TableCell align="left" style={cellStyle}>
                   {!row.isSubscribed ? (
-                    <Link to={`/SubscriptionPayment/${row._id}/${row.rate}`}>
-                      <Button
-                        sx={subscribeButtonStyle}
-                        onClick={() => {
-                          // handleSubscribe(row, index);
-                        }}
-                      >
-                        <Typography>Subscribe</Typography>
-                      </Button>
-                    </Link>
+                    <Button
+                      sx={subscribeButtonStyle}
+                      onClick={() => {
+                        handleSubscribe(row._id, row.rate);
+                      }}
+                    >
+                      <Typography>Subscribe</Typography>
+                    </Button>
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}
@@ -182,15 +194,14 @@ export default function Hpackages() {
                 </TableCell>
 
                 <TableCell>
-                  <IconButton   sx={infoButtonStyle}
+                  <IconButton
+                    sx={infoButtonStyle}
                     onClick={() => {
                       handleOpenDialog(row._id);
-                    }}>
-<InfoIcon fontSize="medium"/>
-
-
+                    }}
+                  >
+                    <InfoIcon fontSize="medium" />
                   </IconButton>
-              
                 </TableCell>
               </TableRow>
             ))}
@@ -202,6 +213,12 @@ export default function Hpackages() {
           </TableBody>
         </Table>
       </TableContainer>
+      <SubsciptionPayment
+        open={dialoggOpen}
+        onClose={handleCloseDialogg}
+        h_id={h_id}
+        amount={amount}
+      />
     </>
   ) : (
     <>

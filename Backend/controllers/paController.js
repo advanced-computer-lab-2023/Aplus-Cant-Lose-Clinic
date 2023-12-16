@@ -1079,14 +1079,28 @@ const healthPackageInfo = async (req, res) => {
   }
 };
 
-const createCheckoutSession= async(req,res)=>
-{
+const createCheckoutSession = async (req, res) => {
   try {
-    const {id,h_id} =req.params;
-    const {type,rate}=await HPackages.findOne({_id:h_id});
-   
-   
-    const new_rate=rate*100;
+    const { pid, id } = req.params;
+    const trimmedId = id.trim();
+
+    let healthPackage = null;
+
+    if (trimmedId.match(/^[0-9a-fA-F]{24}$/)) {
+      healthPackage = await HPackages.findById(trimmedId);
+    }
+
+    if (!healthPackage) {
+      return res.status(404).json({ error: "Health package not found" });
+    }
+
+    const { rate } = healthPackage;
+    if (isNaN(rate)) {
+      return res.status(500).json({ error: "Invalid rate value" });
+    }
+
+    const newRate = rate * 100;
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -1095,21 +1109,24 @@ const createCheckoutSession= async(req,res)=>
           price_data: {
             currency: "usd",
             product_data: {
-              name: type,
+              name: healthPackage.type,
             },
-            unit_amount: new_rate ,
+            unit_amount: newRate,
           },
-          quantity: 1, // Since the quantity will always be 1
-        }
+          quantity: 1,
+        },
       ],
-      success_url: `http://localhost:3000/Success/${id}/${h_id}`,
-      cancel_url: `http://localhost:3000/ViewHealthPackage`,
-    })
+      success_url: `http://localhost:3000/Success/${pid}/${trimmedId}`,
+      cancel_url: "http://localhost:3000/ViewHealthPackage",
+    });
+
     res.json({ url: session.url });
   } catch (e) {
-    res.status(500).json({ error: e.message })
+    console.error(e);
+    res.status(500).json({ error: e.message });
   }
-}
+};
+
 
 const viewPatientHealthRecords = async (req, res) => {
   try {
@@ -1119,7 +1136,50 @@ const viewPatientHealthRecords = async (req, res) => {
     if (!pId) {
       return res.status(400).json({ error: "Patient ID is required in the query" });
     }
-
+    const createCheckoutSession = async (req, res) => {
+      try {
+        const { pid, id } = req.params;
+        const trimmedId = id.trim();
+    
+        let healthPackage = null;
+    
+        if (trimmedId.match(/^[0-9a-fA-F]{24}$/)) {
+          healthPackage = await HPackages.findById(trimmedId);
+        }
+    
+        if (!healthPackage) {
+          return res.status(404).json({ error: "Health package not found" });
+        }
+    
+        const { rate } = healthPackage;
+        const newRate = rate * 100;
+    
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ["card"],
+          mode: "payment",
+          line_items: [
+            {
+              price_data: {
+                currency: "usd",
+                product_data: {
+                  name: healthPackage.type,
+                },
+                unit_amount: newRate,
+              },
+              quantity: 1,
+            },
+          ],
+          success_url: `http://localhost:3000/Success/${pid}/${trimmedId}`,
+          cancel_url: "http://localhost:3000/ViewHealthPackage",
+        });
+    
+        res.json({ url: session.url });
+      } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message });
+      }
+    };
+    
     // Find the patient by its ID and populate related data
     const HealthRecords = await Patient.findById(pId, {
       name: 0,
