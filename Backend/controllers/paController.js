@@ -1246,7 +1246,7 @@ const rescheduleAppointment = async (req, res) => {
 // Send email to the patient
     const emailSubject = "Appointment Reschedule";
       const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
-      await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
+      await sendEmail(patient.email,  emailSubject, emailMessage );
 
     
     res.json({ success: true, message: "Appointment successfully rescheduled" });
@@ -1339,7 +1339,7 @@ const cancelAppointment=async (req,res)=>
       // Send email to the patient
      const emailSubject = "Appointment Canceled";
      const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
-     await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+     await sendEmail(patient.email, emailSubject,emailMessage );
 
 
  
