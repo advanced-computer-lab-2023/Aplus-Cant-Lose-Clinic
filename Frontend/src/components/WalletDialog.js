@@ -37,19 +37,20 @@ const styles = {
   },
 };
 
-export const WalletDialog = ({ open, onClose, type }) => {
+export const WalletDialog = ({ open, onClose}) => {
   const id = useSelector((state) => state.user.id);
+  const role = useSelector((state) => state.user.role);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    type === "patient"
+    role === "patient"
       ? dispatch(viewWalletPatient(id))
       : dispatch(viewWalletDoctor(id));
   }, [dispatch]);
 
   const amount = useSelector((state) =>
-    type === "patient" ? state.patient.wallet : state.doctor.wallet
+    role === "patient" ? state.patient.wallet : state.doctor.wallet
   );
   // const amount = 0;
 

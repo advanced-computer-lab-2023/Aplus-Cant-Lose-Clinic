@@ -31,7 +31,7 @@ import NavbarGen from "../NavbarGen";
 import axios from "axios";
 import { getNotifications } from "../../features/patientSlice.js";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import getNotificationsd from "../../features/doctorSlice.js";
+import {getNotificationsd} from "../../features/doctorSlice.js";
 
 import { API_URL } from "../../Consts";
 
@@ -407,7 +407,6 @@ const AccountAvatar = () => {
       <WalletDialog
         open={dialogOpen}
         onClose={handleCloseDialog}
-        type="patient"
       />
     </div>
   );

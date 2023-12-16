@@ -117,7 +117,7 @@ export const viewWallet = createAsyncThunk(
 
 })
 
-export const getNotifications = createAsyncThunk(
+export const getNotificationsd = createAsyncThunk(
   "doctor/:doctorId/notifications", 
   async (id) => {
   const response = await axios.get(
@@ -207,7 +207,7 @@ export const doctor = createSlice({
       })
 
       builder
-      .addCase(getNotifications.fulfilled, (state, action) => {
+      .addCase(getNotificationsd.fulfilled, (state, action) => {
         state.loading = false;
         state.notifications = action.payload.data.notifications;
       })
