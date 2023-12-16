@@ -202,6 +202,7 @@ handleCloseDialog();      }
         <div>
         <AccountAvatar />
       </div>
+      <h2 style={{marginTop:"30px"}}> family members</h2>
       <Dialog
         open={isDialogOpen2}
         onClose={handleCloseDialog2}
@@ -413,7 +414,6 @@ handleCloseDialog();      }
           <input type="submit" value="Add Family Member" style={buttonStyle} />
         </form>{" "}
       </Dialog>
-      <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
         <Toolbar>
           {/* ... (your existing code) */}
           <Fab
@@ -470,7 +470,6 @@ handleCloseDialog();      }
             </List>
           </Popover>
         </Toolbar>
-      </AppBar>
       <BasicTable />
     </Box>
   ) : (
@@ -505,7 +504,7 @@ function BasicTable() {
   };
 
   const cellStyle = {
-    fontSize: "14px",
+    fontSize: "20px",
   };
 
   return (
@@ -534,7 +533,7 @@ function BasicTable() {
               key={index}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
+              <TableCell component="th"  style={cellStyle} scope="row">
                 {row.fullName}
               </TableCell>
               <TableCell align="left" style={cellStyle}>

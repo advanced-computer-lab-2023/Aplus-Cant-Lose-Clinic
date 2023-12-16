@@ -1,13 +1,7 @@
 import React from "react";
 import { useState } from "react";
 
-import {
-  Select,
-  MenuItem,
-  Checkbox,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Select, MenuItem, Checkbox, Typography, Divider } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { appointmentPatients } from "../../features/doctorSlice";
@@ -16,12 +10,12 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import IconButton from "@mui/material/IconButton";
 import HomeIcon from "@mui/icons-material/Home";
 import { Link, useNavigate } from "react-router-dom";
-import TextField from '@mui/material/TextField';
-import FreeAppointment from './FreeAppointment';
+import TextField from "@mui/material/TextField";
+import FreeAppointment from "./FreeAppointment";
 import FollowUp from "./FollowUp";
 import RescheduleAppointment from "./DocRescheduleAppointment";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import AccountAvatar from "../Authentication/AccountAvatar";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
@@ -40,12 +34,13 @@ export default function DocPatients() {
 
   console.log(appointments);
   const navigate = useNavigate(-1);
-  return (
-    (role === "doctor") ? (
+  return role === "doctor" ? (
+    <div style={{ display: "flex", height: "100%", flexDirection: "column" }}>
+          <div>
+          <AccountAvatar />
+        </div>
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
-            <div>
-        <AccountAvatar />
-      </div>
+    
         <i>
           <IconButton
             color="primary"
@@ -144,9 +139,6 @@ export default function DocPatients() {
           </div>
           <FreeAppointment />
           <FollowUp />
-
-        
-
         </div>
         <div
           style={{
@@ -155,44 +147,49 @@ export default function DocPatients() {
             flexDirection: "column",
           }}
         >
-         {appointments
-    .filter((res) => {
-        return (
-            nameFilter === "" ||
-            (res.pID && res.pID.name.toLowerCase().includes(nameFilter.toLowerCase()))
-        );
-    })
-    .filter((res) => {
-        return (
-            startDateFilter === "" ||
-            (res.startDate && new Date(res.startDate) >= new Date(startDateFilter))
-        );
-    })
-    .filter((res) => {
-        return statusFilter === "Any" || (res.status && res.status === statusFilter);
-    })
-    .filter((res) => {
-      return (
-          upcomingFilter === false ||
-          (res.startDate && new Date(res.startDate) > new Date())
-      );
-  })
-  
-    .filter((res) => {
-        return (
-            upcomingFilter === false ||
-            (res.startDate && new Date(res.startDate) - new Date() > 0)
-        );
-    })
-    .map((res) => {
-      // Additional checks for undefined properties
-      if (!res._id || !res.pID) {
-          console.error("Invalid appointment object:", res);
-          return null; // Skip rendering if the object is invalid
-      }
-  
-      return (
-          <Accordion key={res._id}>
+          {appointments
+            .filter((res) => {
+              return (
+                nameFilter === "" ||
+                (res.pID &&
+                  res.pID.name.toLowerCase().includes(nameFilter.toLowerCase()))
+              );
+            })
+            .filter((res) => {
+              return (
+                startDateFilter === "" ||
+                (res.startDate &&
+                  new Date(res.startDate) >= new Date(startDateFilter))
+              );
+            })
+            .filter((res) => {
+              return (
+                statusFilter === "Any" ||
+                (res.status && res.status === statusFilter)
+              );
+            })
+            .filter((res) => {
+              return (
+                upcomingFilter === false ||
+                (res.startDate && new Date(res.startDate) > new Date())
+              );
+            })
+
+            .filter((res) => {
+              return (
+                upcomingFilter === false ||
+                (res.startDate && new Date(res.startDate) - new Date() > 0)
+              );
+            })
+            .map((res) => {
+              // Additional checks for undefined properties
+              if (!res._id || !res.pID) {
+                console.error("Invalid appointment object:", res);
+                return null; // Skip rendering if the object is invalid
+              }
+
+              return (
+                <Accordion key={res._id}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel1a-content"
@@ -224,41 +221,42 @@ export default function DocPatients() {
                         Reschedule Appointment:{" "}
                       </Typography>
                       {res.status === "upcoming" && res._id && res.pID && (
-                        
-                        <RescheduleAppointment  appointmentID={res?._id} />
-                    )}
+                        <RescheduleAppointment appointmentID={res?._id} />
+                      )}
                     </div>
-                    
                   </AccordionDetails>
                 </Accordion>
               );
             })}
         </div>
 
-        <Snackbar open={false} anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
-      <MuiAlert elevation={6} variant="filled" severity="info">
-        appointement is resuchudeled!!
-      </MuiAlert>
-    </Snackbar>
-
-
+        <Snackbar
+          open={false}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+        >
+          <MuiAlert elevation={6} variant="filled" severity="info">
+            appointement is resuchudeled!!
+          </MuiAlert>
+        </Snackbar>
       </div>
-    ):<>
-    <Link to="/Login" sx={{ left: "100%" }}>
-      <Typography
-        variant="h6"
-        noWrap
-        component="div"
-        sx={{
-          flexGrow: 1,
-          display: { xs: "none", sm: "flex" },
-          fontSize: "20px",
-          maragin: "auto",
-        }}
-      >
-        Login
-      </Typography>
-    </Link>
-  </>
+    </div>
+  ) : (
+    <>
+      <Link to="/Login" sx={{ left: "100%" }}>
+        <Typography
+          variant="h6"
+          noWrap
+          component="div"
+          sx={{
+            flexGrow: 1,
+            display: { xs: "none", sm: "flex" },
+            fontSize: "20px",
+            maragin: "auto",
+          }}
+        >
+          Login
+        </Typography>
+      </Link>
+    </>
   );
 }

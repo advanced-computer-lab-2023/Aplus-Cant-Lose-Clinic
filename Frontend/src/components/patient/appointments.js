@@ -308,7 +308,7 @@ const navigate = useNavigate();
         <div>
         <AccountAvatar />
       </div>
-      <AppBar position="static" sx={{ backgroundColor: "#004E98" }}>
+      <AppBar position="static" sx={{ backgroundColor: "inherit" ,borderColor:"blue"}}>
         <Toolbar>
           <Link to="/Home" style={{ color: "white" }}>
             <IconButton
@@ -318,14 +318,13 @@ const navigate = useNavigate();
               aria-label="open drawer"
               sx={{ mr: 2 }}
             >
-              <HomeIcon />
             </IconButton>
           </Link>
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" },color: "black" ,ml:"40%",fontSize:"30px"}}
           >
             Appointments
           </Typography>
@@ -350,7 +349,7 @@ const navigate = useNavigate();
                 setDate("");
               }}
             >
-              <Typography>Cancel</Typography>
+              <Typography sx={{color:"black"}}>Cancel</Typography>
             </span>
           </Box>
 
@@ -362,7 +361,7 @@ const navigate = useNavigate();
               setStatus(event.target.value);
             }}
           >
-            <MenuItem value={"Any"}>Any</MenuItem>
+            <MenuItem sx={{color:"black"}} value={"Any"}>Any</MenuItem>
             <MenuItem value={"completed"}>completed</MenuItem>
             <MenuItem value="upcoming">upcoming</MenuItem>
             <MenuItem value="cancelled">cancelled</MenuItem>
@@ -375,14 +374,19 @@ const navigate = useNavigate();
         date={date}
         onPayButtonClick={handleOpenPaymentDialog}
       />
-      <Fab
+          <Fab
         color="primary"
         aria-label="add"
-        sx={{ left: "95%", margin: "28% 0 0 0" }}
+        sx={{
+          position: 'fixed',
+          bottom:90,
+          right: 16,
+        }}
         onClick={handleClickOpen}
       >
         <AddIcon />
       </Fab>
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -424,7 +428,7 @@ const navigate = useNavigate();
             </DialogContent>
             <DialogActions>
               <Button onClick={handleClose}>Add</Button>
-              <Button onClick={(noappoints = true && handleClose)}>Cancel</Button>
+              <Button onClick={(noappoints = true && handleClose)}  >Cancel</Button>
             </DialogActions>
           </>
         )}

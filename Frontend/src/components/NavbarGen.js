@@ -13,7 +13,7 @@ import {
   Box,
   AppBar,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { Badge } from "@mui/icons-material";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import GroupIcon from "@mui/icons-material/Group";
@@ -22,15 +22,16 @@ import { useState } from "react";
 import BadgeIcon from "@mui/icons-material/Badge";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import SickIcon from "@mui/icons-material/Sick";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import DoctorProfileDialog from "./doctor/DoctorProfileDialog";
-import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import MedicalInformationIcon from '@mui/icons-material/MedicalInformation';
-import VaccinesIcon from '@mui/icons-material/Vaccines';
-import PermPhoneMsgIcon from '@mui/icons-material/PermPhoneMsg';
+import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import MedicalInformationIcon from "@mui/icons-material/MedicalInformation";
+import VaccinesIcon from "@mui/icons-material/Vaccines";
+import PermPhoneMsgIcon from "@mui/icons-material/PermPhoneMsg";
 import { useEffect } from "react";
 
 const NavbarGen = () => {
@@ -80,6 +81,38 @@ const NavbarGen = () => {
   const handleCloseDialoog = () => {
     setDialogOpen(false);
   };
+  const [dialogHealthRecord, setOpenDialogHealthRecord] = useState(false);
+  const [dialogMedicalHistory, setOpenDialogMedicalHistory] = useState(false);
+
+  const [selectedHealthRecord, setSelectedHealthRecord] = useState(null);
+  const [selectedMedicalHistory, setSelectedMedicalHistory] = useState(null);
+
+  // Function to open the health record dialog
+  const handleOpenHealthRecordDialog = (healthRecord) => {
+    setSelectedHealthRecord(healthRecord);
+    setOpenDialogHealthRecord(true);
+  };
+
+  // Function to open the medical history dialog
+  const handleOpenMedicalHistoryDialog = (medicalHistory) => {
+    setSelectedMedicalHistory(medicalHistory);
+    setOpenDialogMedicalHistory(true);
+  };
+
+  // Function to close the health record dialog
+  const handleCloseHealthRecordDialog = () => {
+    setSelectedHealthRecord(null);
+    setOpenDialogHealthRecord(false);
+  };
+
+  // Function to close the medical history dialog
+  const handleCloseMedicalHistoryDialog = () => {
+    setSelectedMedicalHistory(null);
+    setOpenDialogMedicalHistory(false);
+  };
+  const isActive = (path) => location.pathname === path;
+  const location = useLocation(); // Get the current location
+
   const role = useSelector((state) => state.user.role);
   return (
     <div>
@@ -89,8 +122,15 @@ const NavbarGen = () => {
             <Container maxWidth="xl">
               <Toolbar disableGutters>
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/PatientsList">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/PatientsList"
+                    isActive={() => isActive("/PatientsList")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/PatientsList") ? "#ffd791" : "white",
+                      }}
+                    >
                       <IconButton>
                         <SickIcon style={styles}></SickIcon>
                       </IconButton>
@@ -99,8 +139,15 @@ const NavbarGen = () => {
                   </NavLink>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/DocPatients">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/DocPatients"
+                    isActive={() => isActive("/DocPatients")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/DocPatients") ? "#ffd791" : "white",
+                      }}
+                    >
                       <IconButton>
                         <PendingActionsIcon style={styles}></PendingActionsIcon>
                       </IconButton>
@@ -109,8 +156,17 @@ const NavbarGen = () => {
                   </NavLink>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/FollowUpRequests">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/FollowUpRequests"
+                    isActive={() => isActive("/FollowUpRequests")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/FollowUpRequests")
+                          ? "#ffd791"
+                          : "white",
+                      }}
+                    >
                       <IconButton>
                         <GroupIcon style={styles}></GroupIcon>
                       </IconButton>
@@ -163,8 +219,17 @@ const NavbarGen = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/viewfamilymembers">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/viewfamilymembers"
+                    isActive={() => isActive("/viewfamilymembers")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/viewfamilymembers")
+                          ? "#ffd791"
+                          : "white",
+                      }}
+                    >
                       <IconButton>
                         <FamilyRestroomIcon style={styles}></FamilyRestroomIcon>
                       </IconButton>
@@ -174,8 +239,15 @@ const NavbarGen = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/Appointments">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/Appointments"
+                    isActive={() => isActive("/Appointments")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/Appointments") ? "#ffd791" : "white",
+                      }}
+                    >
                       <IconButton>
                         <CalendarMonthIcon style={styles}></CalendarMonthIcon>
                       </IconButton>
@@ -185,20 +257,34 @@ const NavbarGen = () => {
                 </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/HealthRecords">
-                    <Button sx={{ color: "white" }}>
-                      <IconButton>
-                        <MedicalInformationIcon
-                          style={styles}
-                        ></MedicalInformationIcon>
-                      </IconButton>
-                      <Typography>My Health Records</Typography>
+                  <NavLink
+                    to="/HealthRecords"
+                    isActive={() => isActive("/HealthRecords")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/HealthRecords") ? "#ffd791" : "white",width:"100%"
+                      }}
+                      startIcon={<MedicalInformationIcon style={styles} size="small"></MedicalInformationIcon>}
+                    >
+                    
+                      <Typography sx={{width:"70%"}}>Health Records/
+                      <br></br>Medical History</Typography>
                     </Button>
                   </NavLink>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/ListOfPrescriptions">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/ListOfPrescriptions"
+                    isActive={() => isActive("/ListOfPrescriptions")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/ListOfPrescriptions")
+                          ? "#ffd791"
+                          : "white",
+                      }}
+                    >
                       <IconButton>
                         <VaccinesIcon style={styles}></VaccinesIcon>
                       </IconButton>
@@ -206,34 +292,23 @@ const NavbarGen = () => {
                     </Button>
                   </NavLink>
                 </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/ViewHealthPackage">
-                    <Button sx={{ color: "white" }}>
-                      <IconButton>
-                        <VaccinesIcon style={styles}></VaccinesIcon>
-                      </IconButton>
-                      <Typography>health packages</Typography>
-                    </Button>
-                  </NavLink>
-                </Box>
-                <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/MedHistList">
-                    <Button sx={{ color: "white" }}>
-                      <IconButton>
-                        <VaccinesIcon style={styles}></VaccinesIcon>
-                      </IconButton>
-                      <Typography>Medical History </Typography>
-                    </Button>
-                  </NavLink>
-                </Box>
 
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
-                  <NavLink to="/chats">
-                    <Button sx={{ color: "white" }}>
+                  <NavLink
+                    to="/ViewHealthPackage"
+                    isActive={() => isActive("/ViewHealthPackage")}
+                  >
+                    <Button
+                      sx={{
+                        color: isActive("/ViewHealthPackage")
+                          ? "#ffd791"
+                          : "white",
+                      }}
+                    >
                       <IconButton>
-                        <PermPhoneMsgIcon style={styles}></PermPhoneMsgIcon>
+                        <LocalHospitalIcon style={styles}></LocalHospitalIcon>
                       </IconButton>
-                      <Typography>Chats/Calls</Typography>
+                      <Typography>health packages</Typography>
                     </Button>
                   </NavLink>
                 </Box>

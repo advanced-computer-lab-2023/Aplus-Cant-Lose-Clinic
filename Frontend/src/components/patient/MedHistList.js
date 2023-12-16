@@ -2,29 +2,41 @@ import React, { useState, useEffect } from "react";
 import download from "downloadjs";
 import axios from "axios";
 import { API_URL } from "../../Consts";
+import MedHist from "./MedHist.js"
+
 import {
-  BrowserRouter as Router,
-  Route,
-  Link,
-  Switch,
-  Navigate,
-} from "react-router-dom";
-import Fab from "@mui/material/Fab";
-import Box from "@mui/material/Box";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-import { useDispatch, useSelector } from "react-redux";
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
+  Snackbar,
+  Box,
+  Fab,
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
-import Typography from "@mui/material/Typography";
-import { useNavigate } from "react-router-dom";
+import Alert from "@mui/material/Alert";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import AccountAvatar from "../Authentication/AccountAvatar";
+
 const MedHistList = () => {
   const [filesList, setFilesList] = useState([]);
+  const [open,setOpen]= useState(false);
+const handleOpen=() => {setOpen(true);}
+const handleClose=() => {setOpen(false);}
+
   const [errorMsg, setErrorMsg] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { id, role } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getFilesList = async () => {
       try {
@@ -39,6 +51,7 @@ const MedHistList = () => {
     };
     getFilesList();
   }, [filesList]);
+
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -75,8 +88,7 @@ const MedHistList = () => {
       // Show Snackbar for deletion success
       setSnackbarMessage(`File ${filename} deleted successfully`);
       setSnackbarOpen(true);
-      // Perform additional actions here if needed
-      console.log(`File ${filename} deleted successfully`);
+      // Refresh the files list after deletion
     } catch (error) {
       if (error.response && error.response.status === 404) {
         setErrorMsg("File not found");
@@ -86,77 +98,63 @@ const MedHistList = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   return role === "patient" ? (
-    <div className="files-container">
-      <div>
-        <AccountAvatar />
-      </div>
-      <Typography variant="h5">Medical History</Typography>
-
+    <div style={{width:"700px"}}>
       {errorMsg && <p className="errorMsg">{errorMsg}</p>}
-      <table className="files-table">
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Download File</th>
-            <th>Delete File</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filesList.length > 0 ? (
-            filesList.map(
-              ({ _id, title, description, file_path, file_mimetype }) => (
-                <tr key={_id}>
-                  <td className="file-title">{title}</td>
-                  <td className="file-description">{description}</td>
-                  <td>
-                    <a
-                      href="#/"
-                      onClick={() =>
-                        downloadFile(_id, file_path, file_mimetype)
-                      }
-                    >
-                      Download
-                    </a>
-                  </td>
-                  <td>
-                    <a
-                      href="#/"
-                      onClick={() => deleteFile(_id, file_path, file_mimetype)}
-                    >
-                      Delete
-                    </a>
-                  </td>
-                </tr>
-              )
+      <List sx={{ width: "80%", backgroundColor: "white" }}>
+        {filesList.length > 0 ? (
+          filesList.map(
+            ({ _id, title, description, file_path, file_mimetype }) => (
+              <ListItem key={_id} style={{ borderBottom: "1px solid #004E98" }}>
+                <div style={{display:"flex", flexDirection:"column"}}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: "#6247aa", fontSize: "30px" }}
+                >
+                  {title}
+                </Typography>
+                <div>
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#6247aa", fontSize: "14px" }}
+                  >
+                    {description}
+                  </Typography>
+                </div>
+                </div>
+                <ListItemSecondaryAction>
+                  <IconButton
+                    aria-label="download"
+                    color="primary"
+                    size="large"
+                    sx={{ fontSize: "28px", mr: "15px" }}
+                    onClick={() => downloadFile(_id, file_path, file_mimetype)}
+                  >
+                    <CloudDownloadIcon />
+                  </IconButton>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    color="error"
+                    size="large"
+                    sx={{ fontSize: "28px" }}
+                    onClick={() => deleteFile(_id, file_path, file_mimetype)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
             )
-          ) : (
-            <tr>
-              <td colSpan={3} style={{ fontWeight: "300" }}>
-                No files found. Please add some.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-      <Box
-        sx={{
-          "& > :not(style)": { m: 1 },
-          position: "fixed",
-          left: "0px",
-          bottom: "20px",
-        }}
-      >
-        <Link to="/MedHist">
-          {" "}
-          <Fab color="primary" aria-label="add">
-            <AddIcon />
-          </Fab>
-        </Link>
-      </Box>
+          )
+        ) : (
+          <ListItem>
+            <ListItemText
+              primary="No files found. Please add some."
+              style={{ fontWeight: "300", color: "white", fontSize: "18px" }}
+            />
+          </ListItem>
+        )}
+      </List>
       <Box
         sx={{
           "& > :not(style)": { m: 1 },
@@ -165,32 +163,56 @@ const MedHistList = () => {
           bottom: "20px",
         }}
       >
+        <IconButton onClick={handleOpen} size="large" >
+          <Fab color="primary" aria-label="add" size="large" >
+            <AddIcon size="large" sx={{fontSize:"large",width:"50px",height:"50px"}} />
+          </Fab>
+          medical history
+        </IconButton>
+        <MedHist open={open} onClose={handleClose} />
+      </Box>
+      <Box
+        sx={{
+          "& > :not(style)": { m: 1 },
+          position: "fixed",
+          left: "0px",
+          bottom: "20px",
+        }}
+      >
         <Link to="/Home">
-          {" "}
           <Fab color="primary" aria-label="add">
             <HomeIcon />
           </Fab>
         </Link>
       </Box>
+      {/* Snackbar for notifications */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="success">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </div>
   ) : (
-    <>
-      <Link to="/Login" sx={{ left: "100%" }}>
-        <Typography
-          variant="h6"
-          noWrap
-          component="div"
-          sx={{
-            flexGrow: 1,
-            display: { xs: "none", sm: "flex" },
-            fontSize: "20px",
-            maragin: "auto",
-          }}
-        >
-          Login
-        </Typography>
-      </Link>
-    </>
+    <Link to="/Login" sx={{ left: "100%" }}>
+      <Typography
+        variant="h6"
+        noWrap
+        component="div"
+        sx={{
+          flexGrow: 1,
+          display: { xs: "none", sm: "flex" },
+          fontSize: "20px",
+          margin: "auto",
+        }}
+      >
+        Login
+      </Typography>
+    </Link>
   );
 };
+
 export default MedHistList;
