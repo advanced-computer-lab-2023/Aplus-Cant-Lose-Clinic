@@ -1585,8 +1585,10 @@ const requestFollowUp = async (req, res) => {
   }
 
   try {
+    const today = new Date();
+   const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
     const patient = await Patient.findById(pid);
-    const response = await FollowUp.create({ pID: pid, drID: did,patientName:patient.name });
+    const response = await FollowUp.create({ pID: pid, drID: did,patientName:patient.name ,requestDate:formattedDate});
     res.status(201).json({ message: "Follow-up requested successfully", data: response });
   } catch (error) {
     console.error('Error Requesting FollowUp:', error);

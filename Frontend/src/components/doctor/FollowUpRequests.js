@@ -155,6 +155,7 @@ export default function FollowUpRequests() {
             <TableRow>
               <TableCell style={cellStyle}>Patient Name</TableCell>
               <TableCell style={cellStyle}>Status</TableCell>
+              <TableCell style={cellStyle}>Request Date</TableCell>
               <TableCell style={cellStyle}>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -165,7 +166,11 @@ export default function FollowUpRequests() {
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell style={cellStyle}>{row.patientName}</TableCell>
-                <TableCell style={cellStyle}>{row.status}</TableCell>
+                <TableCell style={cellStyle}>Pending</TableCell>
+                <TableCell style={cellStyle}>
+  {row.requestDate ? new Date(row.requestDate).toLocaleDateString() : 'N/A'}
+</TableCell>
+
                 <TableCell>
                   <Button sx={buttonStyle} onClick={() => handleOpen(row._id)}>
                     <Typography>Accept</Typography>

@@ -60,9 +60,9 @@ export default function DocPatients() {
       console.log("hhhhh",pid);
 
       const response = await axios.patch(`${API_URL}/doctor/CancelAppointment/${aid}/${did}/${pid}`);
-      
+
       snackbarMessage('Appointment Cancelled Successfully!!');
-          
+      window.location.reload();
          
           
 
@@ -238,7 +238,10 @@ export default function DocPatients() {
                   >
                     <Typography>{res.pID?.name}</Typography>
                     <div style={{ marginLeft: "auto" }}></div>
-                    <Typography>{res.status}</Typography>
+                    <Typography>{res.status}
+                    {res.Description.toLowerCase().includes('follow up') && (
+    <span style={{ marginLeft: '0px', color: 'green' }}>+</span>)}
+                    </Typography>
                     <Typography sx={{ marginLeft: "10px" }}>
                       {res.startDate}
                     </Typography>

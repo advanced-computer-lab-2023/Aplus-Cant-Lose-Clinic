@@ -1045,8 +1045,8 @@ const cancelAppointment=async (req,res)=>
       await patient.save()     
       await doctor.save();
   }
-  // const app = await Appointment.find();
-  // res.status(200).json(app)
+   const app = await Appointment.find();
+   res.status(200).json(app)
 
      
 
