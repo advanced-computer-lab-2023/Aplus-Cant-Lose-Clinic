@@ -149,32 +149,36 @@ export default function FollowUpRequests() {
         <div>
         <AccountAvatar />
       </div>
-    <TableContainer component={Paper} style={tableStyle}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        {/* ... (rest of your component) */}
-        <TableBody>
-          {followUpRequests.map((row, index) => (
-            <TableRow
-              key={index}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              {/* ... (rest of your component) */}
-              <TableCell align="left" style={cellStyle}>
-                {row.status}
-              </TableCell>
-              <TableCell>
-                <Button sx={buttonStyle} onClick={() => handleOpen(row._id)}>
-                  <Typography>Accept</Typography>
-                </Button>
-                <Button sx={redButtonStyle} onClick={() => handleReject(row._id)}>
-                  <Typography>Reject</Typography>
-                </Button>
-              </TableCell>
+      <TableContainer component={Paper} style={tableStyle}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell style={cellStyle}>Patient Name</TableCell>
+              <TableCell style={cellStyle}>Status</TableCell>
+              <TableCell style={cellStyle}>Actions</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {followUpRequests.map((row, index) => (
+              <TableRow
+                key={index}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell style={cellStyle}>{row.patientName}</TableCell>
+                <TableCell style={cellStyle}>{row.status}</TableCell>
+                <TableCell>
+                  <Button sx={buttonStyle} onClick={() => handleOpen(row._id)}>
+                    <Typography>Accept</Typography>
+                  </Button>
+                  <Button sx={redButtonStyle} onClick={() => handleReject(row._id)}>
+                    <Typography>Reject</Typography>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
     <Dialog open={open} onClose={handleClose}>
     <DialogTitle>Schedule FollowUp</DialogTitle>

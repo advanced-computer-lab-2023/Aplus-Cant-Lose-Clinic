@@ -1585,7 +1585,8 @@ const requestFollowUp = async (req, res) => {
   }
 
   try {
-    const response = await FollowUp.create({ pID: pid, drID: did });
+    const patient = await Patient.findById(pid);
+    const response = await FollowUp.create({ pID: pid, drID: did,patientName:patient.name });
     res.status(201).json({ message: "Follow-up requested successfully", data: response });
   } catch (error) {
     console.error('Error Requesting FollowUp:', error);

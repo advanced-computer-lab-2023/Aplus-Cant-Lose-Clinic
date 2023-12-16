@@ -9,7 +9,11 @@ const followUpSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Patient", // Reference to the Patient model
     
+  },
+  patientName:{
+    type:String
   }
+
   
 });
 module.exports = mongoose.model("FollowUp", followUpSchema);
