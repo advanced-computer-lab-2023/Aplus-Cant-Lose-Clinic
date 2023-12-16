@@ -282,7 +282,7 @@ router.put('/update/:prescriptionID',  updateDosageForMedicine)
 
 router.post('/add/:prescriptionID',  addMedicineToPrescription)
 
-router.delete('/delete/:prescriptionID', deleteMedicineFromPrescription)
+router.delete('/delete/:prescriptionID/:medID', deleteMedicineFromPrescription)
 router.get("/FollowUpRequests/:doctorId",getFollowUpRequests);
 router.delete("/rejectFollowUp/:id",rejectFollowUpRequest);
 router.post("/acceptFollowUp/:id",acceptFollowUpRequest);
