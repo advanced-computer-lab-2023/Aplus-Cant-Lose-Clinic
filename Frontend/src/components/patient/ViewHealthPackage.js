@@ -25,6 +25,7 @@ import {
   DialogActions,
   DialogD,
 } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import axios from "axios";
 import { API_URL } from "../../Consts";
 import AccountAvatar from "../Authentication/AccountAvatar";
@@ -57,21 +58,17 @@ export default function Hpackages() {
   //dialogiue component state
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogData, setDialogData] = useState("");
-  const [dialoggOpen, setDialoggOpen] = useState(false);
-  const [h_id, setH_id] = useState(0);
-
-  const [amount, setAmount] = useState(0);
+  const[firstDialogue,setfirstDialogue]=useState(false);
+  const[secondDialogue,setSecondDialogue]=useState(false);
+  const[thirdDialogue,setThirdDialogue]=useState(false);
+  const[fourthDialogue,setFourthDialogue]=useState(false);
+  const [familyMemberUsername, setFamilyMemberUsername] = useState("");
+  const[subscribeID,setSubscribeID]=useState("");
+  const[packageID,setPackageID]=useState("");
+  const[amount,setAmount]=useState("");
 
   const navigate = useNavigate();
-  const handleSubscribe = (h_id, amount) => {
-    setH_id(h_id);
-    setAmount(amount);
-    setDialoggOpen(true);
-  };
 
-  const handleCloseDialogg = () => {
-    setDialoggOpen(false);
-  };
   const handleOpenDialog = async (healthPackageId) => {
     try {
       const response = await axios.get(
@@ -89,6 +86,93 @@ export default function Hpackages() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
+  const handleSubscribe=(id,rate)=>
+  {
+    setPackageID(id);
+    setAmount(rate);
+    console.log("RATEEEE",rate)
+    setfirstDialogue(true);
+    
+  }
+  const handleSubscribeForMyself=()=>
+  {
+    setfirstDialogue(false);
+    setSecondDialogue(true);
+    setSubscribeID(id);
+  }
+  const handleSubscribeForFamilyMember=()=>
+  {
+    setThirdDialogue(true)
+
+  }
+  const handleSubmitFamilyMember=async()=>
+  {
+
+    try {
+      
+      const response = await axios.get(
+        `${API_URL}/patient/patientID/${familyMemberUsername}`
+      );
+      console.log("this is the response",response)
+      setSubscribeID(response.data._id)
+      setThirdDialogue(false);
+      setFourthDialogue(true);
+    } catch (error) {
+      console.error("Error getting ID", error);
+    }
+  }
+  const handleWalletButtonClick = async() => {
+    try{
+      const body={amount:amount};
+      console.log("Here",amount);
+      const response=await axios.patch(`${API_URL}/patient/SubscriptionPayment/${subscribeID}/${packageID}`,body)
+      snackbarMessage("You have successfully Subscribed to HealthPackage", "success");
+      navigate('/Home');
+
+    }catch(error)
+    {
+      console.error('Error:', error);
+      snackbarMessage("No Sufficient Balance!", "error");
+      
+    }
+   
+   
+  
+    };
+    const handleWalletButtonClickFamily = async() => {
+      try{
+        const body={amount:amount};
+        console.log("my parameter",subscribeID,packageID,id);
+        const response=await axios.patch(`${API_URL}/patient/SubscriptionPaymentF/${subscribeID}/${packageID}/${id}`,body)
+        snackbarMessage("You have successfully Subscribed to HealthPackage", "success");
+        navigate('/Home');
+  
+      }catch(error)
+      {
+        console.error('Error:', error);
+        snackbarMessage("No Sufficient Balance!", "error");
+        
+      }
+     
+     
+    
+      };
+    
+    const handleCreditCardButtonClick = async() => {
+      try{
+      const response = await axios.post(`${API_URL}/patient/createCheckoutSession/${subscribeID}/${packageID}`)
+     //should add await here?
+      const { url } = response.data;
+   
+         window.location = url;
+      
+    }
+      catch (error) {
+        console.error(error.response.data.error);
+      }
+            
+    };
+    
 
   const tableStyle = {
     width: "80%",
@@ -172,14 +256,16 @@ export default function Hpackages() {
 
                 <TableCell align="left" style={cellStyle}>
                   {!row.isSubscribed ? (
-                    <Button
-                      sx={subscribeButtonStyle}
-                      onClick={() => {
-                        handleSubscribe(row._id, row.rate);
-                      }}
-                    >
-                      <Typography>Subscribe</Typography>
-                    </Button>
+                    
+                      <Button
+                        sx={subscribeButtonStyle}
+                        onClick={() => {
+                          handleSubscribe(row._id, row.rate);
+                        }}
+                      >
+                        <Typography>Subscribe</Typography>
+                      </Button>
+                   
                   ) : (
                     <Button
                       sx={unsubscribeButtonStyle}
@@ -210,15 +296,56 @@ export default function Hpackages() {
               openDialog={dialogOpen}
               closeDialog={handleCloseDialog}
             ></HealthPackageInfo>
+            <Dialog open={firstDialogue} onClose={()=>{setfirstDialogue(false)}}>
+      {/* Your dialog content here */}
+      <div>
+        <Button onClick={handleSubscribeForMyself} color="primary">
+          Myself
+        </Button>
+        <Button onClick={handleSubscribeForFamilyMember} color="primary">
+          Family Member
+        </Button>
+      </div>
+    </Dialog>
+    <Dialog open={secondDialogue} onClose={()=>{setSecondDialogue(false)}}>
+      {/* Your dialog content here */}
+      <div>
+        <Button onClick={handleWalletButtonClick} color="primary">
+          Wallet
+        </Button>
+        <Button onClick={handleCreditCardButtonClick} color="primary">
+          Credit Card
+        </Button>
+      </div>
+    </Dialog>
+    <Dialog open={thirdDialogue} onClose={()=>{setThirdDialogue(false)}}>
+      <div>
+        <TextField
+          label="Family Member Username"
+          variant="outlined"
+          value={familyMemberUsername}
+          onChange={(e) => setFamilyMemberUsername(e.target.value)}
+          style={{ marginBottom: "16px" }}
+        />
+        <Button onClick={handleSubmitFamilyMember} color="primary">
+          Submit
+        </Button>
+      </div>
+    </Dialog>
+    <Dialog open={fourthDialogue} onClose={()=>{setFourthDialogue(false)}}>
+      {/* Your dialog content here */}
+      <div>
+        <Button onClick={handleWalletButtonClickFamily} color="primary">
+          Wallet
+        </Button>
+        <Button onClick={handleCreditCardButtonClick} color="primary">
+          Credit Card
+        </Button>
+      </div>
+    </Dialog>
           </TableBody>
         </Table>
       </TableContainer>
-      <SubsciptionPayment
-        open={dialoggOpen}
-        onClose={handleCloseDialogg}
-        h_id={h_id}
-        amount={amount}
-      />
     </>
   ) : (
     <>
@@ -261,3 +388,5 @@ const HealthPackageInfo = ({ data, openDialog, closeDialog }) => {
     </Dialog>
   );
 };
+
+
