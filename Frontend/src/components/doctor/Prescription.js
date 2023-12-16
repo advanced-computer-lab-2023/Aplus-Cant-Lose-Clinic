@@ -23,7 +23,8 @@ import { API_URL } from '../../Consts';
 import { TextField } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
 const Prescriptions = () => {
     const doctorId = useSelector((state) => state.user.id);
     const [patientList, setPatientList] = useState([]);
@@ -157,6 +158,9 @@ const Prescriptions = () => {
     const handleAddPrescription = () => {
         setAddPrescriptionDialogOpen(true);
     };
+    const handleAddPrescriptionClose = () => {
+      setAddPrescriptionDialogOpen(false);
+  };
 
     useEffect(() => {
         getPatients();
@@ -239,10 +243,28 @@ const Prescriptions = () => {
                             value={formData.dosage}
                             onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
                         />
+                          <div>
+            <Typography sx={{ marginBottom: '8px' }}>Prescription Date and Time</Typography>
+            <DatePicker
+              selected={formData.prescriptionDate}
+              onChange={(date) => setFormData({ ...formData, prescriptionDate: date })}
+              showTimeSelect
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              timeCaption="Time"
+              dateFormat="MMMM d, yyyy h:mm aa"
+              placeholderText="Select date and time"
+              className="custom-datepicker" // Add your own class for styling
+              // ... other props
+            />
+          </div>
                         {/* Add more form fields as needed */}
                         <Button variant="contained" onClick={handleFormSubmit}>
                             Add Prescription
                         </Button>
+                        <Button variant="contained" onClick={handleAddPrescriptionClose}>
+                        Back
+                    </Button>
                     </DialogContent>)}
             </Dialog>
             <Dialog
