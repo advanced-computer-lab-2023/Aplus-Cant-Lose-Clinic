@@ -868,9 +868,9 @@ const addMedicineToPrescription = async (req, res) => {
 };
 const deleteMedicineFromPrescription = async (req, res) => {
   try {
-    const medID = req.body.medID;
+    const medID = req.params.medID;
     const prescriptionID = req.params.prescriptionID;
-
+    console.log("backend:"+medID);
     // Find the prescription by ID
     const prescription = await Prescription.findById(prescriptionID);
 
@@ -897,10 +897,6 @@ const deleteMedicineFromPrescription = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
-
-
-
-
 
 const getFollowUpRequests=async(req,res)=>
 {
