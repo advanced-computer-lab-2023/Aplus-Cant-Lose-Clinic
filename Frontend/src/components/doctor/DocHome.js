@@ -12,7 +12,7 @@ import {
   Box,
   AppBar,
 } from "@mui/material";
-import { NavLink } from "react-router-dom";
+import { NavLink, Navigate } from "react-router-dom";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import GroupIcon from "@mui/icons-material/Group";
 import WalletIcon from "@mui/icons-material/Wallet";
@@ -67,9 +67,11 @@ export default function DocHome() {
   const doctorId = useSelector((state) => state.user.id);
 
   const dispatch = useDispatch();
-  useEffect(() => {
-  }, [dispatch]);
 
+  useEffect(() => {
+    window.location.href = "/DocPatients";
+  }, [dispatch]);
+  
   const notifications = useSelector((state) => state.doctor.notifications);
 
   const [openDialog, setOpenDialog] = useState(false);

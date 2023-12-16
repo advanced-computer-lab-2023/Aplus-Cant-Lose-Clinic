@@ -26,6 +26,7 @@ import MuiAlert from "@mui/material/Alert";
 import AccountAvatar from "../Authentication/AccountAvatar";
 import Button from "@mui/material/Button";
 import { SnackbarContext } from "../../App";
+import wd from "../wd.png";
 export default function DocPatients() {
   const [nameFilter, setNameFilter] = useState("");
   const [startDateFilter, setStartDateFilter] = useState("");
