@@ -79,7 +79,7 @@ function RescheduleAppointment({  appointmentID }) {
     const handleClickOpen = async () => {
         setOpen(true);
        // await getPatientList();
-
+      
         // Retrieve appointmentId from the prop or any other source
         // For example, if appointmentId is part of the appointment object passed as prop
         // const appointmentId = appointment._id; // Make sure to pass the correct prop
@@ -100,6 +100,8 @@ function RescheduleAppointment({  appointmentID }) {
                 rescheduleAppointment(); // Change the function call to rescheduleAppointment
             }
         }
+        window.location.reload();
+
     };
     return (
         <>

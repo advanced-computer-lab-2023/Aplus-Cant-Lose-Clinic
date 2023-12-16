@@ -86,10 +86,12 @@ function RescheduleAppointment({ appointment }) {
     const handleClickOpen = async () => {
       setOpen(true);
       await getPatientList();
+      
     };
     const handleClose = () => {
       setOpen(false);
       rescheduleAppointment();
+      window.location.reload();
     };
     
     return (
