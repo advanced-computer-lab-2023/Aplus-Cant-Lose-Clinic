@@ -40,7 +40,9 @@ const {
   updatePatientNotifications,
   sendPatientEmail,
   requestFollowUp,
-  sendEmail
+  sendEmail,
+  getID,
+  payWithWalletF
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -73,6 +75,7 @@ router.get("/appointmentPatients/:doctorId", appointmentPatients);
 router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId", payWithWallet);
+router.patch("/SubscriptionPaymentF/:patientId/:healthPackageId/:id", payWithWalletF);
 router.patch(
   "/CCSubscriptionPayment/:patientId/:healthPackageId",
   ccSubscriptionPayment
@@ -548,5 +551,6 @@ router.patch("/:patientId/notifications", updatePatientNotifications);
 // send email to a patient
 router.post("/:patientId/send-email", sendPatientEmail);
 router.post("/requestFollowUp/:pid/:did", requestFollowUp);
+router.get("/patientID/:username",getID);
 
 module.exports = router;

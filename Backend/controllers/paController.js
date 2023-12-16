@@ -1399,7 +1399,7 @@ const cancelAppointment=async (req,res)=>
       // Send email to the patient
      const emailSubject = "Appointment Canceled";
      const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
-     await sendEmail(patient.email, emailSubject,emailMessage );
+    await sendEmail(patient.email, emailSubject,emailMessage );
 
 
  
@@ -1593,6 +1593,72 @@ const requestFollowUp = async (req, res) => {
   }
 };
 
+const getID = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const patient = await Patient.findOne({ username: username });
+
+    if (!patient) {
+      // If no patient is found with the given username
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    res.status(200).json({ _id: patient._id });
+  } catch (error) {
+    console.error("Error getting id:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const payWithWalletF= async(req,res)=>
+{
+  const {amount}=req.body;
+  const {patientId,healthPackageId,id}=req.params;
+  try{
+    if (!patientId || !healthPackageId||!id) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+  const patient=await Patient.findOne({_id:patientId})
+  //this is the family member that will pay
+  const familyMem =await Patient.findOne({_id:id})
+
+  
+  if(!patient||!familyMem)
+  {
+    return res.status(404).json({error:"Patient not found!"})
+  }
+ 
+
+  if(familyMem.wallet<amount){
+   return  res.status(400).json({error:"Balance not Sufficient"})
+  }
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  familyMem.wallet-=amount;
+  patient.hPackage=healthPackageId;
+  patient.hPStatus="Subscribed";
+  patient.SubDate=today;
+    await patient.save();
+    await familyMem.save();
+
+    res.status(200).json({message:"Successfully subscribed to health package"})
+
+
+   
+    
+  
+}catch(error)
+{
+  console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+}
+
+}
+
+
 
 
 
@@ -1631,4 +1697,6 @@ module.exports = {
   updatePatientNotifications,
   sendPatientEmail,
   requestFollowUp,
+  getID,
+  payWithWalletF
 };

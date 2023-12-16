@@ -999,7 +999,7 @@ const cancelAppointment=async (req,res)=>
       // Send email to the doctor
       const emailSubject2 = "Appointment Canceled";
       const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
-      await sendEmail( doctor.email , emailSubject2,emailMessage2 );
+     await sendEmail( doctor.email , emailSubject2,emailMessage2 );
 
 
      // Send email to the patient
@@ -1221,3 +1221,4 @@ module.exports = {
   viewPrescriptions
   
 };
+
