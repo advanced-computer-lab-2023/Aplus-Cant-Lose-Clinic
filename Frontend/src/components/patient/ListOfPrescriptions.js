@@ -195,7 +195,22 @@ const App = () => {
                   rootElementId="pagetodownload"
                   downloadFileName="prescription"
                 />
-
+                <Button
+                  sx={{
+                    margin: "10px 0px 0px 50px",
+                    justifyItems: "center",
+                    color: "black",
+                    border: "black",
+                  }}
+                  onClick={() => {
+                //    handlePay(prescriptionid);
+                  }}
+                >
+                  <IconButton sx={{ paddingLeft: "0px" }}>
+                    <ArrowBackIosIcon />
+                  </IconButton>
+                  Pay
+                </Button>
                 <Button
                   sx={{
                     margin: "10px 0px 0px 50px",
@@ -220,9 +235,7 @@ const App = () => {
       <AppBar position="static" sx={{ backgroundColor: "#7b2cbf" }}>
         <Toolbar>
           <Grid container alignItems="center" spacing={2}>
-            <Grid item>
-              
-            </Grid>
+            <Grid item></Grid>
             <Grid item>
               <Typography variant="h5">My Prescriptions</Typography>
             </Grid>
