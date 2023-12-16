@@ -15,7 +15,8 @@ const doctorState = {
   appointments:[],
   info:{},
   wallet:0,
-  ndrID:0
+  ndrID:0,
+  notifications:[],
 
 };
 
@@ -110,12 +111,21 @@ export const viewWallet = createAsyncThunk(
   "doctor/viewWallet", 
   async (id) => {
   const response = await axios.get(
-    `${API_URL}/patient/viewWallet/${id}`
+    `${API_URL}/doctor/viewWallet/${id}`
   );
   return response;
 
 })
 
+export const getNotifications = createAsyncThunk(
+  "doctor/:doctorId/notifications", 
+  async (id) => {
+  const response = await axios.get(
+    `${API_URL}/doctor/${id}/notifications`
+  );
+  return response;
+
+})
 
 
 export const doctor = createSlice({
@@ -194,6 +204,12 @@ export const doctor = createSlice({
       .addCase(viewWallet.fulfilled, (state, action) => {
         state.loading = false;
         state.wallet = action.payload.data.wallet;
+      })
+
+      builder
+      .addCase(getNotifications.fulfilled, (state, action) => {
+        state.loading = false;
+        state.notifications = action.payload.data.notifications;
       })
     
       

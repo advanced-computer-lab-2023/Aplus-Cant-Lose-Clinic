@@ -578,7 +578,7 @@ const viewPrescriptions = async (req, res) => {
         model: "Doctor", // Reference to the Doctor model
       })
       .populate({
-        path: "medID",
+        path: "meds.medID", // Update the path to access the nested medID in meds array
         model: "Medicine", // Reference to the Medicine model
       });
 
@@ -739,7 +739,10 @@ const viewSpecificPrescription = async (req, res) => {
 
     // Find the prescription by its ID and populate related data
     const prescription = await Prescription.findById(prescriptionId)
-      .populate("medID") // Populate the Medicine
+      .populate({
+        path: "meds.medID", // Update the path to access the nested medID in meds array
+        model: "Medicine", // Reference to the Medicine model
+      })
       .populate("patientID") // Populate the Patient
       .populate("doctorID"); // Populate the Doctor
 
@@ -755,7 +758,7 @@ const viewSpecificPrescription = async (req, res) => {
     console.error("Error retrieving prescription:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // Import your Doctor schema/model
 const getAlldoctors = async (req, res) => {
@@ -1193,19 +1196,59 @@ const rescheduleAppointment = async (req, res) => {
     const { startDate, endDate } = req.body;
 
     // Assuming you have a model named 'Appointment' for your appointments
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(appointmentId)
+      .populate('drID') 
+      .populate('pID',);
+
 
     if (!appointment) {
       return res.status(404).json({ message: 'Appointment not found' });
     }
 
+    const doctor = appointment.drID;
+    const patient= appointment.pID;
+    const dId = doctor._id;
+    const pId= patient._id;
+  
+    // console.log(appointment)
+
+
     // Update the start and end dates
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
+      ///added start
+     patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentRescheduled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+      type:"AppointmentRescheduled",
+    });
+      
+        //still will send to doctor 
+    //added end
+
+    
     // Save the updated appointment
+    
+    await patient.save();
+    await doctor.save();
     await appointment.save();
 
+
+      // Send email to the doctor
+      const emailSubject2 = "Appointment Reschedule";
+      const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
+      await sendEmail( doctor.email , emailSubject2, emailMessage2 );
+  
+// Send email to the patient
+    const emailSubject = "Appointment Reschedule";
+      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+      await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
+
+    
     res.json({ success: true, message: "Appointment successfully rescheduled" });
   } catch (error) {
     console.error("Error rescheduling appointment", error);
@@ -1272,6 +1315,36 @@ const cancelAppointment=async (req,res)=>
       res.status(500).json({message:"Patient not found!"})
     }
     appointment.status="cancelled";
+  
+    ///added start
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentCanceled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
+      type:"AppointmentCanceled",
+    });
+
+    await patient.save()     
+    await doctor.save();
+
+
+       // Send email to the doctor
+       const emailSubject2 = "Appointment Canceled";
+       const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
+       await sendEmail( doctor.email , emailSubject2,emailMessage2 );
+
+
+      // Send email to the patient
+     const emailSubject = "Appointment Canceled";
+     const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+     await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+
+
+ 
+
+    //added end
     await appointment.save();
 
     const today=new Date();
@@ -1283,7 +1356,12 @@ const cancelAppointment=async (req,res)=>
       console.log(patient.wallet)
       patient.wallet+=doctor.rate;
       await patient.save()     
+      await doctor.save();
   }
+  // const app = await Appointment.find();
+  // res.status(200).json(app)
+
+     
 
   }
   catch(error)
@@ -1378,6 +1456,7 @@ const sendPatientEmail = async (req, res) => {
   try {
     // Retrieve patient's email from the database
     const patient = await Patient.findById(patientId);
+   
     if (!patient || !patient.email) {
       return res.status(404).json({ message: 'Patient not found or no email associated.' });
     }
@@ -1393,7 +1472,7 @@ const sendPatientEmail = async (req, res) => {
     // Email content
     const mailOptions = {
       from: process.env.EMAIL,
-      to: patient.email,
+      to: /*patient.email*/"ahmed.elgamel@student.guc.edu.eg" ,
       subject,
       text: message,
     };
@@ -1406,6 +1485,38 @@ const sendPatientEmail = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+const sendEmail = async (email, subject, message) => {
+  try {
+    console.log("tetst mailllll")
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: /*email*/"ahmed.elgamel@student.guc.edu.eg",
+      subject,
+      text: message,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully'); // Add this log to check if the function is reached
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error; // Propagate the error to the calling function
+  }
+};
+
+
+
+
 const requestFollowUp = async (req, res) => {
   const { pid, did } = req.params;
 
@@ -1459,5 +1570,5 @@ module.exports = {
   addPatientNotification,
   updatePatientNotifications,
   sendPatientEmail,
-  requestFollowUp
+  requestFollowUp,
 };

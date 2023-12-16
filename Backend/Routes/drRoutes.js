@@ -29,7 +29,8 @@ const {
   deleteMedicineFromPrescription,
   getFollowUpRequests,
   acceptFollowUpRequest,
-  rejectFollowUpRequest
+  rejectFollowUpRequest,
+  cancelAppointment
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -283,6 +284,7 @@ router.delete('/delete/:prescriptionID', deleteMedicineFromPrescription)
 router.get("/FollowUpRequests/:doctorId",getFollowUpRequests);
 router.delete("/rejectFollowUp/:id",rejectFollowUpRequest);
 router.post("/acceptFollowUp/:id",acceptFollowUpRequest);
+router.patch("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
 
 
 

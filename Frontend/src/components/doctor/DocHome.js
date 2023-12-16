@@ -25,6 +25,17 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import SickIcon from "@mui/icons-material/Sick";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import DoctorProfileDialog from "./DoctorProfileDialog";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import { useEffect } from "react";
+import { getNotifications } from '../../features/doctorSlice.js';
+
+
+
 export default function DocHome() {
   console.log("im hiiim ");
   const user = useSelector((state) => state.user);
@@ -54,31 +65,61 @@ export default function DocHome() {
   const divstyle = {
     display: "flex",
   };
-  const [dialogOpen, setDialogOpen] = useState(false);
+ 
+
+  const doctorId = useSelector((state) => state.user.id);
+  
+    const dispatch= useDispatch();
+    useEffect(() => {
+     dispatch(getNotifications(doctorId));
+    }, [dispatch]);
+
+  const notifications = useSelector((state) => state.doctor.notifications);
+
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenDialog = () => {
-    setDialogOpen(true);
+    setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
-    setDialogOpen(false);
+    setOpenDialog(false);
   };
 
-  const [dialoogOpen, setDialoogOpen] = useState(false);
 
-  const handleOpenDialoog = () => {
-    setDialogOpen(true);
-  };
-
-  const handleCloseDialoog = () => {
-    setDialogOpen(false);
-  };
   return (
     // <div>DocHome
     // {  console.log(user)}
     // </div>
 
     <>
+
+<Button
+                variant="outlined"
+                size="large"
+                sx={{ width: "0", ml: "0%", mb: "0.5%",mt:"0px" ,borderRadius:"50%",alignItems: 'center',justifyContent: 'center',display: 'flex', }}
+                onClick={handleOpenDialog}>
+                   
+                    <NotificationsIcon fontSize="small" sx={{color:"grey"}}/>
+                
+        </Button>
+
+     <Dialog open={openDialog} onClose={handleCloseDialog}>
+            <DialogTitle>Notifications</DialogTitle>
+            <DialogContent>
+                {notifications.map((notification, index) => (
+                    <div>
+                     {notification.message}
+                    </div>
+                    
+                      
+                 ))}
+            </DialogContent>
+
+            <DialogActions>
+                <Button onClick={handleCloseDialog}>Close</Button>
+            </DialogActions>
+      </Dialog>
 
       <Snackbar
         open={false}

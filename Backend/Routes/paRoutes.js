@@ -40,6 +40,7 @@ const {
   updatePatientNotifications,
   sendPatientEmail,
   requestFollowUp,
+  sendEmail
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");

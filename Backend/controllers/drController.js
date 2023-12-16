@@ -617,20 +617,52 @@ async function rescheduleAppointment(req, res) {
 
   try {
     // Find the appointment by ID
-    const appointment = await Appointment.findById(appointmentId);
+    const appointment = await Appointment.findById(appointmentId)
+    .populate('drID') 
+    .populate('pID',);
+
+
     if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
       return res.status(400).json({ error: 'Invalid appointmentId' });
   }
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
+    const doctor = appointment.drID;
+    const patient= appointment.pID;
+    const dId = doctor._id;
+    const pId= patient._id;
 
     // Update the appointment with the new dates
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentRescheduled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+      type:"AppointmentRescheduled",
+    });
+      
+
     // Save the updated appointment
+    await patient.save();
+    await doctor.save();
     await appointment.save();
+
+      // Send email to the doctor
+      const emailSubject2 = "Appointment Reschedule";
+      const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
+      await sendEmail( doctor.email , emailSubject2, emailMessage2 );
+  
+    // Send email to the patient
+    const emailSubject = "Appointment Reschedule";
+      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+      await sendPatientEmail({ params: { patientId: pId }, body: { subject: emailSubject, message: emailMessage } });
+
+    
 
     // Return a success message or the updated appointment
     res.json({ message: 'Appointment rescheduled successfully', appointment });
@@ -901,7 +933,8 @@ const acceptFollowUpRequest=async (req,res)=>
       Description: "follow up",
     });
     
-    res.status(200).json({message:"FollowUp accepted Successfully!",data:appointment})
+    const followUps=await FollowUp.find({drID:response.drID})
+    res.status(200).json(followUps)
   }catch(error)
   {
     console.error(error)
@@ -913,14 +946,165 @@ const rejectFollowUpRequest=async(req,res)=>
 {
   const {id}=req.params
   try{
+    
     const response =await FollowUp.findByIdAndDelete(id)
-    res.status(200).json({message:"FollowUp rejected Successfully!"})
+    const followUps=await FollowUp.find({drID:response.drID});
+    res.status(200).json(followUps)
   }catch(error)
   {
     console.error(error)
     res.status(500).json({message:'Error rejecting FollowUp'})
   }
 }
+const cancelAppointment=async (req,res)=>
+{
+  try
+  {
+    const {aid,did,pid}=req.params
+    console.log(aid,did,pid)
+    if (!aid || !did || !pid) {
+      return res.status(400).json({ message: "Invalid parameters" });
+    }
+    console.log("yyyyyyy",did)
+    const appointment=await Appointment.findById(aid)
+    const doctor=await Doctor.findById(did)
+    const patient=await Patient.findById(pid)
+    if(!appointment)
+    {
+      res.status(500).json({message:"Appointment not found!"})
+    }
+    if(!doctor)
+    {
+      res.status(500).json({message:"Doctor not found!"})
+    }
+    if(!patient)
+    {
+      res.status(500).json({message:"Patient not found!"})
+    }
+    appointment.status="cancelled";
+  
+    ///added start
+    patient.notifications.push({ //add notifiaction to patient
+      message:`APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
+      type:"AppointmentCanceled",
+    });
+    doctor.notifications.push({//add notifiaction to doctor
+      message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
+      type:"AppointmentCanceled",
+    });
+
+    await patient.save()     
+    await doctor.save();
+
+      // Send email to the doctor
+      const emailSubject2 = "Appointment Canceled";
+      const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
+      await sendEmail( doctor.email , emailSubject2,emailMessage2 );
+
+
+     // Send email to the patient
+    const emailSubject = "Appointment Canceled";
+    const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+    await sendPatientEmail({ params: { patientId: pid }, body: { subject: emailSubject, message: emailMessage } });
+
+
+    //added end
+    await appointment.save();
+
+    const today=new Date();
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+    const timeDifference = Math.abs(today - appointment.startDate);
+   //const timeDifference = appointment.startDate-today;
+    if (timeDifference > oneDayInMilliseconds) {
+      console.log(timeDifference)
+      console.log(patient.wallet)
+      patient.wallet+=doctor.rate;
+      await patient.save()     
+      await doctor.save();
+  }
+  // const app = await Appointment.find();
+  // res.status(200).json(app)
+
+     
+
+  }
+  catch(error)
+  {
+    console.error(error);
+    res.status(500).json({message:"Error Cancelling Appointment"})
+
+  }
+
+}
+
+
+
+const sendPatientEmail = async (req, res) => {
+  const { patientId } = req.params;
+  const { subject, message } = req.body;
+
+  try {
+    // Retrieve patient's email from the database
+    const patient = await Patient.findById(patientId);
+   
+    if (!patient || !patient.email) {
+      return res.status(404).json({ message: 'Patient not found or no email associated.' });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    // Email content
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: /*patient.email*/"ahmed.elgamel@student.guc.edu.eg" ,
+      subject,
+      text: message,
+    };
+
+    // Send the email
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Email sent successfully' });
+  } catch (error) {
+    console.error('Error sending email:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+
+const sendEmail = async (email, subject, message) => {
+  try {
+    console.log("tetst mailllll")
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
+
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: /*email*/"ahmed.elgamel@student.guc.edu.eg",
+      subject,
+      text: message,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Email sent successfully'); // Add this log to check if the function is reached
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error; // Propagate the error to the calling function
+  }
+};
+
+
 
 
 
@@ -956,6 +1140,7 @@ module.exports = {
   sendDoctorEmail,
   getFollowUpRequests,
   acceptFollowUpRequest,
-  rejectFollowUpRequest
+  rejectFollowUpRequest,
+  cancelAppointment
   
 };
