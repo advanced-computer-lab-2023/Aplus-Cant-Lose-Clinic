@@ -312,16 +312,30 @@ const Prescription = require('../Models/prescription'); // Import the Prescripti
 
 const addPrescription = async (req, res) => {
   try {
-    const { medID, dosage, patientID, doctorID, datePrescribed } = req.body;
+    const { medName, dosage, patientID, doctorID, datePrescribed } = req.body;
 
     // Validate inputs
-    if (!medID || !dosage || !patientID || !doctorID || !datePrescribed) {
+    if (!medName || !dosage || !patientID || !doctorID || !datePrescribed) {
       return res.status(400).json({ error: "Missing required input fields" });
+    }
+
+    // Find or create the medicine
+    let medicine = await Medicine.findOne({ name: medName });
+
+    if (!medicine) {
+      // If the medicine doesn't exist, create a new one
+      medicine = new Medicine({
+        name: medName,
+        // Add other fields as needed
+      });
+
+      // Save the new medicine to the database
+      await medicine.save();
     }
 
     // Create a new prescription instance with the provided data
     const prescription = new Prescription({
-      meds: [{ medID, dosage }],
+      meds: [{ medID: medicine._id, dosage }],
       patientID,
       doctorID,
       datePrescribed,
@@ -339,6 +353,7 @@ const addPrescription = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 const getDr = async (req, res) => {
