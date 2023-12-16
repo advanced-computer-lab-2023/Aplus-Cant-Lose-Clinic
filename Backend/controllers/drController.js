@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const FollowUp=require("../Models/followUps");
+const Medicine = require("../Models/medicine");
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
 }
@@ -837,9 +838,12 @@ const updateDosageForMedicine = async (req, res) => {
 };
 const addMedicineToPrescription = async (req, res) => {
   try {
-    const { medID, dosage } = req.body;
+    const { medName, dosage } = req.body;
     const prescriptionID = req.params.prescriptionID;
-
+    console.log('====================================');
+    console.log(medName);
+    console.log(dosage);
+    console.log('====================================');
     // Find the prescription by ID
     const prescription = await Prescription.findById(prescriptionID);
 
@@ -847,15 +851,22 @@ const addMedicineToPrescription = async (req, res) => {
       return res.status(404).json({ message: 'Prescription not found.' });
     }
 
+    // Find the medicine by its name
+    const medicine = await Medicine.findOne({ name: medName });
+
+    if (!medicine) {
+      return res.status(404).json({ message: 'Medicine not found.' });
+    }
+
     // Check if the medicine already exists in the prescription
-    const existingMedicine = prescription.meds.find((med) => med.medID.toString() === medID);
+    const existingMedicine = prescription.meds.find((med) => med.medID.toString() === medicine._id.toString());
 
     if (existingMedicine) {
       return res.status(400).json({ message: 'Medicine already exists in the prescription.' });
     }
 
     // Add the new medicine with dosage to the prescription
-    prescription.meds.push({ medID, dosage });
+    prescription.meds.push({ medID: medicine._id, dosage });
 
     // Save the updated prescription
     await prescription.save();
@@ -866,6 +877,7 @@ const addMedicineToPrescription = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
 const deleteMedicineFromPrescription = async (req, res) => {
   try {
     const medID = req.params.medID;

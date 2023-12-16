@@ -34,6 +34,8 @@ const Prescriptions = () => {
     const [editdosage, seteditdosage] = useState(false);
     const [newDose, setNewDose] = useState(' ');
     const [Medid, setMedid] = useState('');
+    const [newMed, setnewMed] = useState(' ');
+    const [addMed, setaddMed] = useState(false);
     const [formData, setFormData] = useState({
         medicineName: '',
         dosage: '',
@@ -90,15 +92,21 @@ const Prescriptions = () => {
         }
     };
 
-    const addMedicineToPrescription = async (medID, dosage) => {
+    const addMedicineToPrescription = async (medName, dosage) => {
         try {
+            console.log('====================================');
+            console.log(medName);
+            console.log(dosage);
+            const prescriptionID = prescriptionid._id;
+
+            console.log('====================================');
             const { response } = await axios.post(
-                `${API_URL}/doctor/add/${prescriptionid}`, {
-                medID,
+                `${API_URL}/doctor/add/${prescriptionID}`, {
+                medName,
                 dosage
             }
             );
-            console.log("Response:", response.data);
+            console.log("Response:", response);
 
         } catch (err) {
             console.error("Response data:", err.response.data);
@@ -158,11 +166,42 @@ const Prescriptions = () => {
 
     return (
         <div>
+
+<Dialog
+                open={addMed}
+                sx={{ width: '100%', height: '100%' }}>
+                <DialogContent>
+                    <DialogTitle>Add Medicine </DialogTitle>
+                    <TextField
+                        label="Enter Medicine Name "
+                        fullWidth
+                        value={newMed}
+                        margin='30px'
+                        onChange={(e) => setnewMed(e.target.value)}
+                        sx={{margin: '10px'}}
+
+                    />
+                     <TextField
+                        label="Enter Dose "
+                        fullWidth
+                        value={newDose}
+                        onChange={(e) => setNewDose(e.target.value)}
+                        sx={{margin: '10px'}}
+                    />
+                    <Button variant="contained" onClick={() => {addMedicineToPrescription(newMed, newDose);setaddMed(false);}} sx={{ marginTop: "10px" }}>
+                        Done
+                    </Button>
+                    <Button variant="contained" onClick={() => {setaddMed(false);}} sx={{ marginTop: "10px" }}>
+                        Back
+                    </Button>
+                </DialogContent>
+            </Dialog>
+
             <Dialog
                 open={editdosage}
                 sx={{ width: '100%', height: '100%' }}>
                 <DialogContent>
-                    <DialogTitle>Edit Dose :</DialogTitle>
+                    <DialogTitle>Edit Dose </DialogTitle>
                     <TextField
                         label="Enter Dose "
                         fullWidth
@@ -171,6 +210,9 @@ const Prescriptions = () => {
                     />
                     <Button variant="contained" onClick={() => {updateDosageForMedicine(Medid, newDose);seteditdosage(false);}} sx={{ margin: "10px" }}>
                         Done
+                    </Button>
+                    <Button variant="contained" onClick={() => {seteditdosage(false);}} sx={{ marginTop: "10px" }}>
+                        Back
                     </Button>
                 </DialogContent>
             </Dialog>
@@ -308,7 +350,7 @@ const Prescriptions = () => {
                                     Back
                                 </Button>
                             </Link>
-                            <Button >
+                            <Button onClick={()=>setaddMed(true)}>
                                 Add Medicine
                             </Button>
                         </Paper>
