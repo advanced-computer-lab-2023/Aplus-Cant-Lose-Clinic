@@ -33,9 +33,9 @@ const Prescriptions = () => {
     const [prescriptionid, setPrescriptionid] = useState(null);
     const [AddPrescriptionDialogOpen, setAddPrescriptionDialogOpen] = useState(false);
     const [editdosage, seteditdosage] = useState(false);
-    const [newDose, setNewDose] = useState(' ');
+    const [newDose, setNewDose] = useState('');
     const [Medid, setMedid] = useState('');
-    const [newMed, setnewMed] = useState(' ');
+    const [newMed, setnewMed] = useState('');
     const [addMed, setaddMed] = useState(false);
     const [formData, setFormData] = useState({
         medicineName: '',
