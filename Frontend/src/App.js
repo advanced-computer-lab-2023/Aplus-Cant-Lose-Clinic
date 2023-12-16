@@ -69,6 +69,7 @@ import HealthRecords from "./components/patient/HealthRecords.js";
 import AvailableApp from "./components/patient/AvailableApp";
 import MedHistList from "./components/patient/MedHistList";
 import SuccessAppoint from "./components/patient/SuccessAppoint";
+import DocPrescriptions from "./components/doctor/Prescription";
 const router = createBrowserRouter(
   createRoutesFromElements(
     
@@ -88,7 +89,7 @@ const router = createBrowserRouter(
       <Route path="/upload" element={<Upload />} />
     <Route path="/RegisterAsPatient" element={<RegisterAsPatient />} />
     <Route path="/RegisterAsDoctor" element={<RegisterAsDoctor />} />
-
+      <Route path='/Prescription' element={<DocPrescriptions/>} />
       <Route path="/MedHist" element={<MedHist />} />
       <Route path="/MedHistList" element={<MedHistList />} />
       <Route path="/Appointments" element={<Appointments />} />

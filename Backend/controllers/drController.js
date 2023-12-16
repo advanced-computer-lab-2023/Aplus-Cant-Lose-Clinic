@@ -1104,7 +1104,82 @@ const sendEmail = async (email, subject, message) => {
   }
 };
 
+const getPatientsByDoctorId = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
 
+    // Validate doctorId
+    if (!doctorId) {
+      return res.status(400).json({ error: "Doctor ID is required" });
+    }
+
+    // Find all prescriptions with the specified doctor ID
+    const prescriptions = await Prescription.find({ doctorID: doctorId });
+
+    // Extract unique patient IDs from prescriptions
+    const patientIds = prescriptions.map((prescription) => prescription.patientID);
+
+    // Find patients using the extracted patient IDs and populate prescriptions
+    const patients = await Patient.find({ _id: { $in: patientIds } })
+
+    if (!patients) {
+      return res.status(404).json({ error: "Patients not found" });
+    }
+
+    res.status(200).json({ patients });
+  } catch (error) {
+    console.error("Error in getPatientsByDoctorId:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+const viewPrescriptions = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // Validate the 'patientId' parameter
+    if (!patientId) {
+      return res.status(400).json({ error: "Patient ID is required" });
+    }
+
+    // Find the patient by patientId
+    const patient = await Patient.findById(patientId);
+
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+
+    // Fetch details about each prescription, including medicine and doctor
+    const prescriptions = await Prescription.find({ patientID: patient._id })
+    .populate({
+      path: "doctorID",
+      model: "Doctor", // Reference to the Doctor model
+    })
+    .populate({
+      path: "meds.medID", // Update the path to access the nested medID in meds array
+      model: "Medicine", // Reference to the Medicine model
+    })
+    .catch((populateError) => {
+      console.error("Error populating data:", populateError);
+      throw populateError; // Rethrow the error to be caught in the outer catch block
+    });
+  
+
+    if (!prescriptions || prescriptions.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "No prescriptions found for the patient" });
+    }
+
+    // Prepare the response with the prescriptions, medicine, and doctor details
+    return res.status(200).json({
+      message: "Prescriptions retrieved successfully",
+      prescriptions,
+    });
+  } catch (error) {
+    console.error("Error retrieving prescriptions:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 
@@ -1141,6 +1216,8 @@ module.exports = {
   getFollowUpRequests,
   acceptFollowUpRequest,
   rejectFollowUpRequest,
-  cancelAppointment
+  cancelAppointment,
+  getPatientsByDoctorId,
+  viewPrescriptions
   
 };
