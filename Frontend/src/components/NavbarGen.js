@@ -175,6 +175,16 @@ const NavbarGen = () => {
                   </NavLink>
                 </Box>
                 <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
+                  <NavLink to="/Prescription">
+                    <Button sx={{ color: "white" }}>
+                      <IconButton>
+                        <PendingActionsIcon style={styles}></PendingActionsIcon>
+                      </IconButton>
+                      <Typography>Patient's Prescriptions</Typography>
+                    </Button>
+                  </NavLink>
+                </Box>
+                <Box sx={{ flexGrow: 1, display: { xs: "2", md: "flex" } }}>
                   <Button sx={{ color: "white" }} onClick={handleOpenDialog}>
                     <IconButton>
                       <Badge badgeContent={1} color="error">

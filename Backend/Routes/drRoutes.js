@@ -30,7 +30,9 @@ const {
   getFollowUpRequests,
   acceptFollowUpRequest,
   rejectFollowUpRequest,
-  cancelAppointment
+  cancelAppointment,
+  getPatientsByDoctorId,
+  viewPrescriptions
 } = require("../controllers/drController");
 const path = require('path');
 const multer = require('multer');
@@ -285,7 +287,8 @@ router.get("/FollowUpRequests/:doctorId",getFollowUpRequests);
 router.delete("/rejectFollowUp/:id",rejectFollowUpRequest);
 router.post("/acceptFollowUp/:id",acceptFollowUpRequest);
 router.patch("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
-
+router.get("/getPatientsByDoctorId/:doctorId",getPatientsByDoctorId);
+router.get("/viewPrescriptions/:patientId", viewPrescriptions);
 
 
 
