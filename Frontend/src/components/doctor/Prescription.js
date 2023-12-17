@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AccountAvatar from "../Authentication/AccountAvatar";
 import { useSelector } from 'react-redux';
 import {
     AppBar,
@@ -400,7 +401,11 @@ const Prescriptions = () => {
                     </Paper>
                 ) : null}
             </Dialog>
+            <div sx={{ background: '#004E93' }}>
+            <AccountAvatar />
+            </div>
             <AppBar position="static" sx={{ background: '#004E98' }}>
+            
                 <Container maxWidth="xl">
                     <Toolbar disableGutters sx={{ justifyContent: 'center' }}>
                         <Typography
