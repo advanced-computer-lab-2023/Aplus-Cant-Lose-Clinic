@@ -40,8 +40,7 @@ const AddAdmin = ({ onSave, onCancel }) => {
         snackbarMessage(`error: username already exist has occurred`, "error");
       } else {
         snackbarMessage("You have successfully added", "success");
-        navigate("/Home");
-      }
+        window.location.reload();      }
     });
   };
   //<------------------------------------------------------------------------------------
