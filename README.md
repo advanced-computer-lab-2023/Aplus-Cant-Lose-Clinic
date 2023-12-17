@@ -18,8 +18,8 @@ Project builds successfully and is fully functional. However, project is current
 The code style is enforced using `eslint` and `prettier`. The code style is enforced using `pre-commit` hooks and `pre-commit github action.`
 ## Screenshots
 <details><summary>Admin</summary>
-![addAdmin](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/b9dd5e75-ff5e-49e6-88e3-d66a7aeeb25f)
-![Screenshot 2023-12-16 183808](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/bf46d452-bb21-401b-9654-1968aa19de1c)
+![addAdmin](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/df478b57-8c4f-4061-b9a6-ee43e5da877b)
+  ![Screenshot 2023-12-16 183808](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/bf46d452-bb21-401b-9654-1968aa19de1c)
 ![Screenshot 2023-12-16 184839](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/f3bae77a-365f-4f60-ac77-1135b797bd9a)
 ![Screenshot 2023-12-16 184853](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/7e2c5783-f9e1-4b8a-b80b-e53208821cee)
 ![Screenshot 2023-12-16 184858](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/57a0dede-48b2-4041-8522-27494b74907e)
