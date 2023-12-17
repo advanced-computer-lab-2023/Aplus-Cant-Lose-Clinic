@@ -91,6 +91,20 @@ const paSchema = new mongoose.Schema(
 
       },
     ],
+    cart: [
+      {
+        medicineID:{
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Medicine",
+        },
+        amount: Number,
+      }
+    ],
+    addresses: [
+      {
+        location: String, 
+      },
+    ],
     medHist: [
       {
         title: {

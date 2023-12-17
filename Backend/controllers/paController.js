@@ -199,6 +199,58 @@ const addPatient = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+const AddFromPrescToCart = async (req, res) => {
+  try {
+    const { prescriptionId } = req.params;
+
+    const prescription = await Prescription.findById(prescriptionId);
+
+    if (!prescription) {
+      return res.status(404).json({ message: "Prescription not found" });
+    }
+
+    const { patientID, meds } = prescription;
+
+    const patient = await Patient.findById(patientID);
+
+    if (!patient) {
+      return res.status(404).json({ message: "Patient not found" });
+    }
+
+    for (const medication of meds) {
+      const { medID } = medication;
+      let existingCartItem = null;
+
+      if (patient.cart.length > 0) {
+        // Check if the medicineID already exists in the patient's cart
+        existingCartItem = patient.cart.find((item) =>
+          item.medicineID.equals(medID)
+        );
+      }
+
+      if (existingCartItem) {
+        // If the medicine already exists, increment the amount
+        existingCartItem.amount += 1;
+      } else {
+        // If the medicine does not exist, add it to the cart with amount 1
+        patient.cart.push({ medicineID: medID, amount: 1 });
+      }
+    }
+
+    // Save the updated patient document
+    await patient.save();
+
+    // Respond with a JSON message after the update
+    return res.status(200).json({
+      message: "Prescription checked out successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
 
 const addFamilyMember = async (req, res) => {
   const { fullName, NID, age, gender, relation } = req.body;
@@ -1666,7 +1718,7 @@ const addMedicineToCart2 = async (userId, medicineId) => {
   }
 };
 
-const AddFromPrescToCart = async (req, res) => {
+const AddFromPrescToCart2 = async (req, res) => {
   try {
     const { pId, prescID } = req.params;
 
@@ -1708,7 +1760,6 @@ const AddFromPrescToCart = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 module.exports = {
   addPatient,

@@ -253,7 +253,7 @@ router.patch("/subscribeToHealthPackage", subscribeToHealthPackage);
 router.patch("/unSubscribeToHealthPackage", unSubscribeToHealthPackage);
 
 router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
-router.get("/AddFromPrescToCart/:pId/:prescID", AddFromPrescToCart);
+router.get("/AddFromPrescToCart/:prescriptionId", AddFromPrescToCart);
 
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);

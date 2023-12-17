@@ -29,6 +29,8 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { renderTimeViewClock } from "@mui/x-date-pickers/timeViewRenderers";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
+import axios from "axios";
+import {API_URL} from "../../Consts";
 import { useNavigate } from "react-router-dom";
 import DownloadPage from "./DownloadP";
 import AccountAvatar from "../Authentication/AccountAvatar";
@@ -41,6 +43,20 @@ import { useDispatch, useSelector } from "react-redux";
 import Dialog from "@mui/material/Dialog";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 
+const handlePay = async (prescriptionId) => {
+  try {
+    const response = await axios.get(`${API_URL}/patient/AddFromPrescToCart/${prescriptionId}`);
+    console.log(response.data);
+    if (response.status === 200) {
+      // Navigate to the Checkout page
+      window.location.href = 'http://localhost:3001/Checkout';
+    } 
+     // Handle the response as needed
+  } catch (error) {
+    console.error('Error during payment:', error);
+    // Handle the error as needed
+  }
+};
 const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -203,7 +219,7 @@ const App = () => {
                     border: "black",
                   }}
                   onClick={() => {
-                //    handlePay(prescriptionid);
+                handlePay(prescriptionid._id);
                   }}
                 >
                   <IconButton sx={{ paddingLeft: "0px" }}>
