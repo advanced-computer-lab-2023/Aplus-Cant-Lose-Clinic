@@ -11,6 +11,7 @@ const {
   addFamilyMember,
   viewFamilyMembers,
   viewDoctors,
+  AddFromPrescToCart,
   searchDoctorsByNameOrspeciality,
   searchDoctorsByspecialityOrAvailability,
   viewPrescriptions,
@@ -42,7 +43,7 @@ const {
   requestFollowUp,
   sendEmail,
   getID,
-  payWithWalletF
+  payWithWalletF,
 } = require("../controllers/paController");
 
 const { getUser } = require("../controllers/userController");
@@ -75,7 +76,10 @@ router.get("/appointmentPatients/:doctorId", appointmentPatients);
 router.get("/viewPatientHealthRecords/:patientid", viewPatientHealthRecords);
 
 router.patch("/SubscriptionPayment/:patientId/:healthPackageId", payWithWallet);
-router.patch("/SubscriptionPaymentF/:patientId/:healthPackageId/:id", payWithWalletF);
+router.patch(
+  "/SubscriptionPaymentF/:patientId/:healthPackageId/:id",
+  payWithWalletF
+);
 router.patch(
   "/CCSubscriptionPayment/:patientId/:healthPackageId",
   ccSubscriptionPayment
@@ -149,7 +153,9 @@ router.post("/addFamilyLink/:patientId", async (req, res) => {
       familyMember = await Patient.findOne({ mobile: req.body.phoneNumber });
 
       if (!familyMember) {
-        throw new Error("Family member not found with the provided phone number.");
+        throw new Error(
+          "Family member not found with the provided phone number."
+        );
       }
 
       // Find the patient with the provided ID
@@ -247,6 +253,7 @@ router.patch("/subscribeToHealthPackage", subscribeToHealthPackage);
 router.patch("/unSubscribeToHealthPackage", unSubscribeToHealthPackage);
 
 router.get("/viewHealthPackagesPatient/:patientId", viewHealthPackagesPatient);
+router.get("/AddFromPrescToCart/:pId/:prescID", AddFromPrescToCart);
 
 router.get("/viewWallet/:patientId", viewWallet);
 router.get("/healthPackageInfo/:patientId/:healthPackageId", healthPackageInfo);
@@ -534,10 +541,7 @@ router.get("/delete/:id/:pid", async (req, res) => {
   }
 });
 
-router.patch("/CancelAppointment/:aid/:did/:pid",cancelAppointment);
-
-
-
+router.patch("/CancelAppointment/:aid/:did/:pid", cancelAppointment);
 
 // Get patient notifications
 router.get("/:patientId/notifications", getPatientNotifications);
@@ -551,6 +555,6 @@ router.patch("/:patientId/notifications", updatePatientNotifications);
 // send email to a patient
 router.post("/:patientId/send-email", sendPatientEmail);
 router.post("/requestFollowUp/:pid/:did", requestFollowUp);
-router.get("/patientID/:username",getID);
+router.get("/patientID/:username", getID);
 
 module.exports = router;

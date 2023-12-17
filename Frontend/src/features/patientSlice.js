@@ -64,6 +64,8 @@ export const getAlldoctors = createAsyncThunk("patient/getAlldoctors", async () 
 export const addPatient = createAsyncThunk(
   "patient/addPatient",
   async (data) => {
+    console.log(data);
+
     const response = await axios.post(`${API_URL}/patient/addPatient/`, {
       name: data.name,
       email: data.email,

@@ -39,7 +39,7 @@ const createAdmin = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, salt);
     // Create the admin user record
-    const newAdmin = await User.create({ username, password: hashedPassword, role: "admin" });
+    const newAdmin = await User.create({name:username, username, password: hashedPassword, role: "admin" });
     const data = {
       _id: newAdmin._id,
     };

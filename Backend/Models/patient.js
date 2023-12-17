@@ -4,12 +4,10 @@ const paSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true, // Email is required
     },
     email: {
       type: String,
       required: true, // Email is required
-      unique: true,
     },
     username: {
       type: String,
@@ -117,7 +115,7 @@ const paSchema = new mongoose.Schema(
     ],
     wallet: {
       type: Number,
-      required: true, // wallet is required
+  // wallet is required
     },
     notifications: [
       {

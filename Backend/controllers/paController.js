@@ -9,10 +9,10 @@ const HPackages = require("../Models/hpackages");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const Prescription = require("../Models/prescription");
-const mongoose = require('mongoose');
-const stripe=require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const mongoose = require("mongoose");
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 const nodemailer = require("nodemailer");
-const FollowUp=require("../Models/followUps");
+const FollowUp = require("../Models/followUps");
 
 function generateToken(data) {
   return jwt.sign(data, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
@@ -97,6 +97,7 @@ const createAppointment = async (req, res) => {
 };
 
 const addPatient = async (req, res) => {
+  console.log(req.body);
   try {
     const {
       name,
@@ -152,13 +153,18 @@ const addPatient = async (req, res) => {
     const birthDate = new Date(dBirth);
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
 
     // Check if the patient is at least 18 years old and not over 150 years old
     if (age < 18 || age > 150) {
-      return res.status(400).json({ error: "Patient must be at least 18 and within reasonable age" });
+      return res.status(400).json({
+        error: "Patient must be at least 18 and within reasonable age",
+      });
     }
 
     // Create the patient and user records
@@ -178,6 +184,8 @@ const addPatient = async (req, res) => {
     };
     const token = generateToken(data);
     const user = await User.create({
+      name,
+      email,
       username,
       password: hashedPassword,
       role: "patient",
@@ -303,13 +311,14 @@ const viewDoctors = async (req, res) => {
       doctorInfo.push(doctorInfoItem);
     }
 
-    return res.status(200).json({ message: "Accepted doctors information", doctors: doctorInfo });
+    return res
+      .status(200)
+      .json({ message: "Accepted doctors information", doctors: doctorInfo });
   } catch (error) {
     console.error("Error retrieving accepted doctors information:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 const freeAppiontmentSlot = async (req, res) => {
   try {
@@ -328,9 +337,10 @@ const freeAppiontmentSlot = async (req, res) => {
     }
 
     // Fetch details about each free Appointment
-    const Appointments = await Appointment.find({ drID: doctorId ,status:"Not_Reserved"}).populate(
-      "drID"
-    );
+    const Appointments = await Appointment.find({
+      drID: doctorId,
+      status: "Not_Reserved",
+    }).populate("drID");
     return res.status(200).json({
       message: "Free Appointments retrieved successfully",
       Appointments,
@@ -348,7 +358,9 @@ const reserveAppointmentSlot = async (req, res) => {
 
     // Validate AppointmentId, username, and Description
     if (!AppointmentId || !username || !Description) {
-      return res.status(400).json({ error: "AppointmentId, username, and Description are required" });
+      return res.status(400).json({
+        error: "AppointmentId, username, and Description are required",
+      });
     }
 
     // Find the patient by username
@@ -370,8 +382,7 @@ const reserveAppointmentSlot = async (req, res) => {
     console.error("Error updating appointment:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
-}
-
+};
 
 const searchDoctorsByNameOrspeciality = async (req, res) => {
   try {
@@ -453,9 +464,9 @@ const searchDoctorsByspecialityOrAvailability = async (req, res) => {
     // Find appointments that overlap with the specified time if 'searchTime' is provided
     const overlappingAppointments = searchDateTime
       ? await Appointment.find({
-        startDate: { $lt: searchDateTime },
-        endDate: { $gt: searchDateTime },
-      })
+          startDate: { $lt: searchDateTime },
+          endDate: { $gt: searchDateTime },
+        })
       : [];
 
     // Get the list of doctor IDs from the overlapping appointments
@@ -534,8 +545,8 @@ const viewAppoints = async (req, res) => {
 
     // Fetch details about each prescription, including medicine and doctor
     const Appointments = await Appointment.find({ pID: patient._id }).populate({
-      path: 'drID',
-      model: 'Doctor',
+      path: "drID",
+      model: "Doctor",
     });
 
     // if (!Appointments || Appointments.length === 0) {
@@ -639,21 +650,23 @@ const patientFilterAppointments = async (req, res) => {
   }
 };
 
-const
-  appointmentPatients = async (req, res) => {
-    try {
-      const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
-      if (!mongoose.Types.ObjectId.isValid(doctorId)) {
-        return res.status(400).json({ error: 'Invalid doctorId' });
-      }
-      // Use Mongoose to find all appointments for the specified doctor
-      const appointments = await Appointment.find({ drID: doctorId ,status:"Not_Reserved"})
-      res.json(appointments);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+const appointmentPatients = async (req, res) => {
+  try {
+    const doctorId = req.params.doctorId; // Assuming the doctor's ID is in the request params
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(400).json({ error: "Invalid doctorId" });
     }
-  };
+    // Use Mongoose to find all appointments for the specified doctor
+    const appointments = await Appointment.find({
+      drID: doctorId,
+      status: "Not_Reserved",
+    });
+    res.json(appointments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 const filterPrescriptions = async (req, res) => {
   try {
@@ -685,7 +698,9 @@ const filterPrescriptions = async (req, res) => {
     }
 
     // Find prescriptions based on the query
-    const prescriptions = await Prescription.find(query).populate("medID doctorID");
+    const prescriptions = await Prescription.find(query).populate(
+      "medID doctorID"
+    );
 
     if (!prescriptions || prescriptions.length === 0) {
       return res.status(404).json({ error: "No prescriptions found" });
@@ -734,7 +749,9 @@ const viewSpecificPrescription = async (req, res) => {
 
     // Check if the prescription ID is provided in the query
     if (!prescriptionId) {
-      return res.status(400).json({ error: "Prescription ID is required in the query" });
+      return res
+        .status(400)
+        .json({ error: "Prescription ID is required in the query" });
     }
 
     // Find the prescription by its ID and populate related data
@@ -768,10 +785,12 @@ const getAlldoctors = async (req, res) => {
     res.json(doctors);
   } catch (error) {
     // Handle any errors that may occur during the database query
-    console.error('Error fetching doctors:', error);
-    res.status(500).json({ error: 'An error occurred while fetching doctors.' });
+    console.error("Error fetching doctors:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching doctors." });
   }
-}
+};
 
 const subscribeToHealthPackage = async (req, res) => {
   const { patientId, healthPackageId } = req.query;
@@ -798,7 +817,9 @@ const subscribeToHealthPackage = async (req, res) => {
 
     // Check if the patient is already subscribed to this health package
     if (patient.hPackage && patient.hPackage.equals(healthPackage._id)) {
-      return res.status(400).json({ error: "Patient is already subscribed to this Health Package" });
+      return res.status(400).json({
+        error: "Patient is already subscribed to this Health Package",
+      });
     }
 
     // Add the health package to the patient's array of health packages
@@ -807,24 +828,15 @@ const subscribeToHealthPackage = async (req, res) => {
     // Save the updated patient document
     await patient.save();
 
-    return res
-      .status(201)
-      .json({ message: "Subscribed to Health Package added successfully", patient });
+    return res.status(201).json({
+      message: "Subscribed to Health Package added successfully",
+      patient,
+    });
   } catch (error) {
     console.error("Error Subscribing to Health Package:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-
-
-
-
-
-
-
-;
-
 
 //blabizozozozozo
 const unSubscribeToHealthPackage = async (req, res) => {
@@ -850,68 +862,58 @@ const unSubscribeToHealthPackage = async (req, res) => {
     const healthPackage = patient.hPackage;
 
     if (!healthPackage) {
-      return res.status(404).json({ error: "Health Package is not subscribed to" });
+      return res
+        .status(404)
+        .json({ error: "Health Package is not subscribed to" });
     }
 
     // Unsubscribe by setting the health package to null
     // patient.hPackage = null;
-    patient.hPStatus='Cancelled';
+    patient.hPStatus = "Cancelled";
     await patient.save();
 
     // Now, call the viewHealthPackagesPatient function to retrieve the updated list
-     return await viewHealthPackagesPatient({ params: { patientId } }, res);
-
+    return await viewHealthPackagesPatient({ params: { patientId } }, res);
   } catch (error) {
     console.error("Error Unsubscribing from Health Package:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
-const payWithWallet= async(req,res)=>
-{
-  const {amount}=req.body;
-  const {patientId,healthPackageId}=req.params;
-  try{
+const payWithWallet = async (req, res) => {
+  const { amount } = req.body;
+  const { patientId, healthPackageId } = req.params;
+  try {
     if (!patientId || !healthPackageId) {
       return res.status(400).json({ error: "All fields are required" });
     }
-  const patient=await Patient.findOne({_id:patientId})
+    const patient = await Patient.findOne({ _id: patientId });
 
-  
-  if(!patient)
-  {
-    return res.status(404).json({error:"Patient not found!"})
-  }
- 
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found!" });
+    }
 
-  if(patient.wallet<amount){
-   return  res.status(400).json({error:"Balance not Sufficient"})
-  }
-  
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  patient.wallet-=amount;
-  patient.hPackage=healthPackageId;
-  patient.hPStatus="Subscribed";
-  patient.SubDate=today;
+    if (patient.wallet < amount) {
+      return res.status(400).json({ error: "Balance not Sufficient" });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    patient.wallet -= amount;
+    patient.hPackage = healthPackageId;
+    patient.hPStatus = "Subscribed";
+    patient.SubDate = today;
     await patient.save();
 
-    res.status(200).json({message:"Successfully subscribed to health package"})
-
-
-   
-    
-  
-}catch(error)
-{
-  console.error(error);
+    res
+      .status(200)
+      .json({ message: "Successfully subscribed to health package" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
-}
-
-}
-
+  }
+};
 
 const viewHealthPackagesPatient = async (req, res) => {
   try {
@@ -928,38 +930,37 @@ const viewHealthPackagesPatient = async (req, res) => {
     const patientSubscribedPackage = patient.hPackage;
 
     // Map the health packages and add the subscription status
-    const healthPackagesWithSubscriptions = healthPackages.map(healthPackage => {
-      // const isSubscribed = patientSubscribedPackage ? patientSubscribedPackage.equals(healthPackage._id) : false;
-      const isSubscribed =
-  patientSubscribedPackage &&
-  patientSubscribedPackage.equals(healthPackage._id) &&
-  patient.hPStatus === "Subscribed";
+    const healthPackagesWithSubscriptions = healthPackages.map(
+      (healthPackage) => {
+        // const isSubscribed = patientSubscribedPackage ? patientSubscribedPackage.equals(healthPackage._id) : false;
+        const isSubscribed =
+          patientSubscribedPackage &&
+          patientSubscribedPackage.equals(healthPackage._id) &&
+          patient.hPStatus === "Subscribed";
 
-      return {
-        ...healthPackage.toObject(),
-        isSubscribed,
-      };
-    });
-    
+        return {
+          ...healthPackage.toObject(),
+          isSubscribed,
+        };
+      }
+    );
 
     res.status(200).json({
       message: "Health packages fetched successfully",
       healthPackages: healthPackagesWithSubscriptions,
     });
-    
   } catch (error) {
     console.error("Error fetching health packages:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
-const viewWallet = async(req , res)=>{
-  const {patientId} = req.params;
-  try{
+const viewWallet = async (req, res) => {
+  const { patientId } = req.params;
+  try {
     const patient = await Patient.findById(patientId);
 
-    if(!patient){
+    if (!patient) {
       return res.status(404).json({ error: "Patient not found" });
     }
 
@@ -969,65 +970,55 @@ const viewWallet = async(req , res)=>{
       await patient.save();
     }
 
-    
-    const walletAmount  = patient.wallet ;
+    const walletAmount = patient.wallet;
 
     res.status(200).json({
-      message:" wallet amount is fetched successfully",
+      message: " wallet amount is fetched successfully",
       patient: patient,
-      wallet:walletAmount
-    })
-  }
-  catch(error){
+      wallet: walletAmount,
+    });
+  } catch (error) {
     res.status(500).json({ error: "Internal Server Error" });
   }
+};
 
-
-
-}
-
-
-const ccSubscriptionPayment=async(req,res)=>
-{
-  
-  const {patientId,healthPackageId}=req.params;
-  try{
+const ccSubscriptionPayment = async (req, res) => {
+  const { patientId, healthPackageId } = req.params;
+  try {
     if (!patientId || !healthPackageId) {
       return res.status(400).json({ error: "All fields are required" });
     }
-  const patient=await Patient.findOne({_id:patientId})
+    const patient = await Patient.findOne({ _id: patientId });
 
-  
-  if(!patient)
-  {
-    return res.status(404).json({error:"Patient not found!"})
-  }
- 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  
-  patient.hPackage=healthPackageId;
-  patient.hPStatus="Subscribed";
-  patient.SubDate=today;
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found!" });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    patient.hPackage = healthPackageId;
+    patient.hPStatus = "Subscribed";
+    patient.SubDate = today;
     await patient.save();
 
-    res.status(200).json({message:"Successfully subscribed to health package"})
-}catch(error)
-{
-  console.error(error);
+    res
+      .status(200)
+      .json({ message: "Successfully subscribed to health package" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
-}
-}
+  }
+};
 
 const healthPackageInfo = async (req, res) => {
   const { patientId, healthPackageId } = req.params;
 
   try {
-    const patient = await Patient.findOne({ _id: patientId, hPackage: healthPackageId })
-      .populate('hPackage');
-
-      
+    const patient = await Patient.findOne({
+      _id: patientId,
+      hPackage: healthPackageId,
+    }).populate("hPackage");
 
     if (patient && patient.hPackage) {
       const { hPStatus, SubDate, hPackage } = patient;
@@ -1035,7 +1026,7 @@ const healthPackageInfo = async (req, res) => {
 
       let endDate;
 
-      if (hPStatus === 'Subscribed' || hPStatus === 'Cancelled') {
+      if (hPStatus === "Subscribed" || hPStatus === "Cancelled") {
         // If subscribed, calculate end date as one month more than subscribed date
         const endDateFormat = new Date(SubDate);
         endDateFormat.setMonth(endDateFormat.getMonth() + 1);
@@ -1046,7 +1037,7 @@ const healthPackageInfo = async (req, res) => {
       }
 
       //subscribed and cancelled both have same dates but they are called differently one is renewal date and one is endate
-      if (hPStatus === 'Subscribed') {
+      if (hPStatus === "Subscribed") {
         return res.status(200).json({
           // subscribed: true,
           status: hPStatus,
@@ -1054,7 +1045,7 @@ const healthPackageInfo = async (req, res) => {
           // renewedDate: RenewDate,
           renewedDate: endDate,
         });
-      } else if (hPStatus === 'Cancelled') {
+      } else if (hPStatus === "Cancelled") {
         return res.status(200).json({
           // subscribed: false,
           status: hPStatus,
@@ -1064,18 +1055,18 @@ const healthPackageInfo = async (req, res) => {
         return res.status(200).json({
           // subscribed: false,
           status: hPStatus,
-          message: 'Health package not subscribed by the patient.',
+          message: "Health package not subscribed by the patient.",
         });
       }
     } else {
       return res.status(200).json({
         // subscribed: false,
-        message: 'Health package not subscribed by the patient.',
+        message: "Health package not subscribed by the patient.",
       });
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -1127,33 +1118,34 @@ const createCheckoutSession = async (req, res) => {
   }
 };
 
-
 const viewPatientHealthRecords = async (req, res) => {
   try {
     const pId = req.params.patientid;
-    
+
     // Check if the prescription ID is provided in the query
     if (!pId) {
-      return res.status(400).json({ error: "Patient ID is required in the query" });
+      return res
+        .status(400)
+        .json({ error: "Patient ID is required in the query" });
     }
     const createCheckoutSession = async (req, res) => {
       try {
         const { pid, id } = req.params;
         const trimmedId = id.trim();
-    
+
         let healthPackage = null;
-    
+
         if (trimmedId.match(/^[0-9a-fA-F]{24}$/)) {
           healthPackage = await HPackages.findById(trimmedId);
         }
-    
+
         if (!healthPackage) {
           return res.status(404).json({ error: "Health package not found" });
         }
-    
+
         const { rate } = healthPackage;
         const newRate = rate * 100;
-    
+
         const session = await stripe.checkout.sessions.create({
           payment_method_types: ["card"],
           mode: "payment",
@@ -1172,14 +1164,14 @@ const viewPatientHealthRecords = async (req, res) => {
           success_url: `http://localhost:3000/Success/${pid}/${trimmedId}`,
           cancel_url: "http://localhost:3000/ViewHealthPackage",
         });
-    
+
         res.json({ url: session.url });
       } catch (e) {
         console.error(e);
         res.status(500).json({ error: e.message });
       }
     };
-    
+
     // Find the patient by its ID and populate related data
     const HealthRecords = await Patient.findById(pId, {
       name: 0,
@@ -1196,29 +1188,26 @@ const viewPatientHealthRecords = async (req, res) => {
       addresses: 0,
       wallet: 0,
       records: 0,
-    }).populate('healthRecords');
-    
-    if (!HealthRecords) {
+    }).populate("healthRecords");
 
+    if (!HealthRecords) {
       return res.status(404).json({ error: "HealthRecords not found" });
-      
     }
-    console.log('Reached HealthRecords');
+    console.log("Reached HealthRecords");
 
     return res.status(200).json({
       message: "HealthRecords and related data retrieved successfully",
       HealthRecords,
     });
-    } catch (error) {
+  } catch (error) {
     console.error("Error retrieving HealthRecords data:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
 const createAppointmentCheckoutSession = async (req, res) => {
   try {
-    const { amount,appointmentId,patientId } = req.params;
+    const { amount, appointmentId, patientId } = req.params;
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -1235,8 +1224,8 @@ const createAppointmentCheckoutSession = async (req, res) => {
           quantity: 1,
         },
       ],
-     success_url: `http://localhost:3000/SuccessAppoint/${appointmentId}/${patientId}`,
-     cancel_url: `http://localhost:3000/ViewAppointments`,
+      success_url: `http://localhost:3000/SuccessAppoint/${appointmentId}/${patientId}`,
+      cancel_url: `http://localhost:3000/ViewAppointments`,
     });
 
     res.json({ url: session.url });
@@ -1245,11 +1234,6 @@ const createAppointmentCheckoutSession = async (req, res) => {
   }
 };
 
-
-
-
-
-
 const rescheduleAppointment = async (req, res) => {
   try {
     const { appointmentId } = req.params;
@@ -1257,70 +1241,66 @@ const rescheduleAppointment = async (req, res) => {
 
     // Assuming you have a model named 'Appointment' for your appointments
     const appointment = await Appointment.findById(appointmentId)
-      .populate('drID') 
-      .populate('pID',);
-
+      .populate("drID")
+      .populate("pID");
 
     if (!appointment) {
-      return res.status(404).json({ message: 'Appointment not found' });
+      return res.status(404).json({ message: "Appointment not found" });
     }
 
     const doctor = appointment.drID;
-    const patient= appointment.pID;
+    const patient = appointment.pID;
     const dId = doctor._id;
-    const pId= patient._id;
-  
-    // console.log(appointment)
+    const pId = patient._id;
 
+    // console.log(appointment)
 
     // Update the start and end dates
     appointment.startDate = startDate;
     appointment.endDate = endDate;
 
-      ///added start
-     patient.notifications.push({ //add notifiaction to patient
-      message:`APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
-      type:"AppointmentRescheduled",
+    ///added start
+    patient.notifications.push({
+      //add notifiaction to patient
+      message: `APPOINTEMNT RESCHEULED WITH DOCTOR ${doctor.name}`,
+      type: "AppointmentRescheduled",
     });
-    doctor.notifications.push({//add notifiaction to doctor
-      message:`APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
-      type:"AppointmentRescheduled",
+    doctor.notifications.push({
+      //add notifiaction to doctor
+      message: `APPOINTEMNT RESCHEULED WITH PATIENT ${patient.name}`,
+      type: "AppointmentRescheduled",
     });
-      
-        //still will send to doctor 
+
+    //still will send to doctor
     //added end
 
-    
     // Save the updated appointment
-    
+
     await patient.save();
     await doctor.save();
     await appointment.save();
 
+    // Send email to the doctor
+    const emailSubject2 = "Appointment Reschedule";
+    const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
+    await sendEmail(doctor.email, emailSubject2, emailMessage2);
 
-      // Send email to the doctor
-      const emailSubject2 = "Appointment Reschedule";
-      const emailMessage2 = `Your appointment with patient ${patient.name} has been Reschedule.`;
-      await sendEmail( doctor.email , emailSubject2, emailMessage2 );
-  
-// Send email to the patient
+    // Send email to the patient
     const emailSubject = "Appointment Reschedule";
-      const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
-      await sendEmail(patient.email,  emailSubject, emailMessage );
+    const emailMessage = `Your appointment with Dr. ${doctor.name} has been Reschedule.`;
+    await sendEmail(patient.email, emailSubject, emailMessage);
 
-    
-    res.json({ success: true, message: "Appointment successfully rescheduled" });
+    res.json({
+      success: true,
+      message: "Appointment successfully rescheduled",
+    });
   } catch (error) {
     console.error("Error rescheduling appointment", error);
-    res.status(500).json({ success: false, message: "Error rescheduling appointment" });
+    res
+      .status(500)
+      .json({ success: false, message: "Error rescheduling appointment" });
   }
 };
-
-
-
-
-
-
 
 const successCreditCardPayment = async (req, res) => {
   try {
@@ -1329,115 +1309,98 @@ const successCreditCardPayment = async (req, res) => {
     // Check if the patient and appointment exist
     const patient = await Patient.findById(patientID);
     const appointment = await Appointment.findById(appointmentID);
-console.log(patientID);
-console.log(appointmentID);
+    console.log(patientID);
+    console.log(appointmentID);
 
     if (!patient || !appointment) {
-      return res.status(404).json({ message: 'Patient or Appointment not found' });
+      return res
+        .status(404)
+        .json({ message: "Patient or Appointment not found" });
     }
 
     // Update the appointment status to 'completed' (or any other desired status)
-    appointment.status = 'upcoming';
+    appointment.status = "upcoming";
     appointment.pID = patientID;
 
     // Save changes to the appointment
     await appointment.save();
 
-    res.json({ message: 'Credit card payment successful, appointment scheduled' });
+    res.json({
+      message: "Credit card payment successful, appointment scheduled",
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-const cancelAppointment=async (req,res)=>
-{
-  try
-  {
-    const {aid,did,pid}=req.params
+const cancelAppointment = async (req, res) => {
+  try {
+    const { aid, did, pid } = req.params;
     if (!aid || !did || !pid) {
       return res.status(400).json({ message: "Invalid parameters" });
     }
-    console.log("yyyyyyy",did)
-    const appointment=await Appointment.findById(aid)
-    const doctor=await Doctor.findById(did)
-    const patient=await Patient.findById(pid)
-    if(!appointment)
-    {
-      res.status(500).json({message:"Appointment not found!"})
+    console.log("yyyyyyy", did);
+    const appointment = await Appointment.findById(aid);
+    const doctor = await Doctor.findById(did);
+    const patient = await Patient.findById(pid);
+    if (!appointment) {
+      res.status(500).json({ message: "Appointment not found!" });
     }
-    if(!doctor)
-    {
-      res.status(500).json({message:"Doctor not found!"})
+    if (!doctor) {
+      res.status(500).json({ message: "Doctor not found!" });
     }
-    if(!patient)
-    {
-      res.status(500).json({message:"Patient not found!"})
+    if (!patient) {
+      res.status(500).json({ message: "Patient not found!" });
     }
-    appointment.status="cancelled";
-  
+    appointment.status = "cancelled";
+
     ///added start
-    patient.notifications.push({ //add notifiaction to patient
-      message:`APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
-      type:"AppointmentCanceled",
+    patient.notifications.push({
+      //add notifiaction to patient
+      message: `APPOINTEMNT CANCELED WITH DOCTOR ${doctor.name}`,
+      type: "AppointmentCanceled",
     });
-    doctor.notifications.push({//add notifiaction to doctor
-      message:`APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
-      type:"AppointmentCanceled",
+    doctor.notifications.push({
+      //add notifiaction to doctor
+      message: `APPOINTEMNT CANCELED WITH PATIENT ${patient.name}`,
+      type: "AppointmentCanceled",
     });
 
-    await patient.save()     
+    await patient.save();
     await doctor.save();
 
+    // Send email to the doctor
+    const emailSubject2 = "Appointment Canceled";
+    const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
+    await sendEmail(doctor.email, emailSubject2, emailMessage2);
 
-       // Send email to the doctor
-       const emailSubject2 = "Appointment Canceled";
-       const emailMessage2 = `Your appointment with patient ${patient.name} has been canceled.`;
-       await sendEmail( doctor.email , emailSubject2,emailMessage2 );
-
-
-      // Send email to the patient
-     const emailSubject = "Appointment Canceled";
-     const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
-    await sendEmail(patient.email, emailSubject,emailMessage );
-
-
- 
+    // Send email to the patient
+    const emailSubject = "Appointment Canceled";
+    const emailMessage = `Your appointment with Dr. ${doctor.name} has been canceled.`;
+    await sendEmail(patient.email, emailSubject, emailMessage);
 
     //added end
     await appointment.save();
 
-    const today=new Date();
+    const today = new Date();
     const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
     const timeDifference = Math.abs(today - appointment.startDate);
-   //const timeDifference = appointment.startDate-today;
+    //const timeDifference = appointment.startDate-today;
     if (timeDifference > oneDayInMilliseconds) {
-      console.log(timeDifference)
-      console.log(patient.wallet)
-      patient.wallet+=doctor.rate;
-      await patient.save()     
+      console.log(timeDifference);
+      console.log(patient.wallet);
+      patient.wallet += doctor.rate;
+      await patient.save();
       await doctor.save();
-  }
-  // const app = await Appointment.find();
-  // res.status(200).json(app)
-
-     
-
-  }
-  catch(error)
-  {
+    }
+    // const app = await Appointment.find();
+    // res.status(200).json(app)
+  } catch (error) {
     console.error(error);
-    res.status(500).json({message:"Error Cancelling Appointment"})
-
+    res.status(500).json({ message: "Error Cancelling Appointment" });
   }
-
-}
-
-
-
-
-
-
+};
 
 // Function to get notifications of a patient
 const getPatientNotifications = async (req, res) => {
@@ -1447,14 +1410,14 @@ const getPatientNotifications = async (req, res) => {
     const patient = await Patient.findById(patientId);
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found.' });
+      return res.status(404).json({ message: "Patient not found." });
     }
 
     const notifications = patient.notifications;
     return res.status(200).json({ notifications });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error.' });
+    return res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -1467,20 +1430,22 @@ const addPatientNotification = async (req, res) => {
     const patient = await Patient.findById(patientId);
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found.' });
+      return res.status(404).json({ message: "Patient not found." });
     }
 
     patient.notifications.push({
       message,
-      type: type || 'info',
+      type: type || "info",
     });
 
     await patient.save();
 
-    return res.status(201).json({ message: 'Notification added successfully.' });
+    return res
+      .status(201)
+      .json({ message: "Notification added successfully." });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error.' });
+    return res.status(500).json({ message: "Internal server error." });
   }
 };
 
@@ -1493,21 +1458,21 @@ const updatePatientNotifications = async (req, res) => {
     const patient = await Patient.findById(patientId);
 
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found.' });
+      return res.status(404).json({ message: "Patient not found." });
     }
 
     patient.notifications = updatedNotifications;
 
     await patient.save();
 
-    return res.status(201).json({ message: 'Notifications array updated successfully.' });
+    return res
+      .status(201)
+      .json({ message: "Notifications array updated successfully." });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: 'Internal server error.' });
+    return res.status(500).json({ message: "Internal server error." });
   }
 };
-
-
 
 const sendPatientEmail = async (req, res) => {
   const { patientId } = req.params;
@@ -1516,9 +1481,11 @@ const sendPatientEmail = async (req, res) => {
   try {
     // Retrieve patient's email from the database
     const patient = await Patient.findById(patientId);
-   
+
     if (!patient || !patient.email) {
-      return res.status(404).json({ message: 'Patient not found or no email associated.' });
+      return res
+        .status(404)
+        .json({ message: "Patient not found or no email associated." });
     }
 
     const transporter = nodemailer.createTransport({
@@ -1532,27 +1499,25 @@ const sendPatientEmail = async (req, res) => {
     // Email content
     const mailOptions = {
       from: process.env.EMAIL,
-      to: /*patient.email*/"ahmed.elgamel@student.guc.edu.eg" ,
+      to: /*patient.email*/ "ahmed.elgamel@student.guc.edu.eg",
       subject,
       text: message,
     };
 
     // Send the email
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({ message: "Email sent successfully" });
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error sending email:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
-
 const sendEmail = async (email, subject, message) => {
   try {
-    console.log("tetst mailllll")
+    console.log("tetst mailllll");
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: "gmail",
       auth: {
         user: process.env.EMAIL,
         pass: process.env.EMAIL_PASSWORD,
@@ -1561,21 +1526,18 @@ const sendEmail = async (email, subject, message) => {
 
     const mailOptions = {
       from: process.env.EMAIL,
-      to: /*email*/"ahmed.elgamel@student.guc.edu.eg",
+      to: /*email*/ "ahmed.elgamel@student.guc.edu.eg",
       subject,
       text: message,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('Email sent successfully'); // Add this log to check if the function is reached
+    console.log("Email sent successfully"); // Add this log to check if the function is reached
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     throw error; // Propagate the error to the calling function
   }
 };
-
-
-
 
 const requestFollowUp = async (req, res) => {
   const { pid, did } = req.params;
@@ -1586,12 +1548,21 @@ const requestFollowUp = async (req, res) => {
 
   try {
     const today = new Date();
-   const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`;
+    const formattedDate = `${today.getFullYear()}-${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}-${today.getDate().toString().padStart(2, "0")}`;
     const patient = await Patient.findById(pid);
-    const response = await FollowUp.create({ pID: pid, drID: did,patientName:patient.name ,requestDate:formattedDate});
-    res.status(201).json({ message: "Follow-up requested successfully", data: response });
+    const response = await FollowUp.create({
+      pID: pid,
+      drID: did,
+      patientName: patient.name,
+      requestDate: formattedDate,
+    });
+    res
+      .status(201)
+      .json({ message: "Follow-up requested successfully", data: response });
   } catch (error) {
-    console.error('Error Requesting FollowUp:', error);
+    console.error("Error Requesting FollowUp:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -1614,56 +1585,129 @@ const getID = async (req, res) => {
   }
 };
 
-const payWithWalletF= async(req,res)=>
-{
-  const {amount}=req.body;
-  const {patientId,healthPackageId,id}=req.params;
-  try{
-    if (!patientId || !healthPackageId||!id) {
+const payWithWalletF = async (req, res) => {
+  const { amount } = req.body;
+  const { patientId, healthPackageId, id } = req.params;
+  try {
+    if (!patientId || !healthPackageId || !id) {
       return res.status(400).json({ error: "All fields are required" });
     }
-  const patient=await Patient.findOne({_id:patientId})
-  //this is the family member that will pay
-  const familyMem =await Patient.findOne({_id:id})
+    const patient = await Patient.findOne({ _id: patientId });
+    //this is the family member that will pay
+    const familyMem = await Patient.findOne({ _id: id });
 
-  
-  if(!patient||!familyMem)
-  {
-    return res.status(404).json({error:"Patient not found!"})
-  }
- 
+    if (!patient || !familyMem) {
+      return res.status(404).json({ error: "Patient not found!" });
+    }
 
-  if(familyMem.wallet<amount){
-   return  res.status(400).json({error:"Balance not Sufficient"})
-  }
-  
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  familyMem.wallet-=amount;
-  patient.hPackage=healthPackageId;
-  patient.hPStatus="Subscribed";
-  patient.SubDate=today;
+    if (familyMem.wallet < amount) {
+      return res.status(400).json({ error: "Balance not Sufficient" });
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    familyMem.wallet -= amount;
+    patient.hPackage = healthPackageId;
+    patient.hPStatus = "Subscribed";
+    patient.SubDate = today;
     await patient.save();
     await familyMem.save();
 
-    res.status(200).json({message:"Successfully subscribed to health package"})
-
-
-   
-    
-  
-}catch(error)
-{
-  console.error(error);
+    res
+      .status(200)
+      .json({ message: "Successfully subscribed to health package" });
+  } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Internal server error" });
-}
+  }
+};
+const addMedicineToCart2 = async (userId, medicineId) => {
+  try {
+    const patient = await Patient.findById(userId);
+    console.log(medicineId);
+    if (!patient) {
+      return { error: "Patient not found" };
+    }
 
-}
+    if (!patient.cart || patient.cart.length === 0) {
+      return { error: "Patient's cart is empty" };
+    }
 
+    if (typeof medicineId === "undefined") {
+      return { error: "Medicine ID is missing" };
+    }
+    let existingMedicine = null;
+    if (patient.cart.length !== 0) {
+      existingMedicine = patient.cart.find(
+        (item) =>
+          item.medicineID &&
+          item.medicineID.toString() === medicineId.toString()
+      );
+    }
+    if (existingMedicine) {
+      if (existingMedicine.amount + 1 > medicine.amount) {
+        return { error: "Exceeded available quantity" };
+      }
+      existingMedicine.amount += 1;
+    } else {
+      if (1 > medicine.amount) {
+        return { error: "Exceeded available quantity" };
+      }
+      patient.cart.push({ medicineID: medicineId, amount: 1 });
+    }
 
+    await patient.save();
 
+    return { message: "Medicine added to cart successfully", patient };
+  } catch (error) {
+    console.error("Error adding medicine to cart:", error);
+    return { error: "Internal Server Error" };
+  }
+};
 
+const AddFromPrescToCart = async (req, res) => {
+  try {
+    const { pId, prescID } = req.params;
+
+    // Find prescriptions for the given patientId and status "unfilled"
+    const prescription = await Prescription.findById(prescID);
+
+    if (!prescription || prescription.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No unfilled prescriptions found for the patient" });
+    }
+
+    // Extract medicine IDs from prescriptions
+    const medicineIds = prescription.meds.map((med) => med.medID);
+
+    // Find prescription medicines with type "Prescription", matching IDs, and status "unarchived"
+    const prescriptionMedicines = await Medicine.find({
+      _id: { $in: medicineIds },
+      status: "unarchived",
+    });
+
+    if (!prescriptionMedicines || prescriptionMedicines.length === 0) {
+      return res.status(404).json({
+        message: "No unarchived prescription medicines found for the patient",
+      });
+    }
+    console.log(medicineIds);
+    await Promise.all(
+      medicineIds.map(
+        async (medicineId) => await addMedicineToCart2(pId, medicineId)
+      )
+    );
+    res.status(200).json({
+      message: "Unarchived Prescription medicines retrieved successfully",
+      prescriptionMedicines,
+    });
+  } catch (error) {
+    console.error("Error fetching prescription medicines:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
 
 
 module.exports = {
@@ -1685,6 +1729,7 @@ module.exports = {
   subscribeToHealthPackage,
   unSubscribeToHealthPackage,
   payWithWallet,
+  AddFromPrescToCart,
   viewHealthPackagesPatient,
   viewWallet,
   ccSubscriptionPayment,
@@ -1701,5 +1746,5 @@ module.exports = {
   sendPatientEmail,
   requestFollowUp,
   getID,
-  payWithWalletF
+  payWithWalletF,
 };
