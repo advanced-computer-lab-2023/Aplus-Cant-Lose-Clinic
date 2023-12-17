@@ -81,8 +81,9 @@ export default function DocPatients() {
           <div>
           <AccountAvatar />
         </div>
+
       <div style={{ display: "flex", height: "100%", flexDirection: "row" }}>
-    
+
         <i>
           <IconButton
             color="primary"
@@ -285,6 +286,7 @@ export default function DocPatients() {
                 </Accordion>
               );
             })}
+
         </div>
 
         <Snackbar
@@ -295,7 +297,10 @@ export default function DocPatients() {
             appointement is resuchudeled!!
           </MuiAlert>
         </Snackbar>
+        <img src={wd} style={{width:"60%",height:"900px"}} alt="Image Alt Text"/>
+
       </div>
+
     </div>
   ) : (
     <>
