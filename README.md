@@ -17,6 +17,7 @@ Project builds successfully and is fully functional. However, project is current
 
 The code style is enforced using `eslint` and `prettier`. The code style is enforced using `pre-commit` hooks and `pre-commit github action.`
 ## Screenshots
+>> Admin
 ![addAdmin](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/df478b57-8c4f-4061-b9a6-ee43e5da877b)
   ![Screenshot 2023-12-16 183808](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/bf46d452-bb21-401b-9654-1968aa19de1c)
 ![Screenshot 2023-12-16 184839](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/f3bae77a-365f-4f60-ac77-1135b797bd9a)
@@ -24,7 +25,7 @@ The code style is enforced using `eslint` and `prettier`. The code style is enfo
 ![Screenshot 2023-12-16 184858](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/57a0dede-48b2-4041-8522-27494b74907e)
 ![Screenshot 2023-12-16 184914](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/d92c90fe-2c76-4af8-973b-31b8db2c7eb6)
 
-<details><summary>Patient</summary>
+>> Patient
 ![chats](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/4c2ac8a5-9c36-48c8-8cd3-dae84debfddd)
 ![FamilyMember](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/4f020227-02f2-4c7b-a7ae-48506b9ee9dc)
 ![HealthPackages](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/2e93bf6c-8588-4aca-8cc0-ec7bffae40c6)
@@ -35,8 +36,7 @@ The code style is enforced using `eslint` and `prettier`. The code style is enfo
 ![ViewHealthRecords](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/3a36f05b-dccf-4d95-bd5b-77d727fd9cc7)
 ![wallet](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/9d1dea07-e55c-48b7-a286-b01e786f3ccf)
 
-</details>
-<details><summary>Doctor</summary>
+>>  Doctor
 ![AddPrescription](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/8c030ec9-100f-41b0-8d14-4b3c117d6029)
 ![DrRequests](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/b56b097c-4b1e-497f-be2d-a04cbae84d09)
 ![FollowUps](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/6e3ae3e6-1559-4b0b-8953-0ce84789416a)
@@ -45,7 +45,7 @@ The code style is enforced using `eslint` and `prettier`. The code style is enfo
 ![prescriptions](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/9175e071-770c-46c5-8d8d-b537205257ee)
 ![Screenshot 2023-12-16 185020](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/1e1c3a2e-5196-415d-bc73-41d08cc4efa2)
 
-</details>
+
 
 ## Tech/Framework used 🧰
 
