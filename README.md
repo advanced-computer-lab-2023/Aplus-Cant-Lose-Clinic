@@ -563,10 +563,11 @@ const freeAppiontmentSlot = async (req, res) => {
 4. Run `node .`
 5. From the parent directory, go into the `client` directory and run `npm i`
 6. Run `npm start`
+
 ```
 `
 ```
-<details><summary>Admin</summary>
+<details><summary>API Refrences</summary>
 
 ### Admin API Refrences
 
@@ -1477,7 +1478,8 @@ const freeAppiontmentSlot = async (req, res) => {
 
 
 </details>
-## Tests
+<details><summary>Tests</summary>
+
 <details><summary>Admin</summary>
 
 ![addPack](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/300203a9-5149-4133-a9b5-b1596f04769f)
@@ -1505,6 +1507,7 @@ const freeAppiontmentSlot = async (req, res) => {
 ![specificPerscription](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/48150f4d-79fb-4df3-87a8-009e2c8644d4)
 ![viewFamilyMember](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/ec8886ec-0fba-488b-9e9e-a1aabac98142)
 ![viewFreeAppointments](https://github.com/advanced-computer-lab-2023/Aplus-Cant-Lose-Clinic/assets/98600518/d61a337d-ba12-45f8-91d4-1d103f091bf7)
+</details>
 </details>
 ## How to use 🤷‍♀️
 
